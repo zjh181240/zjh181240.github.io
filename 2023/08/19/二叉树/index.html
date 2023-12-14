@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>二叉树 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁二叉树非递归遍历实现统一写法  123456789101112131415161718192021222324252627282930313233LinkedList&lt;TreeNode&gt; stack &#x3D; new LinkedList&lt;&gt;();TreeNode curr &#x3D; root; &#x2F;&#x2F; 代表当前节点TreeNode pop &#x3D; null; &#x2F;&#x2F; 最近一次弹栈的元素w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树">
+<meta property="og:url" content="http://example.com/2023/08/19/%E4%BA%8C%E5%8F%89%E6%A0%91/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁二叉树非递归遍历实现统一写法  123456789101112131415161718192021222324252627282930313233LinkedList&lt;TreeNode&gt; stack &#x3D; new LinkedList&lt;&gt;();TreeNode curr &#x3D; root; &#x2F;&#x2F; 代表当前节点TreeNode pop &#x3D; null; &#x2F;&#x2F; 最近一次弹栈的元素w">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/41107/Sorted_binary_tree_ALL_RGB.svg.png">
+<meta property="og:image" content="http://example.com/img/41107/BST1.png">
+<meta property="og:image" content="http://example.com/img/41107/BST2.png">
+<meta property="article:published_time" content="2023-08-19T14:14:49.000Z">
+<meta property="article:modified_time" content="2023-08-22T02:16:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java基础">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/41107/Sorted_binary_tree_ALL_RGB.svg.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-二叉树" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/19/%E4%BA%8C%E5%8F%89%E6%A0%91/" class="article-date">
+  <time class="dt-published" datetime="2023-08-19T14:14:49.000Z" itemprop="datePublished">2023-08-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      二叉树
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁二叉树非递归遍历实现"><a href="#🍁二叉树非递归遍历实现" class="headerlink" title="🍁二叉树非递归遍历实现"></a>🍁二叉树非递归遍历实现</h2><h3 id="统一写法"><a href="#统一写法" class="headerlink" title="统一写法"></a>统一写法</h3><img src="/img/41107/Sorted_binary_tree_ALL_RGB.svg.png" alt="Sorted_binary_tree_ALL_RGB.svg" style="zoom:80%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">LinkedList&lt;TreeNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">curr</span> <span class="operator">=</span> root; <span class="comment">// 代表当前节点</span></span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">pop</span> <span class="operator">=</span> <span class="literal">null</span>; <span class="comment">// 最近一次弹栈的元素</span></span><br><span class="line"><span class="keyword">while</span> (curr != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">    <span class="keyword">if</span> (curr != <span class="literal">null</span>) &#123;</span><br><span class="line">        colorPrintln(<span class="string">&quot;前: &quot;</span> + curr.val, <span class="number">31</span>);</span><br><span class="line">        stack.push(curr); <span class="comment">// 压入栈，为了记住回来的路</span></span><br><span class="line">        curr = curr.left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">peek</span> <span class="operator">=</span> stack.peek();</span><br><span class="line">        <span class="comment">// 右子树可以不处理, 对中序来说, 要在右子树处理之前打印</span></span><br><span class="line">        <span class="keyword">if</span> (peek.right == <span class="literal">null</span>) &#123;</span><br><span class="line">            colorPrintln(<span class="string">&quot;中: &quot;</span> + peek.val, <span class="number">36</span>);</span><br><span class="line">            pop = stack.pop();</span><br><span class="line">            colorPrintln(<span class="string">&quot;后: &quot;</span> + pop.val, <span class="number">34</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 右子树处理完成, 对中序来说, 无需打印</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (peek.right == pop) &#123;</span><br><span class="line">            pop = stack.pop();</span><br><span class="line">            colorPrintln(<span class="string">&quot;后: &quot;</span> + pop.val, <span class="number">34</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 右子树待处理, 对中序来说, 要在右子树处理之前打印</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            colorPrintln(<span class="string">&quot;中: &quot;</span> + peek.val, <span class="number">36</span>);</span><br><span class="line">            curr = peek.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">colorPrintln</span><span class="params">(String origin, <span class="type">int</span> color)</span> &#123;</span><br><span class="line">    System.out.printf(<span class="string">&quot;\033[%dm%s\033[0m%n&quot;</span>, color, origin);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前序遍历"><a href="#前序遍历" class="headerlink" title="前序遍历"></a>前序遍历</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">LinkedListStack&lt;TreeNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedListStack</span>&lt;&gt;();</span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">curr</span> <span class="operator">=</span> root;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (!stack.isEmpty() || curr != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (curr != <span class="literal">null</span>) &#123;</span><br><span class="line">        stack.push(curr);</span><br><span class="line">        System.out.println(curr); <span class="comment">// 前序在此处理</span></span><br><span class="line">        curr = curr.left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">        curr = pop.right;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">LinkedListStack&lt;TreeNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedListStack</span>&lt;&gt;();</span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">curr</span> <span class="operator">=</span> root;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (!stack.isEmpty() || curr != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (curr != <span class="literal">null</span>) &#123;</span><br><span class="line">        stack.push(curr);</span><br><span class="line">        curr = curr.left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">        System.out.println(pop); <span class="comment">// 中序在此处理</span></span><br><span class="line">        curr = pop.right;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="后序遍历"><a href="#后序遍历" class="headerlink" title="后序遍历"></a>后序遍历</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">LinkedListStack&lt;TreeNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedListStack</span>&lt;&gt;();</span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">curr</span> <span class="operator">=</span> root;</span><br><span class="line"><span class="type">TreeNode</span> <span class="variable">pop</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (!stack.isEmpty() || curr != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (curr != <span class="literal">null</span>) &#123;</span><br><span class="line">        stack.push(curr);</span><br><span class="line">        curr = curr.left;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">TreeNode</span> <span class="variable">peek</span> <span class="operator">=</span> stack.peek();</span><br><span class="line">        <span class="keyword">if</span> (peek.right == <span class="literal">null</span> || peek.right == pop) &#123;</span><br><span class="line">            pop = stack.pop();</span><br><span class="line">            System.out.println(pop);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            curr = peek.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例题目：二叉树最大深度"><a href="#示例题目：二叉树最大深度" class="headerlink" title="示例题目：二叉树最大深度"></a>示例题目：二叉树最大深度</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    思路：</span></span><br><span class="line"><span class="comment">    1. 得到左子树深度, 得到右子树深度, 二者最大者加一, 就是本节点深度</span></span><br><span class="line"><span class="comment">    2. 因为需要先得到左右子树深度, 很显然是后序遍历典型应用</span></span><br><span class="line"><span class="comment">    3. 关于深度的定义：从根出发, 离根最远的节点总边数,</span></span><br><span class="line"><span class="comment">        注意: 力扣里的深度定义要多一</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">        深度2         深度3         深度1</span></span><br><span class="line"><span class="comment">        1            1            1</span></span><br><span class="line"><span class="comment">       / \          / \</span></span><br><span class="line"><span class="comment">      2   3        2   3</span></span><br><span class="line"><span class="comment">                        \</span></span><br><span class="line"><span class="comment">                         4</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxDepth</span><span class="params">(TreeNode node)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">// 非力扣题目改为返回 -1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> <span class="variable">d1</span> <span class="operator">=</span> maxDepth(node.left);</span><br><span class="line">    <span class="type">int</span> <span class="variable">d2</span> <span class="operator">=</span> maxDepth(node.right);</span><br><span class="line">    <span class="keyword">return</span> Integer.max(d1, d2) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">    思路：</span></span><br><span class="line"><span class="comment">    1. 使用非递归后序遍历, 栈的最大高度即为最大深度</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">maxDepth</span><span class="params">(TreeNode root)</span> &#123;</span><br><span class="line">    <span class="type">TreeNode</span> <span class="variable">curr</span> <span class="operator">=</span> root;</span><br><span class="line">    LinkedList&lt;TreeNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">TreeNode</span> <span class="variable">pop</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (curr != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (curr != <span class="literal">null</span>) &#123;</span><br><span class="line">            stack.push(curr);</span><br><span class="line">            <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> stack.size();</span><br><span class="line">            <span class="keyword">if</span> (size &gt; max) &#123;</span><br><span class="line">                max = size;</span><br><span class="line">            &#125;</span><br><span class="line">            curr = curr.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">TreeNode</span> <span class="variable">peek</span> <span class="operator">=</span> stack.peek();</span><br><span class="line">            <span class="keyword">if</span>(peek.right == <span class="literal">null</span> || peek.right == pop) &#123;</span><br><span class="line">                pop = stack.pop();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                curr = peek.right;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> max;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁二叉搜索树"><a href="#🍁二叉搜索树" class="headerlink" title="🍁二叉搜索树"></a>🍁二叉搜索树</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><blockquote>
+<p>二叉搜索树（也称二叉排序树）是符合下面特征的二叉树：</p>
+<ol>
+<li>树节点增加 key 属性，用来比较谁大谁小，key 不可以重复</li>
+<li>对于任意一个树节点，它的 key 比左子树的 <strong>key 都大</strong>，同时也比右子树的 <strong>key 都小</strong></li>
+</ol>
+</blockquote>
+<img src="/img/41107/BST1.png" alt="BST1" style="zoom:80%;" />
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">BSTNode</span> &#123;</span><br><span class="line">    <span class="type">int</span> key; <span class="comment">// 若希望任意类型作为 key, 则后续可以将其设计为 Comparable 接口</span></span><br><span class="line">    Object value;</span><br><span class="line">    BSTNode left;</span><br><span class="line">    BSTNode right;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BSTNode</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.key = key;</span><br><span class="line">        <span class="built_in">this</span>.value = key;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BSTNode</span><span class="params">(<span class="type">int</span> key, Object value)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.key = key;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BSTNode</span><span class="params">(<span class="type">int</span> key, Object value, BSTNode left, BSTNode right)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.key = key;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">        <span class="built_in">this</span>.left = left;</span><br><span class="line">        <span class="built_in">this</span>.right = right;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">get</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> doGet(root, key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> Object <span class="title function_">doGet</span><span class="params">(BSTNode node, <span class="type">int</span> key)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>; <span class="comment">// 没找到</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key &lt; node.key) &#123;</span><br><span class="line">        <span class="keyword">return</span> doGet(node.left, key); <span class="comment">// 向左找</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.key &lt; key) &#123;</span><br><span class="line">        <span class="keyword">return</span> doGet(node.right, key); <span class="comment">// 向右找</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> node.value; <span class="comment">// 找到了</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">get</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">node</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="keyword">while</span> (node != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; node.key) &#123;</span><br><span class="line">            node = node.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.key &lt; key) &#123;</span><br><span class="line">            node = node.right;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> node.value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="找最小"><a href="#找最小" class="headerlink" title="找最小"></a>找最小</h3><blockquote>
+<p>树的最左侧即为最小值</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">min</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> doMin(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">doMin</span><span class="params">(BSTNode node)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 左边已走到头</span></span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="literal">null</span>) &#123; </span><br><span class="line">        <span class="keyword">return</span> node.value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> doMin(node.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">min</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="comment">// 左边未走到头</span></span><br><span class="line">    <span class="keyword">while</span> (p.left != <span class="literal">null</span>) &#123;</span><br><span class="line">        p = p.left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="找最大"><a href="#找最大" class="headerlink" title="找最大"></a>找最大</h3><blockquote>
+<p>树的最右侧即为最大值</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">max</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> doMax(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">doMax</span><span class="params">(BSTNode node)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 右边已走到头</span></span><br><span class="line">    <span class="keyword">if</span> (node.left == <span class="literal">null</span>) &#123; </span><br><span class="line">        <span class="keyword">return</span> node.value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> doMin(node.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 非递归实现</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">max</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="comment">// 右边未走到头</span></span><br><span class="line">    <span class="keyword">while</span> (p.right != <span class="literal">null</span>) &#123;</span><br><span class="line">        p = p.right;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="新增节点"><a href="#新增节点" class="headerlink" title="新增节点"></a>新增节点</h3><blockquote>
+<ul>
+<li>若找到 key，更新找到节点的值</li>
+<li>若没找到 key，创建并返回新节点</li>
+</ul>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 递归实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">put</span><span class="params">(<span class="type">int</span> key, Object value)</span> &#123;</span><br><span class="line">    root = doPut(root, key, value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> BSTNode <span class="title function_">doPut</span><span class="params">(BSTNode node, <span class="type">int</span> key, Object value)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (node == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BSTNode</span>(key, value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key &lt; node.key) &#123;</span><br><span class="line">        node.left = doPut(node.left, key, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.key &lt; key) &#123;</span><br><span class="line">        node.right = doPut(node.right, key, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        node.value = value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 返回的新节点，作为上次递归时 node 的左孩子或右孩子</span></span><br><span class="line"><span class="comment">// 缺点是，会有很多不必要的赋值操作</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">put</span><span class="params">(<span class="type">int</span> key, Object value)</span> &#123;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">node</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">parent</span> <span class="operator">=</span> <span class="literal">null</span>; <span class="comment">// 记住父节点</span></span><br><span class="line">    <span class="keyword">while</span> (node != <span class="literal">null</span>) &#123;</span><br><span class="line">        parent = node;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; node.key) &#123;</span><br><span class="line">            node = node.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (node.key &lt; key) &#123;</span><br><span class="line">            node = node.right;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 1. key 存在则更新</span></span><br><span class="line">            node.value = value;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. key 不存在则新增</span></span><br><span class="line">    <span class="keyword">if</span> (parent == <span class="literal">null</span>) &#123;</span><br><span class="line">        root = <span class="keyword">new</span> <span class="title class_">BSTNode</span>(key, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key &lt; parent.key) &#123;</span><br><span class="line">        parent.left = <span class="keyword">new</span> <span class="title class_">BSTNode</span>(key, value);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        parent.right = <span class="keyword">new</span> <span class="title class_">BSTNode</span>(key, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="🚩前驱后继"><a href="#🚩前驱后继" class="headerlink" title="🚩前驱后继"></a>🚩前驱后继</h3><h4 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h4><blockquote>
+<p>一个节点的前驱（前任）节点是指比它小的节点中，<strong>最大的</strong>那个</p>
+<p>一个节点的后继（后任）节点是指比它大的节点中，<strong>最小的</strong>那个</p>
+</blockquote>
+<img src="/img/41107/BST2.png" alt="BST2" style="zoom:80%;" />
+
+<p>例如：</p>
+<p>1 没有前驱，后继是 2</p>
+<p>2 前驱是 1，后继是 3</p>
+<p>3 前驱是 2，后继是 4</p>
+<hr>
+<p>高效<strong>找前驱</strong>分成 2 种情况：</p>
+<p>节点有左子树，此时前驱节点就是左子树的最大值，图中属于这种情况的有</p>
+<ul>
+<li>2 的前驱是1</li>
+<li>4 的前驱是 3</li>
+<li>6 的前驱是 5</li>
+<li>7 的前驱是 6</li>
+</ul>
+<p>节点没有左子树，若离它最近的祖先<strong>自从左而来</strong>，此祖先即为前驱，如</p>
+<ul>
+<li>3 的祖先 2 自左而来，前驱 2</li>
+<li>5 的祖先 4 自左而来，前驱 4</li>
+<li>8 的祖先 7 自左而来，前驱 7</li>
+<li>1 没有这样的祖先，前驱 null</li>
+</ul>
+<p>高效<strong>找后继</strong>分成 2 种情况：</p>
+<p>节点有右子树，此时后继节点即为右子树的最小值，如</p>
+<ul>
+<li>2 的后继 3</li>
+<li>3 的后继 4</li>
+<li>5 的后继 6</li>
+<li>7 的后继 8</li>
+</ul>
+<p>节点没有右子树，若离它最近的祖先自从右而来，此祖先即为后继，如</p>
+<ul>
+<li>1 的祖先 2 自右而来，后继 2</li>
+<li>4 的祖先 5 自右而来，后继 5</li>
+<li>6 的祖先 7 自右而来，后继 7</li>
+<li>8 没有这样的祖先，后继 null</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">predecessor</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">ancestorFromLeft</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; p.key) &#123;</span><br><span class="line">            p = p.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (p.key &lt; key) &#123;</span><br><span class="line">            ancestorFromLeft = p; <span class="comment">// 记录自从左而来的祖先</span></span><br><span class="line">            p = p.right;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况1 - 有左孩子</span></span><br><span class="line">    <span class="keyword">if</span> (p.left != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> max(p.left);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况2 - 有祖先自左而来</span></span><br><span class="line">    <span class="keyword">return</span> ancestorFromLeft != <span class="literal">null</span> ? ancestorFromLeft.value : <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">successor</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">ancestorFromRight</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; p.key) &#123;</span><br><span class="line">            ancestorFromRight = p;</span><br><span class="line">            p = p.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (p.key &lt; key) &#123;</span><br><span class="line">            p = p.right;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况1 - 有右孩子</span></span><br><span class="line">    <span class="keyword">if</span> (p.right != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> min(p.right);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 情况2 - 有祖先自右而来</span></span><br><span class="line">    <span class="keyword">return</span> ancestorFromRight != <span class="literal">null</span> ? ancestorFromRight.value : <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="找小于目标的所有节点"><a href="#找小于目标的所有节点" class="headerlink" title="找小于目标的所有节点"></a>找小于目标的所有节点</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 中序遍历的基本框架</span></span><br><span class="line"><span class="keyword">public</span> List&lt;Object&gt; <span class="title function_">less</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    ArrayList&lt;Object&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    LinkedList&lt;BSTNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">            stack.push(p);</span><br><span class="line">            p = p.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">BSTNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">            <span class="keyword">if</span> (pop.key &lt; key) &#123; <span class="comment">// 满足条件加入</span></span><br><span class="line">                result.add(pop.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123; <span class="comment">// 不满足可以直接退出</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = pop.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="找大于目标的所有节点"><a href="#找大于目标的所有节点" class="headerlink" title="找大于目标的所有节点"></a>找大于目标的所有节点</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 跟小于反之</span></span><br><span class="line"><span class="keyword">public</span> List&lt;Object&gt; <span class="title function_">greater</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    ArrayList&lt;Object&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    LinkedList&lt;BSTNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">            stack.push(p);</span><br><span class="line">            p = p.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">BSTNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">            <span class="keyword">if</span> (pop.key &gt; key) &#123;</span><br><span class="line">                result.add(pop.value);</span><br><span class="line">            &#125;</span><br><span class="line">            p = pop.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述查找较大值需要先遍历完较小值，可改造成<strong>反向中序遍历</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Object&gt; <span class="title function_">greater</span><span class="params">(<span class="type">int</span> key)</span> &#123;</span><br><span class="line">    ArrayList&lt;Object&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    LinkedList&lt;BSTNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">            stack.push(p);</span><br><span class="line">            p = p.right; <span class="comment">// 记录右边路线</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">BSTNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">            <span class="keyword">if</span> (pop.key &gt; key) &#123;</span><br><span class="line">                result.add(pop.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = pop.left;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="找某个范围之间的所有节点"><a href="#找某个范围之间的所有节点" class="headerlink" title="找某个范围之间的所有节点"></a>找某个范围之间的所有节点</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 和找小于类似</span></span><br><span class="line"><span class="keyword">public</span> List&lt;Object&gt; <span class="title function_">between</span><span class="params">(<span class="type">int</span> key1, <span class="type">int</span> key2)</span> &#123;</span><br><span class="line">    ArrayList&lt;Object&gt; result = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="type">BSTNode</span> <span class="variable">p</span> <span class="operator">=</span> root;</span><br><span class="line">    LinkedList&lt;BSTNode&gt; stack = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">while</span> (p != <span class="literal">null</span> || !stack.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (p != <span class="literal">null</span>) &#123;</span><br><span class="line">            stack.push(p);</span><br><span class="line">            p = p.left;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">BSTNode</span> <span class="variable">pop</span> <span class="operator">=</span> stack.pop();</span><br><span class="line">            <span class="keyword">if</span> (pop.key &gt;= key1 &amp;&amp; pop.key &lt;= key2) &#123; <span class="comment">// 多加一个判断条件</span></span><br><span class="line">                result.add(pop.value);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pop.key &gt; key2) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p = pop.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>优点：</p>
+<ol>
+<li>如果每个节点的左子树和右子树的大小差距不超过1，可以保证搜索操作的时间复杂度是 **O(log n)**，效率高。</li>
+<li>插入、删除结点等操作也比较容易实现，效率也比较高。</li>
+<li>对于<strong>有序数据</strong>的查询和处理，二叉查找树非常适用，可以使用中序遍历得到有序序列。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>如果输入的数据是有序或者近似有序的，就会出现极度不平衡的情况，可能导致搜索效率下降，时间复杂度退化成O(n)。</li>
+<li>对于频繁地插入、删除操作，需要维护平衡二叉查找树，例如红黑树、AVL 树等，否则搜索效率也会下降。</li>
+<li>对于存在大量重复数据的情况，需要做相应的处理，否则会导致树的深度增加，搜索效率下降。</li>
+<li>对于结点过多的情况，由于树的空间开销较大，可能导致内存消耗过大，不适合对内存要求高的场景。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/19/%E4%BA%8C%E5%8F%89%E6%A0%91/" data-id="clq4m8c5g0047bc5s884rf6vj" data-title="二叉树" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/08/22/BST%E7%A4%BA%E4%BE%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          BST示例
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/08/16/HashMap/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">HashMap</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

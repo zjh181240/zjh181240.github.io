@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-前缀和" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/10/04/%E5%89%8D%E7%BC%80%E5%92%8C/" class="article-date">
+  <time class="dt-published" datetime="2023-10-04T02:41:17.000Z" itemprop="datePublished">2023-10-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/10/04/%E5%89%8D%E7%BC%80%E5%92%8C/">前缀和</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><h3 id="前缀和"><a href="#前缀和" class="headerlink" title="前缀和"></a>前缀和</h3><p>求数列的和时，Sn &#x3D; a1+a2+a3+…an; 此时Sn就是数列的前 n 项和。例 S5 &#x3D; a1 + a2 + a3 + a4 + a5; S2 &#x3D; a1 + a2。可以通过 S5-S2 得到 a3+a4+a5 的值，前缀和数组里保存的就是前 n 项的和</p>
+<img src="/img/26737/前缀和1.png" alt="前缀和" style="zoom:80%;" />
+
+<h3 id="代码框架"><a href="#代码框架" class="headerlink" title="代码框架"></a>代码框架</h3><p><strong>前缀和 + HashMap[两数之和]</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span>[] twoSum(<span class="type">int</span>[] nums, <span class="type">int</span> target) &#123;</span><br><span class="line"></span><br><span class="line">        HashMap&lt;Integer,Integer&gt; map  = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">//一次遍历</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nums.length; ++i) &#123;</span><br><span class="line">            <span class="comment">//存在时，我们用数组得值为 key，索引为 value</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(target - nums[i]))&#123;              </span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;i,map.get(target-nums[i])&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//存入值</span></span><br><span class="line">            map.put(nums[i],i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><h4 id="和为K的子数组"><a href="#和为K的子数组" class="headerlink" title="和为K的子数组"></a>和为K的子数组</h4><p>链接：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subarray-sum-equals-k/description/">560. 和为 K 的子数组 - 力扣（LeetCode）</a></p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>将所有的前缀和该前缀和出现的次数存到map里，可以通过 presum - k的个数获得 k 的个数</p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">subarraySum</span><span class="params">(<span class="type">int</span>[] nums, <span class="type">int</span> k)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// &lt;前缀，次数&gt;</span></span><br><span class="line">        HashMap&lt;Integer,Integer&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="comment">//细节，这里需要预存前缀和为 0 的情况，会漏掉前几位就满足的情况</span></span><br><span class="line">        <span class="comment">//例如输入[1,1,0]，k = 2 如果没有这行代码，则会返回0,漏掉了1+1=2，和1+1+0=2的情况</span></span><br><span class="line">        <span class="comment">//输入：[3,1,1,0] k = 2时则不会漏掉</span></span><br><span class="line">        <span class="comment">//因为presum[3] - presum[0]表示前面 3 位的和，所以需要map.put(0,1),垫下底</span></span><br><span class="line">        map.put(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">presum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x : nums) &#123;</span><br><span class="line">            presum += x;</span><br><span class="line">            <span class="comment">//当前前缀和已知，判断是否含有 presum - k的前缀和，那么就知道某一区间的和为 k 了。</span></span><br><span class="line">            <span class="keyword">if</span> (map.containsKey(presum - k)) &#123;</span><br><span class="line">                count += map.get(presum - k);<span class="comment">//获取次数</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//更新</span></span><br><span class="line">            map.put(presum,map.getOrDefault(presum,<span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://leetcode.cn/circle/discuss/EQWhUd/">分享｜得了，前缀和被我一下给扒光了 - 力扣（LeetCode）</a></p>
+<h2 id="🍁E1：平均数为k的最长连续子数组"><a href="#🍁E1：平均数为k的最长连续子数组" class="headerlink" title="🍁E1：平均数为k的最长连续子数组"></a>🍁E1：平均数为k的最长连续子数组</h2><blockquote>
+<p>2023年美团秋招笔试</p>
+</blockquote>
+<h4 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h4><p>给定<em>n</em>个正整数组成的数组，求平均数正好等于 <em>k</em> 的最长连续子数组的长度</p>
+<h5 id="输入描述"><a href="#输入描述" class="headerlink" title="输入描述:"></a><strong>输入描述:</strong></h5><blockquote>
+<p>第一行输入两个正整数n和k，用空格隔开。<br>第二行输入n个正整数ai，用来表示数组。<br>1≤n≤200000<br>1≤k,ai≤10^9</p>
+</blockquote>
+<h5 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述:"></a><strong>输出描述:</strong></h5><blockquote>
+<p>如果不存在任何一个连续子数组的平均数等于k，则输出-1。<br>否则输出平均数正好等于 k 的最长连续子数组的长度。</p>
+</blockquote>
+<p><strong>示例1</strong></p>
+<p><strong>输入</strong></p>
+<blockquote>
+<p>5 2<br>1 3 2 4 1</p>
+</blockquote>
+<p><strong>输出</strong></p>
+<blockquote>
+<p>3</p>
+</blockquote>
+<p><strong>说明</strong></p>
+<blockquote>
+<p>取前三个数即可，平均数为2。</p>
+</blockquote>
+<h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><p>1.既然要求平均数为k,只需把所有元素<strong>减去k</strong>,若一些元素和为0即说明这些元素平均数为k<br>2.使用map&lt;sum,i&gt;表示<strong>前i个位置的和</strong><br>3.遍历元素进行求和：<br>    当出现不存在的sum时进行记录<br>    当出现已存在的sum时,假设此时下标为j，记录sum下标为i<br>    则说明在(i+1,j)这一段所有元素的和为0,即其平均数是k,是符合要求的<br>4.找出最长的子数组即可</p>
+<h4 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Scanner</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">    <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">    <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> in.nextInt();</span><br><span class="line">    <span class="type">long</span> <span class="variable">pre</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">long</span> cur;</span><br><span class="line">    <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> -<span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 第一次出现的值和下标</span></span><br><span class="line">    HashMap&lt;Long,Integer&gt; m = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="comment">// 第一个值有可能就为k</span></span><br><span class="line">    m.put(<span class="number">0L</span>,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        cur = pre + in.nextInt() - k;</span><br><span class="line">        <span class="keyword">if</span>(m.containsKey(cur))&#123;</span><br><span class="line">            res = Math.max(res,i-m.get(cur));</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            m.put(cur,i);</span><br><span class="line">        &#125;</span><br><span class="line">        pre = cur;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(res);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/10/04/%E5%89%8D%E7%BC%80%E5%92%8C/" data-id="clq4m8c5w004sbc5s0jrw2md8" data-title="前缀和" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Redis数据类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="article-date">
+  <time class="dt-published" datetime="2023-09-26T02:28:17.000Z" itemprop="datePublished">2023-09-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/">Redis数据类型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><p>Redis中所有的key（键）都是字符串，值的数据类型有5种：<strong>String、List、Set、Zset、Hash</strong></p>
+<img src="/img/6834/redis1.jpeg" alt="img" style="zoom:67%;" />
+
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">存储的值</th>
+<th align="center">操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">String</td>
+<td align="center">可以是字符串、整数或浮点数</td>
+<td align="center">对整个字符串或字符串的一部分进行操作；对整数或浮点数进行自增或自减操作</td>
+</tr>
+<tr>
+<td align="center">List</td>
+<td align="center">一个链表，链表上的每个节点都包含一个字符串</td>
+<td align="center">对链表的两端进行push和pop操作，读取单个或多个元素；根据值查找或删除元素</td>
+</tr>
+<tr>
+<td align="center">Set</td>
+<td align="center">包含字符串的无序集合</td>
+<td align="center">字符串的集合，包含基础的方法有看是否存在添加、获取、删除；还包含计算交集、并集、差集等</td>
+</tr>
+<tr>
+<td align="center">Hash</td>
+<td align="center">包含键值对的无序散列表</td>
+<td align="center">包含方法有添加、获取、删除单个元素</td>
+</tr>
+<tr>
+<td align="center">Zset</td>
+<td align="center">和散列一样，用于存储键值对</td>
+<td align="center">字符串成员与浮点数分数之间的有序映射；元素的排列顺序由分数的大小决定；包含方法有添加、获取、删除单个元素以及根据分值范围或成员来获取元素</td>
+</tr>
+</tbody></table>
+<h2 id="🍁String"><a href="#🍁String" class="headerlink" title="🍁String"></a>🍁String</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>String类型是<strong>二进制安全</strong>的，string可以包含任何数据，如数字，字符串，jpg图片或者序列化的对象</p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis2.jpeg" alt="image-20230926151736752" style="zoom: 80%;" />
+
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p><strong>缓存</strong>： 经典使用场景，把常用信息，字符串，图片或者视频等信息放到redis中，redis<strong>作为缓存层</strong>，mysql做持久化层，降低mysql的读写压力</p>
+<p><strong>计数器</strong>：redis是单线程模型（<strong>原子性</strong>），一个命令执行完才会执行下一个，同时数据可以一步落地到其他的数据源</p>
+<p><strong>session</strong>：spring session + redis实现session共享</p>
+<h2 id="🍁List"><a href="#🍁List" class="headerlink" title="🍁List"></a>🍁List</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>List底层为双端链表</p>
+<ul>
+<li>元素较少的情况下会使用一块连续的内存存储，即压缩列表ziplist（元素较少的情况下会使用一块连续的内存存储）</li>
+<li>当数据量比较多的时候会改成quicklist，将多个ziplist使用双向指针串起来使用。这样既满足了快速的插入删除性能，又不会出现太大的空间冗余</li>
+</ul>
+<img src="/img/6834/redis4.jpeg" alt="image-20230926153312332" style="zoom:80%;" />
+
+<h3 id="命令-1"><a href="#命令-1" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis3.jpeg" alt="image-20230926152748719" style="zoom:80%;" />
+
+<h3 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h3><p>lpush+lpop&#x3D;Stack(栈)</p>
+<p>lpush+rpop&#x3D;Queue（队列）</p>
+<p>lpush+ltrim&#x3D;Capped Collection（有限集合）</p>
+<p>lpush+brpop&#x3D;Message Queue（消息队列）</p>
+<h2 id="🍁Set"><a href="#🍁Set" class="headerlink" title="🍁Set"></a>🍁Set</h2><h3 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h3><p>Set 是 String 类型的<strong>无序集合</strong>。集合成员是唯一的，这就意味着集合中<strong>不能出现重复</strong>的数据</p>
+<p>底层其实是一个value为null的hash表，所以添加，删除，查找的<strong>复杂度都是O(1)</strong></p>
+<h3 id="命令-2"><a href="#命令-2" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis5.jpeg" alt="image-20230926153655152" style="zoom:80%;" />
+
+<h3 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h3><p><strong>标签</strong>（tag）：给用户添加标签，或者用户给消息添加标签，这样有同一标签或者类似标签的可以给推荐关注的事或者关注的人</p>
+<p><strong>点赞，或点踩，收藏等</strong>：可以放到set中实现</p>
+<h2 id="🍁Hash"><a href="#🍁Hash" class="headerlink" title="🍁Hash"></a>🍁Hash</h2><h3 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h3><p>Hash是一个string类型的field和value的映射表，hash特别适合用于<strong>存储对象</strong>。类似Java里面的<strong>Map&lt;String,Object&gt;</strong></p>
+<h3 id="命令-3"><a href="#命令-3" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis6.jpeg" alt="image-20230926173013194" style="zoom:80%;" />
+
+<h3 id="应用-3"><a href="#应用-3" class="headerlink" title="应用"></a>应用</h3><p>存储对象类型</p>
+<h2 id="🍁Zset"><a href="#🍁Zset" class="headerlink" title="🍁Zset"></a>🍁Zset</h2><h3 id="概述-4"><a href="#概述-4" class="headerlink" title="概述"></a>概述</h3><p>Redis有序集合zset与普通集合set非常相似，是一个没有重复元素的字符串集合。</p>
+<p>不同之处是有序集合的每个成员都关联了一个<strong>评分（score）</strong>,这个评分（score）被用来按照从最低分到最高分的方式排序集合中的成员。集合的成员是唯一的，但是评分可以是重复的</p>
+<p><strong>底层结构</strong></p>
+<p>hash：hash的作用就是关联元素value和权重score，保障元素value的唯一性，可以通过元素value找到相应的score值。<br>跳跃表（<strong>zSkiplist</strong>）：跳跃表的目的在于给元素value排序，根据score的范围获取元素列表</p>
+<h3 id="命令-4"><a href="#命令-4" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis7.jpeg" alt="image-20230926221106241" style="zoom:80%;" />
+
+<h3 id="应用-4"><a href="#应用-4" class="headerlink" title="应用"></a>应用</h3><p>排行榜：有序集合经典使用场景。例如小说视频等网站需要对用户上传的小说视频做排行榜，榜单可以按照用户关注数，更新时间，字数等打分，做排行。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" data-id="clq4m8c4g002qbc5sfbli3tnr" data-title="Redis数据类型" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-分布式锁" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/21/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="article-date">
+  <time class="dt-published" datetime="2023-09-21T01:19:21.000Z" itemprop="datePublished">2023-09-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/21/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><blockquote>
+<p>当多个进程不在同一个系统中(比如分布式系统中控制共享资源访问)，用分布式锁控制多个进程对资源的访问</p>
+</blockquote>
+<p><strong>设计原则：安全性和有效性</strong></p>
+<p><strong>互斥</strong>（属于安全性）：在任何给定时刻，只有一个客户端可以持有锁。</p>
+<p><strong>无死锁</strong>（属于有效性）：即使锁定资源的客户端崩溃或被分区，也总是可以获得锁；通常通过超时机制实现。</p>
+<p><strong>容错性</strong>（属于有效性）：只要大多数节点都启动，客户端就可以获取和释放锁</p>
+<h2 id="🍁基于数据库实现"><a href="#🍁基于数据库实现" class="headerlink" title="🍁基于数据库实现"></a>🍁基于数据库实现</h2><h3 id="1-基于数据库表"><a href="#1-基于数据库表" class="headerlink" title="1 基于数据库表"></a>1 基于数据库表</h3><p>直接创建一张锁表，然后通过操作该表中的数据来实现了。当我们想要获得锁的时候，就可以在该表中增加一条记录，想要释放锁的时候就删除这条记录</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> database_lock (</span><br><span class="line">	`id` <span class="type">BIGINT</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT,</span><br><span class="line">	`resource` <span class="type">int</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;锁定的资源&#x27;</span>,</span><br><span class="line">	`description` <span class="type">varchar</span>(<span class="number">1024</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> &quot;&quot; COMMENT <span class="string">&#x27;描述&#x27;</span>,</span><br><span class="line">	<span class="keyword">PRIMARY</span> KEY (id),</span><br><span class="line">	<span class="keyword">UNIQUE</span> KEY uiq_idx_resource (resource)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4 COMMENT<span class="operator">=</span><span class="string">&#x27;数据库分布式锁表&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>获得锁时，插入一条数据:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> database_lock(resource, description) <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;lock&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>释放锁时，删除这条数据:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> database_lock <span class="keyword">WHERE</span> resource<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-基于悲观锁"><a href="#2-基于悲观锁" class="headerlink" title="2 基于悲观锁"></a>2 基于悲观锁</h3><h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ol>
+<li>在对任意记录进行修改前，先尝试为该记录加上排他锁（exclusive locking）。</li>
+<li>如果加锁失败，说明该记录正在被修改，那么当前查询可能要等待或者抛出异常。 </li>
+<li>如果成功加锁，那么就可以对记录做修改，事务完成后就会解锁了。</li>
+<li>其间如果有其他对该记录做修改或加排他锁的操作，都会等待我们解锁或抛出异常。</li>
+</ol>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span><span class="number">0.</span>开始事务</span><br><span class="line"><span class="keyword">begin</span>;<span class="operator">/</span><span class="keyword">begin</span> work;<span class="operator">/</span><span class="keyword">start</span> transaction; (三者选一就可以)</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span><span class="number">1.</span>查询出商品信息,使用<span class="keyword">select</span>…<span class="keyword">for</span> <span class="keyword">update</span>的方式，开启排他锁</span><br><span class="line"><span class="keyword">select</span> status <span class="keyword">from</span> t_goods <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span><span class="number">2.</span>根据商品信息生成订单</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t_orders (id,goods_id) <span class="keyword">values</span> (<span class="keyword">null</span>,<span class="number">1</span>);</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span><span class="number">3.</span>修改商品status为<span class="number">2</span></span><br><span class="line"><span class="keyword">update</span> t_goods <span class="keyword">set</span> status<span class="operator">=</span><span class="number">2</span>;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span><span class="number">4.</span>提交事务</span><br><span class="line"><span class="keyword">commit</span>;<span class="operator">/</span><span class="keyword">commit</span> work;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-基于乐观锁"><a href="#3-基于乐观锁" class="headerlink" title="3 基于乐观锁"></a>3 基于乐观锁</h3><p>使用版本号时，可以在数据初始化时指定一个版本号，每次对数据的更新操作都对版本号执行+1操作。并判断当前版本号是不是该数据的最新的版本号。</p>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>查询出商品信息</span><br><span class="line"><span class="keyword">select</span> (status,status,version) <span class="keyword">from</span> t_goods <span class="keyword">where</span> id<span class="operator">=</span>#&#123;id&#125;</span><br><span class="line"><span class="number">2.</span>根据商品信息生成订单</span><br><span class="line"><span class="number">3.</span>修改商品status为<span class="number">2</span></span><br><span class="line"><span class="keyword">update</span> t_goods </span><br><span class="line"><span class="keyword">set</span> status<span class="operator">=</span><span class="number">2</span>,version<span class="operator">=</span>version<span class="operator">+</span><span class="number">1</span></span><br><span class="line"><span class="keyword">where</span> id<span class="operator">=</span>#&#123;id&#125; <span class="keyword">and</span> version<span class="operator">=</span>#&#123;version&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>对数据库依赖，开销大问题，行锁变表锁问题，无法解决数据库单点和可重入的问题</p>
+<h2 id="🍁基于redis实现"><a href="#🍁基于redis实现" class="headerlink" title="🍁基于redis实现"></a>🍁基于redis实现</h2><h3 id="1-set-NX-PX-Lua"><a href="#1-set-NX-PX-Lua" class="headerlink" title="1 set NX PX + Lua"></a>1 set NX PX + Lua</h3><h4 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h4><blockquote>
+<p>命令：SET productId:lock 0xx9p03001 NX PX 30000</p>
+</blockquote>
+<p>productId：由自己定义，可以是与本次业务有关的id</p>
+<p>0xx9p03001：是一串随机值，必须保证全局唯一</p>
+<p>NX：指的是当且仅当key(也就是案例中的”productId:lock”)在Redis中不存在时，返回执行成功，否则执行失败</p>
+<p>PX 30000：指的是在30秒后，key将被自动删除</p>
+<h4 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h4><p>伪代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">if(缓存中有)&#123;</span><br><span class="line">  返回缓存中的数据</span><br><span class="line">&#125;else&#123;</span><br><span class="line">  获取分布式锁</span><br><span class="line">  if(获取锁成功）&#123;</span><br><span class="line">       try&#123;</span><br><span class="line">         查询数据库</span><br><span class="line">      &#125;finally&#123;</span><br><span class="line">         释放锁</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">lock</span><span class="params">(String key, <span class="type">long</span> expire, <span class="type">int</span> retryTimes, <span class="type">long</span> retryDuration)</span> &#123;</span><br><span class="line">    <span class="comment">// use JedisCommands instead of setIfAbsense</span></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> setRedis(key, expire);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// retry if needed</span></span><br><span class="line">    <span class="keyword">while</span> ((!result) &amp;&amp; retryTimes-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;lock failed, retrying...&quot;</span> + retryTimes);</span><br><span class="line">            Thread.sleep(retryDuration);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// use JedisCommands instead of setIfAbsense</span></span><br><span class="line">        result = setRedis(key, expire);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">setRedis</span><span class="params">(String key, <span class="type">long</span> expire)</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        RedisCallback&lt;String&gt; redisCallback = connection -&gt; &#123;</span><br><span class="line">            <span class="type">JedisCommands</span> <span class="variable">commands</span> <span class="operator">=</span> (JedisCommands) connection.getNativeConnection();</span><br><span class="line">            <span class="type">String</span> <span class="variable">uuid</span> <span class="operator">=</span> SnowIDUtil.uniqueStr();</span><br><span class="line">            lockFlag.set(uuid);</span><br><span class="line">            <span class="keyword">return</span> commands.set(key, uuid, NX, PX, expire); <span class="comment">// 加分布式锁</span></span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> redisTemplate.execute(redisCallback);</span><br><span class="line">        <span class="keyword">return</span> !StringUtil.isEmpty(result);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        log.error(<span class="string">&quot;set redis occurred an exception&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解锁：使用原子性的Lua语言</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> redis.call(<span class="string">&quot;get&quot;</span>, KEYS[<span class="number">1</span>])==ARGV[<span class="number">1</span>] <span class="keyword">then</span></span><br><span class="line">	<span class="keyword">return</span> redis.call(<span class="string">&quot;del&quot;</span>, KEYS[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-Redisson"><a href="#2-Redisson" class="headerlink" title="2 Redisson"></a>2 Redisson</h3><h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>redisson所有指令都通过lua脚本执行，保证了操作的原子性</p>
+<p>redisson设置了watchdog看门狗，“看门狗”的逻辑保证了没有死锁发生</p>
+<p>redisson支持Redlock的实现方式</p>
+<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p><img src="/img/18358/%E5%88%86%E5%B8%83%E5%BC%8F3.png" alt="image-20230925094317807"></p>
+<p><strong>加锁机制</strong></p>
+<p>线程去获取锁，获取成功: 执行lua脚本，保存数据到redis数据库。</p>
+<p>线程去获取锁，获取失败: 一直通过while循环尝试获取锁，获取成功后，执行lua脚本，保存数据到redis</p>
+<p><strong>WatchDog-自动延期</strong></p>
+<p>情况一：在一个分布式环境下，假如一个线程获得锁后，突然服务器宕机了，那么这个时候在一定时间后这个锁会自动释放，也可以设置锁的有效时间(默认30秒），这样的目的主要是防止死锁的发生</p>
+<p>情况二：线程A业务还没有执行完，时间就过了，线程A 还想持有锁的话，就会启动一个watch dog后台线程，不断的延长锁key的生存时间。</p>
+<p><strong>lua脚本-保证原子性</strong></p>
+<p>如果业务逻辑复杂，通过封装在lua脚本中发送给redis，由于redis是单线程的，这样就保证这段复杂业务逻辑执行的原子性</p>
+<h4 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h4><p>使用RLock操作分布锁，RLock继承JDK的Lock接口，所以他有Lock接口的所有特性，比如lock、unlock、trylock等特性,同时它还有很多新特性：强制锁释放，带有效期的锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">RLock</span> &#123;</span><br><span class="line">    </span><br><span class="line">   <span class="comment">//----------------------Lock接口方法-----------------------</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加锁 锁的有效期默认30秒</span></span><br><span class="line"><span class="comment">     •	如果主线程未释放，且当前锁未调用unlock方法，则进入到watchDog机制</span></span><br><span class="line"><span class="comment">	 •	如果主线程未释放，且当前锁调用unlock方法，则直接释放锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">lock</span><span class="params">()</span>;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加锁 可以手动设置锁的有效时间</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> leaseTime 锁有效时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unit      时间单位 小时、分、秒、毫秒等</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">lock</span><span class="params">(<span class="type">long</span> leaseTime, TimeUnit unit)</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * tryLock()方法是有返回值的，用来尝试获取锁，</span></span><br><span class="line"><span class="comment">     * 如果获取成功，则返回true，如果获取失败（即锁已被其他线程获取），则返回false .</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">tryLock</span><span class="params">()</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * tryLock(long time, TimeUnit unit)方法和tryLock()方法是类似的，</span></span><br><span class="line"><span class="comment">     * 只不过区别在于这个方法在拿不到锁时会等待一定的时间，</span></span><br><span class="line"><span class="comment">     * 在时间期限之内如果还拿不到锁，就返回false。如果如果一开始拿到锁或者在等待期间内拿到了锁，则返回true。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> time 等待时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unit 时间单位 小时、分、秒、毫秒等</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">tryLock</span><span class="params">(<span class="type">long</span> time, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 比上面多一个参数，多添加一个锁的有效时间</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> waitTime  等待时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> leaseTime 锁有效时间</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unit      时间单位 小时、分、秒、毫秒等</span></span><br><span class="line"><span class="comment">     * waitTime 大于 leaseTime</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">tryLock</span><span class="params">(<span class="type">long</span> waitTime, <span class="type">long</span> leaseTime, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">unlock</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/21/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" data-id="clq4m8c5j004bbc5s7spjd9lo" data-title="分布式锁" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-分布式理论" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/20/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" class="article-date">
+  <time class="dt-published" datetime="2023-09-20T14:11:50.000Z" itemprop="datePublished">2023-09-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/20/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/">分布式理论</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁分布式系统"><a href="#🍁分布式系统" class="headerlink" title="🍁分布式系统"></a>🍁分布式系统</h2><p>分布式系统是一个硬件或软件组件分布在不同的网络计算机上，彼此之间仅仅通过消息传递进行通信和协调的系统。即<strong>一群独立计算机集合共同对外提供服务，但是对于系统的用户来说，就像是一台计算机在提供服务一样</strong></p>
+<h3 id="分布性"><a href="#分布性" class="headerlink" title="分布性"></a>分布性</h3><p>分布式系统中的多台计算机之间在空间位置上可以随意分布</p>
+<h3 id="对等性"><a href="#对等性" class="headerlink" title="对等性"></a>对等性</h3><p>分布式系统中的计算机没有主／从之分，即没有控制整个系统的主机，也没有被控制的从机，组成分布式系统的所有计算机节点都是对等的</p>
+<h3 id="自治性"><a href="#自治性" class="headerlink" title="自治性"></a>自治性</h3><p>分布式系统中的各个节点都包含自己的处理机和内存，各自具有独立的处理数据的功能</p>
+<h3 id="并发性"><a href="#并发性" class="headerlink" title="并发性"></a>并发性</h3><p>在一个计算机网络中，程序运行过程的并发性操作</p>
+<h2 id="🍁CAP理论"><a href="#🍁CAP理论" class="headerlink" title="🍁CAP理论"></a>🍁CAP理论</h2><img src="/img/27486/分布式1.png" alt="image-20230920222012832" style="zoom: 50%;" />
+
+<p><code>一致性 (Consistency)</code>: 一个写操作返回成功，那么之后的读请求都必须读到这个新数据；如果返回失败，那么所有读操作都不能读到这个数据。<strong>所有节点访问同一份最新的数据</strong></p>
+<p><code>可用性 (Availability)</code>: 对数据更新具备高可用性，请求能够<strong>及时处理</strong>，不会一直等待，即使出现节点失效。</p>
+<p><code>分区容错性 (Partition tolerance)</code>: 能容忍网络分区，在网络断开的情况下，<strong>被分隔的节点仍能正常对外提供服务</strong></p>
+<p>🚩CAP理论三选二：C、A、P三者不能同时满足，<strong>最多只能满足其中两个</strong></p>
+<h2 id="🍁BASE理论"><a href="#🍁BASE理论" class="headerlink" title="🍁BASE理论"></a>🍁BASE理论</h2><img src="/img/27486/分布式2.png" alt="image-20230921090547793" style="zoom:50%;" />
+
+<blockquote>
+<p>BASE是“Basically Available, Soft state, Eventually consistent(基本可用、软状态、最终一致性)”的首字母缩写，BASE 理论是对 CAP 理论的延伸，核心思想是即使无法做到强一致性（Strong Consistency，CAP 的一致性就是强一致性），但应用可以采用适合的方式达到最终一致性（Eventual Consitency）</p>
+</blockquote>
+<p><code>Basically Available（基本可用）</code>：分布式系统在出现不可预知故障的时候，允许<strong>损失部分可用性</strong></p>
+<p><code>Soft state（软状态）</code>：软状态也称为弱状态，和硬状态相对，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程<strong>存在延时</strong>。</p>
+<p><code>Eventually consistent（最终一致性）</code>：最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，<strong>最终能够达到一个一致的状态</strong>。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/20/%E5%88%86%E5%B8%83%E5%BC%8F%E7%90%86%E8%AE%BA/" data-id="clq4m8c5k004ebc5se51hgg6i" data-title="分布式理论" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-MySQL优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/16/MySQL%E4%BC%98%E5%8C%96/" class="article-date">
+  <time class="dt-published" datetime="2023-09-16T15:05:20.000Z" itemprop="datePublished">2023-09-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/16/MySQL%E4%BC%98%E5%8C%96/">MySQL优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁主键优化"><a href="#🍁主键优化" class="headerlink" title="🍁主键优化"></a>🍁主键优化</h2><p>主键顺序插入的性能是要高于乱序插入的</p>
+<h3 id="数据组织方式"><a href="#数据组织方式" class="headerlink" title="数据组织方式"></a>数据组织方式</h3><p>InnoDB存储引擎中，表数据都是<strong>根据主键顺序组织存放</strong>的，这种存储方式的表称为索引组织表</p>
+<img src="/img/43137/SQL优化1.png" alt="image-20230918093027151" style="zoom:80%;" />
+
+<p>数据行是记录在逻辑结构 page 页中的，而每一个页的大小是固定的，默认16K。  一个页中所存储的行也是有限的，如果插入的数据行row在该页存储不下，将会存储到下一个页中，页与页之间会通过<strong>指针连接</strong></p>
+<img src="/img/43137/SQL优化2.png" alt="image-20230918093248803" style="zoom:80%;" />
+
+<h3 id="页分裂"><a href="#页分裂" class="headerlink" title="页分裂"></a>页分裂</h3><p>页可以为空，也可以填充一半，也可以填充100%。每个页包含了2-N行数据(如果一行数据过大，会行溢出)，根据主键排列</p>
+<h4 id="1-主键顺序插入"><a href="#1-主键顺序插入" class="headerlink" title="1 主键顺序插入"></a>1 主键顺序插入</h4><p>每页写满后申请新页插入</p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%963.png" alt="image-20230918093542862"></p>
+<h4 id="2-主键乱序插入"><a href="#2-主键乱序插入" class="headerlink" title="2 主键乱序插入"></a>2 主键乱序插入</h4><p>1）1，2页已经写满</p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%964.png" alt="image-20230918093737894"></p>
+<p>2）再插入id为50的记录</p>
+<p>按照顺序，应该存储在47之后。但是47所在的1#页，已经写满了，存储不了50对应的数据了。 那么此时会开辟一个新的3#页。<strong>将1#页后一半的数据，移动到3#页，然后在3#页，插入50</strong>。</p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%965.png" alt="image-20230918094017708"></p>
+<p>重新设置链表指针：</p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%966.png" alt="image-20230918094052329"></p>
+<p>以上就是“页分裂”现象</p>
+<h3 id="页合并"><a href="#页合并" class="headerlink" title="页合并"></a>页合并</h3><p>目前有这些数据</p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%967.png" alt="image-20230918094229806"></p>
+<p>当删除一行记录时，实际上记录并没有被物理删除，只是记录被标记（flaged）为删除并且它的空间<strong>变得允许被其他记录声明使用</strong></p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%968.png" alt="image-20230918094328029"></p>
+<p>当页中删除的记录达到 MERGE_THRESHOLD（默认为页的50%），InnoDB会开始寻找最靠近的页（前 或后）看看是否可以<strong>将两个页合并以优化空间使用</strong></p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%969.png" alt="image-20230918094418506"></p>
+<p>以上就是“页合并”现象</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>满足业务需求的情况下，尽量降低主键的长度。</li>
+<li>插入数据时，尽量选择顺序插入，选择使用AUTO_INCREMENT自增主键。</li>
+<li>尽量不要使用UUID做主键或者是其他自然主键，如身份证号。</li>
+<li>业务操作时，避免对主键的修改。</li>
+</ol>
+<h2 id="🍁order-by优化"><a href="#🍁order-by优化" class="headerlink" title="🍁order by优化"></a>🍁order by优化</h2><h3 id="总览"><a href="#总览" class="headerlink" title="总览"></a>总览</h3><p>排序的方式：</p>
+<blockquote>
+<p>Using filesort : 通过表的索引或全表扫描，读取满足条件的数据行，然后在排序缓冲区sort buffer中完成排序操作，所有不是通过索引直接返回排序结果的排序都叫 FileSort 排序。</p>
+<p>Using index : 通过有序索引顺序扫描直接返回有序数据，这种情况即为 using index，不需要额外排序，操作效率高。</p>
+</blockquote>
+<p>对于以上的两种排序方式，Using index的性能高，而Using filesort的性能低，我们在优化排序操作时，尽量要优化为 <strong>Using index</strong></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>根据排序字段建立合适的索引，多字段排序时，也遵循<strong>最左前缀法则</strong>。</li>
+<li>尽量使用覆盖索引。</li>
+<li>多字段排序, 一个升序一个降序，此时需要注意联合索引在创建时的<strong>规则</strong>（ASC&#x2F;DESC）。</li>
+</ol>
+<p>​	创建联合索引(age 升序排序，phone 倒序排序)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_user_age_phone_ad <span class="keyword">on</span> tb_user(age <span class="keyword">asc</span> ,phone <span class="keyword">desc</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%9610.png" alt="image-20230918145133521"></p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%9611.png" alt="image-20230918145158669"></p>
+<p>​	4.如果不可避免的出现filesort，大数据量排序时，可以适当增大排序缓冲区大小sort_buffer_size(默认256k)。</p>
+<h2 id="🍁group-by优化"><a href="#🍁group-by优化" class="headerlink" title="🍁group by优化"></a>🍁group by优化</h2><ol>
+<li>在分组操作时，可以通过索引来提高效率。 </li>
+<li>分组操作时，索引的使用也是满足最左前缀法则的。</li>
+</ol>
+<h2 id="🍁limit优化"><a href="#🍁limit优化" class="headerlink" title="🍁limit优化"></a>🍁limit优化</h2><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>越往后，分页查询效率越低，这是分页查询的问题。</p>
+<p>当在进行分页查询时，如果执行 limit 2000000,10 ，此时需要MySQL排序前2000010 记录，仅仅返回 2000000 - 2000010 的记录，其他记录丢弃，查询排序的代价非常大。</p>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><p><strong>覆盖索引加子查询形式</strong>进行优化</p>
+<blockquote>
+<p>explain select * from tb_sku t , (select id from tb_sku order by id limit 2000000,10) a where t.id &#x3D; a.id;</p>
+</blockquote>
+<h2 id="🍁count优化"><a href="#🍁count优化" class="headerlink" title="🍁count优化"></a>🍁count优化</h2><p>count() 是一个聚合函数，对于返回的结果集，一行行地判断，如果 count 函数的参数<strong>不是 NULL，累计值就加 1</strong>，否则不加，最后<strong>返回累计值</strong></p>
+<p><img src="/img/43137/SQL%E4%BC%98%E5%8C%9612.png" alt="image-20230918150102423"></p>
+<p>效率排序：count(字段) &lt; count(主键 id) &lt; count(1) ≈ count(✳)，所以尽 量使用 count(✳)。</p>
+<h2 id="🍁update优化"><a href="#🍁update优化" class="headerlink" title="🍁update优化"></a>🍁update优化</h2><p>where条件后面字段尽量用索引字段，否则行锁会升级为表锁</p>
+<p>InnoDB的行锁是针对索引加的锁，不是针对记录加的锁 ,并且该索引不能失效，否则会从行锁升级为表锁 。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/16/MySQL%E4%BC%98%E5%8C%96/" data-id="clq4m8c44002fbc5sdw14d2uf" data-title="MySQL优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-MySQL-MVCC" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/14/MySQL-MVCC/" class="article-date">
+  <time class="dt-published" datetime="2023-09-14T07:05:48.000Z" itemprop="datePublished">2023-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/14/MySQL-MVCC/">MySQL-MVCC</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><h3 id="1-当前读"><a href="#1-当前读" class="headerlink" title="1 当前读"></a>1 当前读</h3><blockquote>
+<p>读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。</p>
+</blockquote>
+<p>select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读</p>
+<h3 id="2-快照读"><a href="#2-快照读" class="headerlink" title="2 快照读"></a>2 快照读</h3><blockquote>
+<p>简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁，是非阻塞读。</p>
+</blockquote>
+<p>Read Committed：每次select，都生成一个快照读。</p>
+<p>Repeatable Read：开启事务后第一个select语句才是快照读的地方。</p>
+<p>Serializable：快照读会退化为当前读。</p>
+<h3 id="3-MVCC"><a href="#3-MVCC" class="headerlink" title="3 MVCC"></a>3 MVCC</h3><blockquote>
+<p>Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本， 使得读写操作没有冲突，快照读为MySQL实现MVCC提供了一个非阻塞读功能。</p>
+</blockquote>
+<p>MVCC的具体实现，依赖于数据库记录中的<strong>三个隐式字段、undo log日志、readView</strong></p>
+<h2 id="🍁隐藏字段"><a href="#🍁隐藏字段" class="headerlink" title="🍁隐藏字段"></a>🍁隐藏字段</h2><p>创建表后，InnoDB还会自动的添加三个隐藏字段：</p>
+<p><img src="/img/59324/MVCC1.png" alt="image-20230914152245645"></p>
+<p>前两个字段是肯定会添加的， 是否添加最后一个字段DB_ROW_ID，得看当前表有没有主键，如果有主键，则不会添加该隐藏字段</p>
+<h2 id="🍁undolog"><a href="#🍁undolog" class="headerlink" title="🍁undolog"></a>🍁undolog</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h3><p>回滚日志，在insert、update、delete的时候产生的便于数据回滚的日志。<br>当<strong>insert</strong>的时候，产生的undo log日志只在回滚时需要，在事务提交后，可被<strong>立即删除</strong>。<br>而<strong>update、delete</strong>的时候，产生的undo log日志不仅在回滚时需要，在快照读时也需要，<strong>不会立即被删除</strong></p>
+<h3 id="2-版本链"><a href="#2-版本链" class="headerlink" title="2 版本链"></a>2 版本链</h3><p>初始有一张表格</p>
+<img src="/img/59324/MVCC2.png" alt="image-20230914152848234" style="zoom:80%;" />
+
+<p>DB_TRX_ID : 代表最近修改事务ID，记录插入这条记录或最后一次修改该记录的事务ID，是自增的。<br>DB_ROLL_PTR ： 由于这条数据是才插入的，没有被更新过，所以该字段值为null。</p>
+<p>假设有四个并发事务访问该表</p>
+<p>(1)第一步</p>
+<p><img src="/img/59324/MVCC3.png" alt="image-20230914153054302"></p>
+<p>当事务2执行第一条修改语句时，会记录undo log日志，记录数据变更之前的样子; </p>
+<p>然后更新记录， 并且记录本次操作的事务ID，回滚指针，回滚指针用来指定如果发生回滚，回滚到哪一个版本</p>
+<p><img src="/img/59324/MVCC4.png" alt="image-20230914153149797"></p>
+<p>(2)第二步</p>
+<p><img src="/img/59324/MVCC5.png" alt="image-20230914153222905"></p>
+<p>当事务3执行第一条修改语句时，也会记录undo log日志; </p>
+<p>然后更新记录，并且记录本次操作的事务ID，回滚指针</p>
+<p><img src="/img/59324/MVCC6.png" alt="image-20230914153309216"></p>
+<p>(3)第三步</p>
+<p><img src="/img/59324/MVCC7.png" alt="image-20230914153416045"></p>
+<p>当事务4执行第一条修改语句时，也会记录undo log日志; </p>
+<p>然后更新记录，并且记录本次操作的事务ID，回滚指针</p>
+<p><img src="/img/59324/MVCC8.png" alt="image-20230914153454702"></p>
+<p>最终，不同事务或相同事务对同一条记录进行修改，会导致该记录的undo log生成一条<strong>记录版本链表</strong>，链表的头部是最新的旧记录，链表尾部是最早的旧记录</p>
+<h2 id="🍁readview"><a href="#🍁readview" class="headerlink" title="🍁readview"></a>🍁readview</h2><blockquote>
+<p>ReadView（读视图）是快照读SQL执行时MVCC提取数据的依据，记录并维护系统当前活跃的事务 （未提交的）id</p>
+</blockquote>
+<p>ReadView中包含了四个核心字段：</p>
+<p><img src="/img/59324/MVCC9.png" alt="image-20230914160018273"></p>
+<p>Readview中规定了版本链数据的访问规则：</p>
+<p>trx_id 代表当前undolog版本链对应事务ID</p>
+<p><img src="/img/59324/MVCC10.png" alt="image-20230914160209474"></p>
+<p>生成ReadView的时机不同： </p>
+<p>READ COMMITTED ：在事务中每一次执行快照读时生成ReadView </p>
+<p>REPEATABLE READ：仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView</p>
+<h2 id="🍁原理"><a href="#🍁原理" class="headerlink" title="🍁原理"></a>🍁原理</h2><h3 id="RC隔离级别"><a href="#RC隔离级别" class="headerlink" title="RC隔离级别"></a>RC隔离级别</h3><p>RC隔离级别下，在事务中每一次执行快照读时生成ReadView</p>
+<p><strong>分析上例事务5：</strong></p>
+<p>在事务5中，查询了两次id为30的记录，由于隔离级别为Read Committed，所以每一次进行快照读都会生成一个ReadView，两次生成的ReadView如下：</p>
+<p><img src="/img/59324/MVCC11.png" alt="image-20230914162427358"></p>
+<p>两次快照读在获取数据时，就需要根据所生成的ReadView以及ReadView的版本链访问规则，到undolog版本链中匹配数据，最终决定此次快照读返回的数据</p>
+<p>1、先来看第一次快照读具体的读取过程：</p>
+<p><img src="/img/59324/MVCC12.png" alt="image-20230914162920984"></p>
+<p>先匹配左侧的正常记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00003这条记录，对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②不满足 ③不满足 ④也 不满足 ，都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00002这条记录，对应的trx_id为2，也就是将2带入右侧的匹配规则中。①不满足 ②满足 <strong>终止匹配</strong>，此次快照读，返回的数据就是版本链中记录的这条数据。</p>
+<p>2、再来看第二次快照读具体的读取过程：</p>
+<p><img src="/img/59324/MVCC13.png" alt="image-20230915214410722"></p>
+<p>先匹配左侧的正常记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00003这条记录，这条记录对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②满足 。终止匹配，此次 快照读，返回的数据就是版本链中记录的这条数据。</p>
+<h3 id="RR隔离级别"><a href="#RR隔离级别" class="headerlink" title="RR隔离级别"></a>RR隔离级别</h3><p>RR隔离级别下，仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView。 而RR 是可重复读，<strong>在一个事务中，执行两次相同的select语句，查询到的结果是一样的</strong>。</p>
+<p><img src="/img/59324/MVCC14.png" alt="image-20230915214939945"></p>
+<p>在RR隔离级别下，只是在事务中第一次快照读时生成ReadView，后续都是复用该 ReadView，那么既然ReadView都一样， ReadView的版本链匹配规则也一样， 那么最终快照读返回的结果也是一样的</p>
+<h2 id="🍁总结"><a href="#🍁总结" class="headerlink" title="🍁总结"></a>🍁总结</h2><p>MVCC + 锁，实现了事务的隔离性。 而一致性则是由redolog 与 undolog保证</p>
+<p><img src="/img/59324/MVCC15.png" alt="image-20230915215116732"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/14/MySQL-MVCC/" data-id="clq4m8c3r0025bc5s42nc4k16" data-title="MySQL-MVCC" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-ConcurrentHashMap" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/13/ConcurrentHashMap/" class="article-date">
+  <time class="dt-published" datetime="2023-09-13T07:06:57.000Z" itemprop="datePublished">2023-09-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/13/ConcurrentHashMap/">ConcurrentHashMap</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁ConcurrentHashMap1-7"><a href="#🍁ConcurrentHashMap1-7" class="headerlink" title="🍁ConcurrentHashMap1.7"></a>🍁ConcurrentHashMap1.7</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p><code>Segment(大数组) + HashEntry(小数组) + 链表</code>，每个 Segment 对应一把锁，如果多个线程访问不同的Segment，则不会冲突</p>
+<h3 id="并发度"><a href="#并发度" class="headerlink" title="并发度"></a>并发度</h3><p><strong>Segment 数组大小即并发度</strong>，决定了同一时刻最多能有多少个线程并发访问。Segment 数组<strong>不能扩容</strong>，意味着并发度在 ConcurrentHashMap 创建时就固定了</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p><img src="/img/58651/CHM1.png" alt="image.png"></p>
+<p>clevel代表<strong>并发度</strong>，capacity&#x2F;clevel&#x3D;64&#x2F;8 &#x3D; 8，代表<strong>每个Segment 数组大小</strong></p>
+<h3 id="索引计算"><a href="#索引计算" class="headerlink" title="索引计算"></a>索引计算</h3><ul>
+<li>假设大数组长度是2的m次方，key 在大数组内的索引是 key 的二次 hash 值的高 m 位</li>
+<li>假设小数组长度是2的n次方，key 在小数组内的索引是 key 的二次 hash 值的低 n 位</li>
+</ul>
+<h3 id="扩容"><a href="#扩容" class="headerlink" title="扩容"></a>扩容</h3><p>每个小数组的扩容相对<strong>独立</strong>，小数组在<strong>超过</strong>扩容因子时会触发扩容，每次<strong>扩容翻倍</strong></p>
+<h3 id="Segment-0-原型"><a href="#Segment-0-原型" class="headerlink" title="Segment[0] 原型"></a>Segment[0] 原型</h3><p>首次创建其它小数组时，会<strong>以此原型为依据</strong>，数组长度，扩容因子都会以原型为准（原型模式）</p>
+<p><img src="/img/58651/CHM2.png" alt="image.png"></p>
+<p>这里的Segment[6]首次创建按照Segment[0]的标准，大小为4</p>
+<h2 id="🍁ConcurrentHashMap1-8"><a href="#🍁ConcurrentHashMap1-8" class="headerlink" title="🍁ConcurrentHashMap1.8"></a>🍁ConcurrentHashMap1.8</h2><h3 id="数据结构-1"><a href="#数据结构-1" class="headerlink" title="数据结构"></a>数据结构</h3><p><code>Node 数组 + 链表或红黑树</code>，数组的<strong>每个头节点作为锁</strong>，如果多个线程访问的头节点不同，则不会冲突。首次生成头节点时如果发生竞争，利用 cas 而非 syncronized，进一步提升性能</p>
+<h3 id="并发度-1"><a href="#并发度-1" class="headerlink" title="并发度"></a>并发度</h3><p><strong>Node数组有多大</strong>，并发度就有多大，与 1.7 不同，<strong>Node 数组可以扩容</strong></p>
+<h3 id="扩容条件"><a href="#扩容条件" class="headerlink" title="扩容条件"></a>扩容条件</h3><p>Node 数组满 <strong>3&#x2F;4</strong> 时就会扩容，每次<strong>扩容翻倍</strong></p>
+<p><img src="/img/58651/CHM3.png" alt="image-20230913152614695"></p>
+<p>这里put会立即扩容，容量翻倍为32：</p>
+<p><img src="/img/58651/CHM4.png" alt="image-20230913152704689"></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>与 1.7 相比是<strong>懒惰初始化</strong></li>
+<li>capacity 代表<strong>预估</strong>的元素个数，capacity &#x2F; factor 来计算出初始数组大小，需要贴近2^n</li>
+<li>factor 只在计算初始数组大小时被使用，之后<strong>扩容固定为 3&#x2F;4</strong></li>
+<li>超过树化阈值时的扩容问题，如果容量已经是 64，直接树化，否则在原来容量基础上做 <strong>3 轮扩容</strong></li>
+</ul>
+<p><strong>示例</strong></p>
+<p><img src="/img/58651/CHM5.png" alt="image.png"></p>
+<p><strong>预估</strong>capacity12个元素，初始化16已经超过阈值（0.75），因此初始化数组长度为32</p>
+<p>如果capacity为11，则初始化数组长度为16</p>
+<h3 id="正常扩容"><a href="#正常扩容" class="headerlink" title="正常扩容"></a>正常扩容</h3><p>以链表为单位<strong>从后向前</strong>迁移链表，迁移完成的将旧数组头节点替换为 <strong>ForwardingNode</strong></p>
+<p><strong>示例</strong></p>
+<p>1.开始时，元素个数12个&#x3D;16×0.75，触发扩容</p>
+<img src="/img/58651/CHM6.png" alt="image-20230913153248107" style="zoom:80%;" />
+
+<p>2.<strong>从后向前</strong>迁移链表，迁移完成的将旧数组头节点替换为 <strong>ForwardingNode</strong></p>
+<img src="/img/58651/CHM7.png" alt="image-20230913153436375" style="zoom:80%;" />
+
+<p>3.重新计算索引</p>
+<img src="/img/58651/CHM8.png" alt="image-20230913153534408" style="zoom:80%;" />
+
+<p>4.迁移完毕</p>
+<img src="/img/58651/CHM9.png" alt="image-20230913153625276" style="zoom:80%;" />
+
+<p><strong>总结</strong></p>
+<p>如果链表长度超过 1，则需要对节点进行复制（创建新节点），怕的是节点迁移后 next 指针改变</p>
+<p>​	比如示例中：原数组10号下的链表，转为新数组下的10号和26号</p>
+<p>如果链表最后几个元素扩容后索引不变，则节点无需复制</p>
+<p>​	比如示例中：新数组下的26号链表的5-&gt;6</p>
+<h3 id="并发扩容"><a href="#并发扩容" class="headerlink" title="并发扩容"></a>并发扩容</h3><h4 id="1-并发get"><a href="#1-并发get" class="headerlink" title="1 并发get"></a>1 并发get</h4><p>根据是否为 <strong>ForwardingNode</strong> 来决定是在新数组查找还是在旧数组查找，不会阻塞</p>
+<p><strong>示例</strong></p>
+<p><img src="/img/58651/CHM10.png" alt="image-20230913154241353"></p>
+<p>此时旧线程在迁移，新线程get10号Node会访问<strong>旧数组</strong></p>
+<h4 id="2-并发put"><a href="#2-并发put" class="headerlink" title="2 并发put"></a>2 并发put</h4><p>如果 put 的线程与扩容线程操作的链表是<strong>同一个</strong>，put 线程会阻塞<br>如果 put 的线程操作的链表还未迁移完成，即头节点不是 ForwardingNode，则可以<strong>协助扩容</strong><br>如果 put 的线程操作的链表已经迁移完成，即头结点是 ForwardingNode，则可以并发执行</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/13/ConcurrentHashMap/" data-id="clq4m8c0z0009bc5s5ru82088" data-title="ConcurrentHashMap" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-MySQL的锁" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/10/MySQL%E7%9A%84%E9%94%81/" class="article-date">
+  <time class="dt-published" datetime="2023-09-10T03:34:22.000Z" itemprop="datePublished">2023-09-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/10/MySQL%E7%9A%84%E9%94%81/">MySQL的锁</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><p>按照锁的粒度分，分为以下三类:</p>
+<ol>
+<li>全局锁：锁定数据库中的所有表。 </li>
+<li>表级锁：每次操作锁住整张表。 </li>
+<li>行级锁：每次操作锁住对应的行数据。</li>
+</ol>
+<h2 id="🍁全局锁"><a href="#🍁全局锁" class="headerlink" title="🍁全局锁"></a>🍁全局锁</h2><blockquote>
+<p>全局锁就是对整个数据库实例加锁，加锁后整个实例就处于<strong>只读状态</strong>，后续的DML的写语句，DDL语句，已经更新操作的事务提交语句都将<strong>被阻塞</strong></p>
+</blockquote>
+<p>典型的使用场景是做全库的逻辑备份，对所有的表进行锁定，从而获取一致性视图，<strong>保证数据的完整性</strong>。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>1）加锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush tables <span class="keyword">with</span> read lock ;</span><br></pre></td></tr></table></figure>
+
+<p>2）数据备份</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysqldump  <span class="operator">-</span>uroot –p1234  itcast <span class="operator">&gt;</span> itcast.sql</span><br></pre></td></tr></table></figure>
+
+<p>3）释放锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unlock tables ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ol>
+<li>如果在主库上备份，那么在备份期间都不能执行更新，业务基本上就得停摆 </li>
+<li>如果在从库上备份，那么在备份期间从库不能执行主库同步过来的二进制日志（binlog），会导致<strong>主从延迟</strong></li>
+</ol>
+<h2 id="🍁表级锁"><a href="#🍁表级锁" class="headerlink" title="🍁表级锁"></a>🍁表级锁</h2><blockquote>
+<p>表级锁，每次操作锁住整张表。锁定粒度大，发生锁冲突的概率最高，并发度最低</p>
+</blockquote>
+<p>表级锁，主要分为以下三类：</p>
+<ol>
+<li>表锁</li>
+<li>元数据锁（meta data lock，MDL）</li>
+<li>意向锁</li>
+</ol>
+<h3 id="1-表锁"><a href="#1-表锁" class="headerlink" title="1 表锁"></a>1 表锁</h3><p>分为两类： 表共享读锁（read lock）和 表独占写锁（write lock）</p>
+<h4 id="1-语法"><a href="#1-语法" class="headerlink" title="(1)语法"></a>(1)语法</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">加锁：lock tables 表名... read<span class="operator">/</span>write </span><br><span class="line"></span><br><span class="line">释放锁：unlock tables <span class="operator">/</span> 客户端断开连接 </span><br></pre></td></tr></table></figure>
+
+<h4 id="2-读锁"><a href="#2-读锁" class="headerlink" title="(2)读锁"></a>(2)读锁</h4><p><img src="/img/49413/%E8%A1%A8%E7%BA%A7%E8%AF%BB%E9%94%81.png" alt="image-20230910170550651"></p>
+<p>左侧为客户端一，对指定表加了读锁，不会影响右侧客户端二的读，但是会阻塞右侧客户端的写。</p>
+<h4 id="3-写锁"><a href="#3-写锁" class="headerlink" title="(3)写锁"></a>(3)写锁</h4><p><img src="/img/49413/%E8%A1%A8%E7%BA%A7%E5%86%99%E9%94%81.png" alt="image-20230910170718587"></p>
+<p>左侧为客户端一，对指定表加了写锁，会阻塞右侧客户端的读和写</p>
+<h4 id="4-结论"><a href="#4-结论" class="headerlink" title="(4)结论"></a>(4)结论</h4><p>读锁<strong>不会阻塞其他客户端的读</strong>，但是会<strong>阻塞写</strong>（包括自己）。</p>
+<p>写锁<strong>既会阻塞其他客户端的读，又会阻塞其他客户端的写</strong>。</p>
+<h3 id="2-元数据锁"><a href="#2-元数据锁" class="headerlink" title="2 元数据锁"></a>2 元数据锁</h3><h4 id="1-概述"><a href="#1-概述" class="headerlink" title="(1)概述"></a>(1)概述</h4><blockquote>
+<p>meta data lock , 元数据锁，简写MDL。 </p>
+</blockquote>
+<p>MDL加锁过程是<strong>系统自动控制</strong>，无需显式使用，在访问一张表的时候会自动加上。MDL锁主要作用是维护表元数据的数据一致性，在表上有活动事务的时候，不可以对元数据进行写入操作。<strong>为了避免DML与DDL冲突，保证读写的正确性。</strong><br>元数据，可以简单理解为就是一张<strong>表的表结构</strong>。 也就是说，某一张表涉及到未提交的事务时，是不能够修改这张表的表结构的</p>
+<h4 id="2-语法"><a href="#2-语法" class="headerlink" title="(2)语法"></a>(2)语法</h4><ol>
+<li>当对一张表进行增删改查的时候，加MDL读锁(共享)；</li>
+<li>当对表结构进行变更操作的时候，加MDL写锁(排他)</li>
+</ol>
+<img src="/img/49413/表级元数据锁.png" alt="image-20230910171525904" style="zoom:80%;" />
+
+<h3 id="3-意向锁"><a href="#3-意向锁" class="headerlink" title="3 意向锁"></a>3 意向锁</h3><h4 id="1-概述-1"><a href="#1-概述-1" class="headerlink" title="(1)概述"></a>(1)概述</h4><p>为了避免DML在执行时，加的行锁与表锁的冲突，在InnoDB中引入了意向锁，使得表锁<strong>不用检查每行数据是否加锁，使用意向锁来减少表锁的检查</strong></p>
+<h4 id="2-示例"><a href="#2-示例" class="headerlink" title="(2)示例"></a>(2)示例</h4><p>首先客户端一，开启一个事务，然后执行DML操作，在执行DML语句时，会对涉及到的行加行锁：</p>
+<img src="/img/49413/表级意向锁1.png" alt="image-20230910171946046"  />
+
+<p>客户端二，想对这张表加表锁时，会检查当前表是否有对应的行锁，如果没有，则添加表锁，此时就会从第一行数据，检查到最后一行数据，效率较低：</p>
+<p><img src="/img/49413/%E8%A1%A8%E7%BA%A7%E6%84%8F%E5%90%91%E9%94%812.png" alt="image-20230910172037718"></p>
+<p>有了意向锁之后，客户端一，在执行DML操作时，会对涉及的行加行锁，同时也会对该表加上意向锁：</p>
+<p><img src="/img/49413/%E8%A1%A8%E7%BA%A7%E6%84%8F%E5%90%91%E9%94%813.png" alt="image-20230910172120609"></p>
+<p>其他客户端，在对这张表加表锁的时候，会根据该表上所加的意向锁来判定是否可以成功加表锁，而不用逐行判断行锁情况了：</p>
+<p><img src="/img/49413/%E8%A1%A8%E7%BA%A7%E6%84%8F%E5%90%91%E9%94%814.png" alt="image-20230910172204744"></p>
+<h4 id="3-分类"><a href="#3-分类" class="headerlink" title="(3)分类"></a>(3)分类</h4><ol>
+<li>意向共享锁(IS): 由语句select … lock in share mode添加 。与表锁共享锁(read)兼容，与表锁排他锁(write)互斥。</li>
+<li>意向排他锁(IX): 由insert、update、delete、select…for update添加 。与表锁共享锁(read)及排他锁(write)都互斥，意向锁之间不会互斥</li>
+</ol>
+<p>一旦事务提交了，意向共享锁、意向排他锁，都会自动释放。</p>
+<h2 id="🍁行级锁"><a href="#🍁行级锁" class="headerlink" title="🍁行级锁"></a>🍁行级锁</h2><blockquote>
+<p>行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。</p>
+</blockquote>
+<p>InnoDB的数据是基于索引组织的，行锁是通过对索引上的<strong>索引项加锁</strong>来实现的，而不是对记录加的锁。</p>
+<p>行级锁分三类：</p>
+<p>1.行锁（Record Lock）：锁定单个行记录的锁，防止其他事务对此行进行update和delete。在RC、RR隔离级别下支持</p>
+<p><img src="/img/49413/%E8%A1%8C%E9%94%811.png" alt="image-20230911090211230"></p>
+<p>2.间隙锁（Gap Lock）：锁定索引记录间隙（<strong>不含该记录</strong>），确保索引记录间隙不变，防止其他事务在这个间隙进行insert，产生幻读。在RR隔离级别下支持</p>
+<p><img src="/img/49413/%E8%A1%8C%E9%94%812.png" alt="image-20230911090320650"></p>
+<p>3.临键锁（Next-Key Lock）：行锁和间隙锁组合，同时锁住数据，并锁住数据前面的间隙Gap。 在RR隔离级别下支持</p>
+<p><img src="/img/49413/%E8%A1%8C%E9%94%813.png" alt="image-20230911090508607"></p>
+<h3 id="1-行锁"><a href="#1-行锁" class="headerlink" title="1 行锁"></a>1 行锁</h3><h4 id="1-概述-2"><a href="#1-概述-2" class="headerlink" title="(1)概述"></a>(1)概述</h4><p>共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排它锁<br>排他锁（X）：允许获取排他锁的事务更新数据，阻止其他事务获得相同数据集的共享锁和排他锁</p>
+<p><img src="/img/49413/%E8%A1%8C%E9%94%814.png" alt="image-20230911091213397"></p>
+<h4 id="2-特点"><a href="#2-特点" class="headerlink" title="(2)特点"></a>(2)特点</h4><p>默认情况下，InnoDB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 <strong>next-key 锁</strong>进行搜索和索引扫描，以防止幻读。</p>
+<ul>
+<li>针对唯一索引进行检索时，对已存在的记录进行等值匹配时，将会自动优化为行锁。</li>
+<li>InnoDB的行锁是针对于索引加的锁，不通过索引条件检索数据，那么InnoDB将对表中的所有记录加锁，此时就会升级为表锁</li>
+</ul>
+<h3 id="2-间隙锁-临键锁"><a href="#2-间隙锁-临键锁" class="headerlink" title="2 间隙锁&amp;临键锁"></a>2 间隙锁&amp;临键锁</h3><h4 id="1-特点"><a href="#1-特点" class="headerlink" title="(1)特点"></a>(1)特点</h4><p>默认情况下，InnoDB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁进行搜<br>索和索引扫描，以防止幻读。</p>
+<ul>
+<li>索引上的等值查询(唯一索引)，给不存在的记录加锁时, 优化为间隙锁 。</li>
+<li>索引上的等值查询(非唯一普通索引)，向右遍历时最后一个值不满足查询需求时，next-key lock 退化为间隙锁。</li>
+<li>索引上的范围查询(唯一索引)–会访问到不满足条件的第一个值为止</li>
+</ul>
+<p>间隙锁唯一目的是<strong>防止其他事务插入间隙</strong>。间隙锁可以共存，一个事务采用的间隙锁不会 阻止另一个事务在同一间隙上采用间隙锁</p>
+<h4 id="2-示例-1"><a href="#2-示例-1" class="headerlink" title="(2)示例"></a>(2)示例</h4><p><strong>索引上的等值查询(唯一索引)，给不存在的记录加锁时, 优化为间隙锁</strong></p>
+<p><img src="/img/49413/%E9%97%B4%E9%9A%99%E9%94%811.png" alt="image-20230911092149446"></p>
+<p><strong>索引上的等值查询(非唯一普通索引)，向右遍历时最后一个值不满足查询需求时，next-key  lock 退化为间隙锁</strong></p>
+<p><img src="/img/49413/%E9%97%B4%E9%9A%99%E9%94%812.png" alt="image-20230911092425766"></p>
+<p>要根据这个二级索引查询值为18的数据，并加上共享锁，只锁定18这一行就可以了吗？ 并不是，因为是非唯一索引，这个结构中可能有多个18的存在，所以，在加锁时会继续往后找，找到一个不满足条件的值（当前案例中也 就是29）。此时会对18加临键锁，并对29之前的间隙加锁</p>
+<p><img src="/img/49413/%E9%97%B4%E9%9A%99%E9%94%813.png" alt="image-20230911092701785"></p>
+<p><strong>索引上的范围查询(唯一索引)–会访问到不满足条件的第一个值为止</strong></p>
+<p><img src="/img/49413/%E9%97%B4%E9%9A%99%E9%94%814.png" alt="image-20230911092741310"></p>
+<p>查询的条件为id&gt;&#x3D;19，并添加共享锁。 此时可以根据数据库表中现有的数据，将数据分为三个部分：<br>[19]	(19,25]	(25,+∞]<br>所以数据库数据在加锁是，就是将19加了行锁，25的临键锁（包含25及25之前的间隙），正无穷的临键锁(正无穷及之前的间隙)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/10/MySQL%E7%9A%84%E9%94%81/" data-id="clq4m8c45002gbc5sf35j05cw" data-title="MySQL的锁" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-排序算法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/05/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2023-09-05T14:50:07.000Z" itemprop="datePublished">2023-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/09/05/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁总览"><a href="#🍁总览" class="headerlink" title="🍁总览"></a>🍁总览</h2><img src="/img/61237/排序1.png" alt="排序1" style="zoom:80%;" />
+
+<p>对数阶：快速排序、堆排序和归并排序</p>
+<p>不稳定：选择排序、快速排序、希尔排序、堆排序</p>
+<h2 id="🍁冒泡排序"><a href="#🍁冒泡排序" class="headerlink" title="🍁冒泡排序"></a>🍁冒泡排序</h2><h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>比较相邻的元素。如果第一个比第二个大，就交换他们两个</li>
+<li>对每一对相邻元素作同样的工作，从开始第一对到结尾的最后一对。这步做完后，最后的元素会是最大的数</li>
+<li>针对所有的元素重复以上的步骤，除了最后一个</li>
+<li>持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较</li>
+</ol>
+<p><img src="/img/61237/%E6%8E%92%E5%BA%8F2.png" alt="排序2"></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 辅助交换函数</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span>[] array, <span class="type">int</span> i, <span class="type">int</span> j)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">t</span> <span class="operator">=</span> array[i];</span><br><span class="line">    array[i] = array[j];</span><br><span class="line">    array[j] = t;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">bubble</span><span class="params">(<span class="type">int</span>[] a)</span>&#123;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">swapped</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>;j &lt; a.length-<span class="number">1</span>;j++)&#123;</span><br><span class="line">        swapped = <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i &lt; a.length-j-<span class="number">1</span>;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[i]&gt;a[i+<span class="number">1</span>])&#123;</span><br><span class="line">            	swap(a,i,i+<span class="number">1</span>);</span><br><span class="line">                swapped = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!swapped)&#123; <span class="comment">//没有发生交换，退出循环</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁选择排序"><a href="#🍁选择排序" class="headerlink" title="🍁选择排序"></a>🍁选择排序</h2><h3 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>首先在未排序序列中找到最小（大）元素，存放到排序序列的起始位置</li>
+<li>再从剩余未排序元素中继续寻找最小（大）元素，然后放到已排序序列的末尾。</li>
+<li>重复第二步，直到所有元素均排序完毕</li>
+</ol>
+<p><img src="/img/61237/%E6%8E%92%E5%BA%8F3.png" alt="排序3"></p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">selection</span><span class="params">(<span class="type">int</span>[] a)</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 选择轮数 a.length - 1</span></span><br><span class="line">    <span class="comment">// 2. 交换的索引位置(right) 初始 a.length - 1, 每次递减</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> a.length - <span class="number">1</span>; right &gt; <span class="number">0</span> ; right--) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> right;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; right; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[i] &gt; a[max]) &#123;</span><br><span class="line">                max = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(max != right) &#123;</span><br><span class="line">            swap(a, max, right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁插入排序"><a href="#🍁插入排序" class="headerlink" title="🍁插入排序"></a>🍁插入排序</h2><h3 id="步骤-2"><a href="#步骤-2" class="headerlink" title="步骤"></a>步骤</h3><p>1.将数组分为两部分 [0 .. low-1]  [low .. a.length-1]</p>
+<ul>
+<li>左边 [0 .. low-1] 是已排序部分</li>
+<li>右边 [low .. a.length-1] 是未排序部分</li>
+</ul>
+<p>2.每次从未排序区域取出 low 位置的元素, 插入到已排序区域</p>
+<p><img src="/img/61237/%E6%8E%92%E5%BA%8F4.png" alt="排序4"></p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">insert</span><span class="params">(<span class="type">int</span>[] a)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">low</span> <span class="operator">=</span> <span class="number">1</span>; low &lt; a.length; low++) &#123;</span><br><span class="line">        <span class="comment">// 将 low 位置的元素插入至 [0..low-1] 的已排序区域</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">t</span> <span class="operator">=</span> a[low];</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> low - <span class="number">1</span>; <span class="comment">// 已排序区域指针</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (i &gt;= <span class="number">0</span> &amp;&amp; t &lt; a[i]) &#123; <span class="comment">// 没有找到插入位置</span></span><br><span class="line">            a[i + <span class="number">1</span>] = a[i]; <span class="comment">// 空出插入位置</span></span><br><span class="line">            i--;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找到插入位置</span></span><br><span class="line">        <span class="keyword">if</span> (i != low - <span class="number">1</span>) &#123;</span><br><span class="line">            a[i + <span class="number">1</span>] = t;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁希尔排序"><a href="#🍁希尔排序" class="headerlink" title="🍁希尔排序"></a>🍁希尔排序</h2><h3 id="步骤-3"><a href="#步骤-3" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>选择一个增量序列 t1，t2，……，tk，其中 ti &gt; tj, tk &#x3D; 1；</li>
+<li>按增量序列个数 k，对序列进行 k 趟排序；</li>
+<li>每趟排序，根据对应的增量 ti，将待排序列分割成若干长度为 m 的子序列，分别对各子表进行直接插入排序。仅增量因子为 1 时，整个序列作为一个表来处理，表长度即为整个序列的长度。</li>
+</ol>
+<p><img src="/img/61237/%E6%8E%92%E5%BA%8F5.png" alt="排序5"></p>
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">shell</span><span class="params">(<span class="type">int</span>[] a)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">gap</span> <span class="operator">=</span> a.length&gt;&gt;<span class="number">1</span>; gap &gt;<span class="number">0</span> ; gap=gap&gt;&gt;<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">low</span> <span class="operator">=</span> gap; low &lt; a.length; low ++) &#123;</span><br><span class="line">            <span class="comment">// 将 low 位置的元素插入至 [0..low-1] 的已排序区域</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">t</span> <span class="operator">=</span> a[low];</span><br><span class="line">            <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> low - gap; <span class="comment">// 已排序区域指针</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (i &gt;= <span class="number">0</span> &amp;&amp; t &lt; a[i]) &#123; <span class="comment">// 没有找到插入位置</span></span><br><span class="line">                a[i + gap] = a[i]; <span class="comment">// 空出插入位置</span></span><br><span class="line">                i -= gap;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 找到插入位置</span></span><br><span class="line">            <span class="keyword">if</span> (i != low - gap) &#123;</span><br><span class="line">                a[i + gap] = t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;            </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁快速排序（重要）"><a href="#🍁快速排序（重要）" class="headerlink" title="🍁快速排序（重要）"></a>🍁快速排序（重要）</h2><h3 id="步骤-双边循环方案"><a href="#步骤-双边循环方案" class="headerlink" title="步骤(双边循环方案)"></a>步骤(双边循环方案)</h3><p>1.选择最左侧元素作为基准点</p>
+<p>2.j 找比基准点小的，i 找比基准点大的，一旦找到，二者进行交换</p>
+<ul>
+<li>i 从左向右</li>
+<li>j 从右向左</li>
+</ul>
+<p>3.最后基准点与 i 交换，i 即为基准点最终索引</p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>i 找到比基准点大的5停下来，j 找到比基准点小的1停下来（包含等于），二者交换</p>
+<p><img src="/img/61237/%E5%BF%AB%E6%8E%921.png" alt="快排1"></p>
+<p>i 找到8，j 找到3，二者交换，i 找到7，j 找到2，二者交换</p>
+<p><img src="/img/61237/%E5%BF%AB%E6%8E%922.png" alt="快排2"></p>
+<p>i &#x3D;&#x3D; j，退出循环，基准点与 i 交换</p>
+<p><img src="/img/61237/%E5%BF%AB%E6%8E%923.png" alt="快排3"></p>
+<h3 id="代码-4"><a href="#代码-4" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">quick</span><span class="params">(<span class="type">int</span>[] a,<span class="type">int</span> l,<span class="type">int</span> h)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(l &gt;= h)&#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> <span class="variable">p</span> <span class="operator">=</span> partition(a,l,h);</span><br><span class="line">    quick(a,l,p-<span class="number">1</span>);</span><br><span class="line">    quick(a,p+<span class="number">1</span>,h);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">partition</span><span class="params">(<span class="type">int</span>[] a,<span class="type">int</span> l,<span class="type">int</span> h)</span>&#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">pv</span> <span class="operator">=</span> a[l]; <span class="comment">//基准点元素</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> l;</span><br><span class="line">    <span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> h;</span><br><span class="line">    <span class="keyword">while</span>(i &lt; j)&#123;</span><br><span class="line">        <span class="comment">// j 从右找小的</span></span><br><span class="line">        <span class="keyword">while</span>(i &lt; j &amp;&amp; a[j] &gt; pv)&#123;</span><br><span class="line">            j -= <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// i 从左找大的</span></span><br><span class="line">        <span class="keyword">while</span>(i &lt; j &amp;&amp; a[i] &lt;= pv)&#123;</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    	swap(a,i,j);   </span><br><span class="line">    &#125;</span><br><span class="line">    swap(a,l,j);</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h3><p>基准点在左边，并且要先 j 后 i </p>
+<p>while( i &lt; j &amp;&amp; a[j] &gt; pv ) j– </p>
+<p>while ( i &lt; j &amp;&amp; a[i] &lt;&#x3D; pv ) i++ </p>
+<h2 id="🍁归并排序"><a href="#🍁归并排序" class="headerlink" title="🍁归并排序"></a>🍁归并排序</h2><h3 id="步骤-4"><a href="#步骤-4" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>分 - 每次从中间切一刀，处理的数据少一半</li>
+<li>治 - 当数据仅剩一个时可以认为有序</li>
+<li>合 - 两个有序的结果，可以进行合并排序</li>
+</ol>
+<p><img src="/img/61237/%E6%8E%92%E5%BA%8F6.png" alt="排序6"></p>
+<h3 id="代码-5"><a href="#代码-5" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MergeSortTopDown</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        a1 原始数组</span></span><br><span class="line"><span class="comment">        i~iEnd 第一个有序范围</span></span><br><span class="line"><span class="comment">        j~jEnd 第二个有序范围</span></span><br><span class="line"><span class="comment">        a2 临时数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">merge</span><span class="params">(<span class="type">int</span>[] a1, <span class="type">int</span> i, <span class="type">int</span> iEnd, <span class="type">int</span> j, <span class="type">int</span> jEnd, <span class="type">int</span>[] a2)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> i;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= iEnd &amp;&amp; j &lt;= jEnd) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a1[i] &lt; a1[j]) &#123;</span><br><span class="line">                a2[k] = a1[i];</span><br><span class="line">                i++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                a2[k] = a1[j];</span><br><span class="line">                j++;</span><br><span class="line">            &#125;</span><br><span class="line">            k++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (i &gt; iEnd) &#123;</span><br><span class="line">            System.arraycopy(a1, j, a2, k, jEnd - j + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (j &gt; jEnd) &#123;</span><br><span class="line">            System.arraycopy(a1, i, a2, k, iEnd - i + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sort</span><span class="params">(<span class="type">int</span>[] a1)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] a2 = <span class="keyword">new</span> <span class="title class_">int</span>[a1.length];</span><br><span class="line">        split(a1, <span class="number">0</span>, a1.length - <span class="number">1</span>, a2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">split</span><span class="params">(<span class="type">int</span>[] a1, <span class="type">int</span> left, <span class="type">int</span> right, <span class="type">int</span>[] a2)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] array = Arrays.copyOfRange(a1, left, right + <span class="number">1</span>);</span><br><span class="line"><span class="comment">//        System.out.println(Arrays.toString(array));</span></span><br><span class="line">        <span class="comment">// 2. 治</span></span><br><span class="line">        <span class="keyword">if</span> (left == right) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 1. 分</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">m</span> <span class="operator">=</span> (left + right) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        split(a1, left, m, a2);                 <span class="comment">// left = 0 m = 0  9</span></span><br><span class="line">        split(a1, m + <span class="number">1</span>, right, a2);       <span class="comment">// m+1 = 1 right = 1  3</span></span><br><span class="line">        <span class="comment">// 3. 合</span></span><br><span class="line">        merge(a1, left, m, m + <span class="number">1</span>, right, a2);</span><br><span class="line">        System.arraycopy(a2, left, a1, left, right - left + <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] a = &#123;<span class="number">9</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">4</span>&#125;;</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line">        sort(a);</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁堆排序"><a href="#🍁堆排序" class="headerlink" title="🍁堆排序"></a>🍁堆排序</h2><h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>堆逻辑上是<strong>完全二叉树</strong>，堆中某个节点的值总是<strong>不大于或不小于其父节点</strong>的值；实现上可以选择<strong>数组</strong></p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F1.png" alt="堆排序1"></p>
+<p>堆化步骤：</p>
+<ol>
+<li>找到最后一个非叶子节点</li>
+<li>从后向前，对每个节点执行<strong>下潜</strong></li>
+</ol>
+<p>规律：</p>
+<ul>
+<li>一棵满二叉树节点个数为 2^h-1，如上例中高度 h&#x3D;3 节点数是 2^3-1&#x3D;7</li>
+<li>非叶子节点范围为 [0, size&#x2F;2-1]</li>
+</ul>
+<h3 id="步骤-5"><a href="#步骤-5" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>建立大顶堆</li>
+<li>每次将堆顶元素（最大值）交换到末尾，调整堆顶元素，让它重新符合大顶堆特性</li>
+</ol>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>建堆<img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F2.png" alt="堆排序2"></p>
+<p>交换，下潜调整</p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F3.png" alt="堆排序3"></p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F4.png" alt="堆排序4"></p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F5.png" alt="堆排序5"></p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F6.png" alt="堆排序6"></p>
+<p><img src="/img/61237/%E5%A0%86%E6%8E%92%E5%BA%8F7.png" alt="堆排序7"></p>
+<h3 id="代码-6"><a href="#代码-6" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HeapSort</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sort</span><span class="params">(<span class="type">int</span>[] a)</span> &#123;</span><br><span class="line">        heapify(a, a.length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> a.length - <span class="number">1</span>; right &gt; <span class="number">0</span>; right--) &#123;</span><br><span class="line">            swap(a, <span class="number">0</span>, right);</span><br><span class="line">            down(a, <span class="number">0</span>, right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 建堆 O(n)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">heapify</span><span class="params">(<span class="type">int</span>[] array, <span class="type">int</span> size)</span> &#123;</span><br><span class="line">        <span class="comment">// 非叶子节点不断下潜</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> size / <span class="number">2</span> - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            down(array, i, size);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 下潜</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">down</span><span class="params">(<span class="type">int</span>[] array, <span class="type">int</span> parent, <span class="type">int</span> size)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">left</span> <span class="operator">=</span> parent * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">            <span class="type">int</span> <span class="variable">right</span> <span class="operator">=</span> left + <span class="number">1</span>;</span><br><span class="line">            <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> parent;</span><br><span class="line">            <span class="keyword">if</span> (left &lt; size &amp;&amp; array[left] &gt; array[max]) &#123;</span><br><span class="line">                max = left;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (right &lt; size &amp;&amp; array[right] &gt; array[max]) &#123;</span><br><span class="line">                max = right;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (max == parent) &#123; <span class="comment">// 没找到更大的孩子</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            swap(array, max, parent);</span><br><span class="line">            parent = max;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 交换</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">swap</span><span class="params">(<span class="type">int</span>[] a, <span class="type">int</span> i, <span class="type">int</span> j)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">t</span> <span class="operator">=</span> a[i];</span><br><span class="line">        a[i] = a[j];</span><br><span class="line">        a[j] = t;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] a = &#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line">        sort(a);</span><br><span class="line">        System.out.println(Arrays.toString(a));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁计数排序"><a href="#🍁计数排序" class="headerlink" title="🍁计数排序"></a>🍁计数排序</h2><h3 id="步骤-6"><a href="#步骤-6" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>花O(n)的时间扫描一下整个序列 A，获取最小值 min 和最大值 max</li>
+<li>开辟一块新的空间创建新的数组 B，长度为 ( max - min + 1)</li>
+<li>数组 B 中 index 的元素记录的值是 A 中某元素出现的次数</li>
+<li>最后输出目标整数序列，具体的逻辑是遍历数组 B，输出相应元素以及对应的个数</li>
+</ol>
+<h3 id="代码-7"><a href="#代码-7" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sort</span><span class="params">(<span class="type">int</span>[] a)</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">min</span> <span class="operator">=</span> a[<span class="number">0</span>];</span><br><span class="line">    <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> a[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : a) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt; max) &#123;</span><br><span class="line">            max = i;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (i &lt; min) &#123;</span><br><span class="line">            min = i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span>[] counting = <span class="keyword">new</span> <span class="title class_">int</span>[max - min + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : a) &#123;</span><br><span class="line">        counting[i - min]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; counting.length; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span> (counting[i] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            a[k] = i + min;</span><br><span class="line">            counting[i]--;</span><br><span class="line">            k++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁桶排序"><a href="#🍁桶排序" class="headerlink" title="🍁桶排序"></a>🍁桶排序</h2><h3 id="步骤-7"><a href="#步骤-7" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>设置固定数量的空桶。</li>
+<li>把数据放到对应的桶中。</li>
+<li>对每个不为空的桶中数据进行排序。</li>
+<li>拼接不为空的桶中数据，得到结果。</li>
+</ol>
+<h3 id="代码-8"><a href="#代码-8" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BucketSortGeneric</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[] ages = &#123;<span class="number">20</span>, <span class="number">10</span>, <span class="number">28</span>, <span class="number">66</span>, <span class="number">25</span>, <span class="number">31</span>, <span class="number">67</span>, <span class="number">30</span>, <span class="number">70</span>&#125;; <span class="comment">// 假设人类年龄 1~99</span></span><br><span class="line">        System.out.println(Arrays.toString(ages));</span><br><span class="line">        sort(ages, <span class="number">20</span>);</span><br><span class="line">        System.out.println(Arrays.toString(ages));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sort</span><span class="params">(<span class="type">int</span>[] a, <span class="type">int</span> range)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> a[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> <span class="variable">min</span> <span class="operator">=</span> a[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; a.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (a[i] &gt; max) &#123;</span><br><span class="line">                max = a[i];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (a[i] &lt; min) &#123;</span><br><span class="line">                min = a[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 1. 准备桶</span></span><br><span class="line">        DynamicArray[] buckets = <span class="keyword">new</span> <span class="title class_">DynamicArray</span>[(max - min) / range + <span class="number">1</span>];</span><br><span class="line">        System.out.println(buckets.length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; buckets.length; i++) &#123;</span><br><span class="line">            buckets[i] = <span class="keyword">new</span> <span class="title class_">DynamicArray</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 2. 放入年龄数据</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> age : a) &#123;</span><br><span class="line">            buckets[(age - min) / range].addLast(age);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (DynamicArray bucket : buckets) &#123;</span><br><span class="line">            <span class="comment">// 3. 排序桶内元素</span></span><br><span class="line">            <span class="type">int</span>[] array = bucket.array();</span><br><span class="line">            InsertionSort.sort(array);</span><br><span class="line">            System.out.println(Arrays.toString(array));</span><br><span class="line">            <span class="comment">// 4. 把每个桶排序好的内容，依次放入原始数组</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> v : array) &#123;</span><br><span class="line">                a[k++] = v;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁基数排序"><a href="#🍁基数排序" class="headerlink" title="🍁基数排序"></a>🍁基数排序</h2><h3 id="步骤-8"><a href="#步骤-8" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li>将所有待比较数值（正整数）统一为同样的数位长度，数位较短的数前面补零</li>
+<li>从最低位开始，依次进行一次排序</li>
+<li>从最低位排序一直到最高位排序完成以后, 数列就变成一个有序序列</li>
+</ol>
+<h3 id="代码-9"><a href="#代码-9" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RadixSort</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">radixSort</span><span class="params">(String[] a, <span class="type">int</span> length)</span> &#123;</span><br><span class="line">        ArrayList&lt;String&gt;[] buckets = <span class="keyword">new</span> <span class="title class_">ArrayList</span>[<span class="number">128</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; buckets.length; i++) &#123;</span><br><span class="line">            buckets[i] = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> length - <span class="number">1</span>; i &gt;= <span class="number">0</span> ; i--) &#123;</span><br><span class="line">            <span class="keyword">for</span> (String s : a) &#123;</span><br><span class="line">                buckets[s.charAt(i)].add(s);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (ArrayList&lt;String&gt; bucket : buckets) &#123;</span><br><span class="line">                <span class="keyword">for</span> (String s : bucket) &#123;</span><br><span class="line">                    a[k++] = s;</span><br><span class="line">                &#125;</span><br><span class="line">                bucket.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">/*String[] phoneNumbers = new String[10];</span></span><br><span class="line"><span class="comment">        phoneNumbers[0] = &quot;13812345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[1] = &quot;13912345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[2] = &quot;13612345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[3] = &quot;13712345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[4] = &quot;13512345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[5] = &quot;13412345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[6] = &quot;15012345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[7] = &quot;15112345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[8] = &quot;15212345678&quot;;</span></span><br><span class="line"><span class="comment">        phoneNumbers[9] = &quot;15712345678&quot;;*/</span></span><br><span class="line"></span><br><span class="line">        String[] phoneNumbers = <span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">10</span>];</span><br><span class="line">        phoneNumbers[<span class="number">0</span>] = <span class="string">&quot;138&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">1</span>] = <span class="string">&quot;139&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">2</span>] = <span class="string">&quot;136&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">3</span>] = <span class="string">&quot;137&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">4</span>] = <span class="string">&quot;135&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">5</span>] = <span class="string">&quot;134&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">6</span>] = <span class="string">&quot;150&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">7</span>] = <span class="string">&quot;151&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">8</span>] = <span class="string">&quot;152&quot;</span>;</span><br><span class="line">        phoneNumbers[<span class="number">9</span>] = <span class="string">&quot;157&quot;</span>;</span><br><span class="line">        RadixSort.radixSort(phoneNumbers, <span class="number">3</span>);</span><br><span class="line">        <span class="keyword">for</span> (String phoneNumber : phoneNumbers) &#123;</span><br><span class="line">            System.out.println(phoneNumber);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/vn3KiV-ez79FmbZ36SX9lg">十大经典排序算法动画与解析，看我就够了！（配代码完全版） (qq.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1rv4y1H7o6?p=48&vd_source=4e325d8f935e8f302a35ee035332e67b">基础算法-202-排序算法-冒泡排序_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/05/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" data-id="clq4m8c5o004ibc5s0t0a56it" data-title="排序算法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-MySQL索引进阶" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/" class="article-date">
+  <time class="dt-published" datetime="2023-08-30T14:43:59.000Z" itemprop="datePublished">2023-08-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/">MySQL索引进阶</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁最左前缀法则"><a href="#🍁最左前缀法则" class="headerlink" title="🍁最左前缀法则"></a>🍁最左前缀法则</h2><blockquote>
+<p>如果索引了多列（联合索引），要遵守最左前缀法则。最左前缀法则指的是查询<strong>从索引的最左列开始， 并且不跳过索引中的列</strong>。如果跳跃某一列，索引将会**部分失效(后面的字段索引失效)**。</p>
+</blockquote>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>tb_user表有一个联合索引，这个联合索引涉及到三个字段，顺序分别为：profession， age，status</p>
+<p><img src="/img/13143/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B61.png" alt="image-20230830224849301"></p>
+<p>最左前缀法则指的是，查询时，最左边的列，也就是profession必须存在，否则索引全部失效。  而且中间不能跳过某一列，否则该列后面的字段索引将失效。</p>
+<p>生效示例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">=</span> <span class="number">31</span>;</span><br></pre></td></tr></table></figure>
+
+<p>失效示例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> age <span class="operator">=</span> <span class="number">31</span> <span class="keyword">and</span> status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>当执行以下SQL语句，索引<strong>生效</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> age <span class="operator">=</span> <span class="number">31</span> <span class="keyword">and</span>  status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span> <span class="keyword">and</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span>；</span><br></pre></td></tr></table></figure>
+
+<p>🚩最左前缀法则中指的最左边的列，是指在查询时，联合索引的最左边的字段(即是<strong>第一个字段</strong>)必须存在，与编写SQL时，<strong>条件编写的先后顺序无关</strong></p>
+<h2 id="🍁索引失效情况"><a href="#🍁索引失效情况" class="headerlink" title="🍁索引失效情况"></a>🍁索引失效情况</h2><h3 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h3><blockquote>
+<p>联合索引中，出现范围查询<code>(&gt;,&lt;)</code>，范围查询<strong>右侧的列索引</strong>失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">&gt;</span> <span class="number">30</span> <span class="keyword">and</span> status </span><br><span class="line"><span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%881.png" alt="image-20230830225756823"></p>
+<p>当范围查询使用&gt; 或 &lt; 时，走联合索引了，但是索引的长度为49（不够联合索引的长度），就说明范围查询右边的status字段是没有走索引的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">&gt;=</span> <span class="number">30</span> <span class="keyword">and</span> </span><br><span class="line">status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%882.png" alt="image-20230830225937192"></p>
+<p>范围查询使用&gt;&#x3D; 或 &lt;&#x3D; 时，走联合索引了，但是索引的长度为54（正常），就说明所有的字段都是走索引的</p>
+<p><strong>总结：尽可能的使用类似于 &gt;&#x3D; 或 &lt;&#x3D; 这类的范围查询，而避免使用 &gt; 或 &lt;</strong></p>
+<h3 id="索引列运算"><a href="#索引列运算" class="headerlink" title="索引列运算"></a>索引列运算</h3><blockquote>
+<p>在索引列上进行运算操作， 索引将失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  <span class="built_in">substring</span>(phone,<span class="number">10</span>,<span class="number">2</span>) <span class="operator">=</span> <span class="string">&#x27;15&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%883.png" alt="image-20230902161053946"></p>
+<p>根据phone字段进行函数运算操作之后，索引失效</p>
+<h3 id="字符串不加引号"><a href="#字符串不加引号" class="headerlink" title="字符串不加引号"></a>字符串不加引号</h3><blockquote>
+<p>字符串类型字段使用时，不加引号，索引将失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="string">&#x27;17799990015&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="number">17799990015</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%884.png" alt="image-20230902161301773"></p>
+<h3 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h3><blockquote>
+<p>尾部模糊匹配，索引不会失效。<strong>头部模糊匹配</strong>，索引失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;软件%&#x27;</span>;</span><br><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;%工程&#x27;</span>;</span><br><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;%工%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%885.png" alt="image-20230902161446391"></p>
+<p>在like模糊查询中，在关键字后面加%，索引可以生效。而如果在关键字<strong>前面加了%<strong>，索引</strong>将会失效</strong></p>
+<h3 id="or连接条件"><a href="#or连接条件" class="headerlink" title="or连接条件"></a>or连接条件</h3><blockquote>
+<p>用or分割开的条件， 如果or前的条件中的列有索引，而后面的列中没有索引，那么涉及的索引<strong>都不会</strong>被用到</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">10</span> <span class="keyword">or</span> age <span class="operator">=</span> <span class="number">23</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="string">&#x27;17799990017&#x27;</span> <span class="keyword">or</span> age <span class="operator">=</span> <span class="number">23</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%886.png" alt="image-20230902161651202"></p>
+<p>由于age没有索引，所以即使id、phone有索引，索引也会失效</p>
+<h3 id="数据分布影响"><a href="#数据分布影响" class="headerlink" title="数据分布影响"></a>数据分布影响</h3><blockquote>
+<p>如果MySQL评估使用索引比全表更慢，则不使用索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">&gt;=</span> <span class="string">&#x27;17799990005&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">&gt;=</span> <span class="string">&#x27;17799990015&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%887.png" alt="image-20230902161847037"></p>
+<p>MySQL在查询时，会评估使用索引的效率与走全表扫描的效率，如果走全表扫描更快，则放弃索引，走全表扫描</p>
+<h2 id="🍁SQL提示"><a href="#🍁SQL提示" class="headerlink" title="🍁SQL提示"></a>🍁SQL提示</h2><blockquote>
+<p>SQL提示是优化数据库的一个重要手段，简单来说，就是在SQL语句中加入一些人为的提示来达到优 化操作的目的</p>
+<p>在查询的时候，自己来指定使用哪个索引</p>
+</blockquote>
+<h3 id="use-index"><a href="#use-index" class="headerlink" title="use index"></a>use index</h3><blockquote>
+<p>建议MySQL使用哪一个索引完成此次查询（仅仅是建议，mysql内部还会再次进行评估）</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user use index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ignore-index"><a href="#ignore-index" class="headerlink" title="ignore index"></a>ignore index</h3><blockquote>
+<p>忽略指定的索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user ignore index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="force-index"><a href="#force-index" class="headerlink" title="force index"></a>force index</h3><blockquote>
+<p> 强制使用索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user force index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁覆盖索引"><a href="#🍁覆盖索引" class="headerlink" title="🍁覆盖索引"></a>🍁覆盖索引</h2><blockquote>
+<p>覆盖索引是指 查询使用了索引，并且需要返回的列，在该索引中已经全部能够找到</p>
+</blockquote>
+<h3 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h3><h4 id="1-表结构及索引示意图"><a href="#1-表结构及索引示意图" class="headerlink" title="1.表结构及索引示意图"></a>1.表结构及索引示意图</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%951.png" alt="image-20230902162909592"></p>
+<p>说明：id是主键，是一个聚集索引。 name字段建立了普通索引，是一个二级索引（辅助索引）</p>
+<h4 id="2-执行：select-from-tb-user-where-id-2"><a href="#2-执行：select-from-tb-user-where-id-2" class="headerlink" title="2.执行：select * from tb_user where id &#x3D; 2;"></a>2.执行：select * from tb_user where id &#x3D; 2;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%952.png" alt="image-20230902163019030"></p>
+<p>根据id查询，直接走聚集索引查询，一次索引扫描，直接返回数据，性能高。</p>
+<h4 id="3-执行：select-id-name-from-tb-user-where-name-‘Arm’"><a href="#3-执行：select-id-name-from-tb-user-where-name-‘Arm’" class="headerlink" title="3.执行：select id,name from tb_user where name &#x3D; ‘Arm’;"></a>3.执行：select id,name from tb_user where name &#x3D; ‘Arm’;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%953.png" alt="image-20230902163120038"></p>
+<p>虽然是根据name字段查询，查询二级索引，但是由于查询返回在字段为 id，name，在name的二级索引中，这两个值都是可以直接获取到的，因为<strong>覆盖索引</strong>，所以不需要回表查询，性能高</p>
+<h4 id="4-执行：select-id-name-gender-from-tb-user-where-name-‘Arm’"><a href="#4-执行：select-id-name-gender-from-tb-user-where-name-‘Arm’" class="headerlink" title="4.执行：select id,name,gender from tb_user where name &#x3D; ‘Arm’;"></a>4.执行：select id,name,gender from tb_user where name &#x3D; ‘Arm’;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%954.png" alt="image-20230902163234966"></p>
+<p>由于在name的二级索引中，不包含gender，所以，需要两次索引扫描，也就是需要<strong>回表查询</strong>，性能相对较差</p>
+<h3 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h3><p>一张表, 有四个字段(id, username, password, status), 对以下SQL语句进行优化:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> id,username,password <span class="keyword">from</span> tb_user <span class="keyword">where</span> username <span class="operator">=</span> <span class="string">&#x27;itcast&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>解析：</p>
+<p>针对于 username, password建立联合索引, sql为:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_user_name_pass <span class="keyword">on</span> tb_user(username,password); </span><br></pre></td></tr></table></figure>
+
+<p>这样避免上述的SQL语句，在查询的过程中，出现回表查询</p>
+<p>🚩<strong>根据覆盖索引的原则，应少用select * …;</strong></p>
+<h2 id="🍁前缀索引"><a href="#🍁前缀索引" class="headerlink" title="🍁前缀索引"></a>🍁前缀索引</h2><blockquote>
+<p>当字段类型为字符串（varchar，text，longtext等）时，有时候需要索引很长的字符串，这会让索引变得很大，查询时，浪费大量的磁盘IO， 影响查询效率。此时可以只将字符串的<strong>一部分前缀建立索引</strong>，这样可以大大节约索引空间，从而提高索引效率</p>
+</blockquote>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index  idx_xxxx <span class="keyword">on</span> table_name(<span class="keyword">column</span>(n)) ;</span><br></pre></td></tr></table></figure>
+
+<p>示例：为tb_user表的email字段，建立长度为5的前缀索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_email_5 <span class="keyword">on</span> tb_user(email(<span class="number">5</span>));</span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀长度"><a href="#前缀长度" class="headerlink" title="前缀长度"></a>前缀长度</h3><p>可以根据索引的选择性来决定，而选择性是指不重复的索引值（基数）和数据表的记录总数的比值， 索引选择性越高则查询效率越高， 唯一索引的选择性是1，这是最好的索引选择性，性能也是最好的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  <span class="built_in">count</span>(<span class="keyword">distinct</span> email) <span class="operator">/</span> <span class="built_in">count</span>(<span class="operator">*</span>)   <span class="keyword">from</span>  tb_user ;</span><br><span class="line"><span class="keyword">select</span>  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="built_in">substring</span>(email,<span class="number">1</span>,<span class="number">5</span>)) <span class="operator">/</span> <span class="built_in">count</span>(<span class="operator">*</span>)  <span class="keyword">from</span>  tb_user ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀索引的查询流程"><a href="#前缀索引的查询流程" class="headerlink" title="前缀索引的查询流程"></a>前缀索引的查询流程</h3><p><img src="/img/13143/%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95.png" alt="image-20230902164841767"></p>
+<h2 id="🍁单列索引与联合索引"><a href="#🍁单列索引与联合索引" class="headerlink" title="🍁单列索引与联合索引"></a>🍁单列索引与联合索引</h2><blockquote>
+<p>单列索引：即一个索引只包含单个列</p>
+<p>联合索引：即一个索引包含了多个列</p>
+</blockquote>
+<p>在业务场景中，如果存在多个查询条件，考虑针对于查询字段建立索引时，建议建立联合索引， 而非单列索引。</p>
+<p><img src="/img/13143/%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95.png" alt="image-20230902165135541"></p>
+<h2 id="🍁索引设计原则"><a href="#🍁索引设计原则" class="headerlink" title="🍁索引设计原则"></a>🍁索引设计原则</h2><ol>
+<li>针对于数据量较大，且<strong>查询比较频繁</strong>的表建立索引。</li>
+<li>针对于常作为<strong>查询条件（where）、排序（order by）、分组（group by）操作的字段</strong>建立索引。</li>
+<li>尽量选择<strong>区分度高的列</strong>作为索引，尽量建立<strong>唯一索引</strong>，区分度越高，使用索引的效率越高。</li>
+<li>如果是字符串类型的字段，字段的<strong>长度较长</strong>，可以针对于字段的特点，建立<strong>前缀索引</strong>。</li>
+<li><strong>尽量使用联合索引，减少单列索引</strong>，查询时，联合索引很多时候可以覆盖索引，节省存储空间，避免回表，提高查询效率。</li>
+<li>要<strong>控制索引的数量</strong>，索引并不是多多益善，索引越多，维护索引结构的代价也就越大，会影响增删改的效率。</li>
+<li>如果索引列不能存储NULL值，请在创建表时使用NOT NULL约束它。当优化器知道每列是否包含NULL值时，它可以更好地确定哪个索引最有效地用于查询。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/" data-id="clq4m8c4b002kbc5s7fxyeug1" data-title="MySQL索引进阶" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

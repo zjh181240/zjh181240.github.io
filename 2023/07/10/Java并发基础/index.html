@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java并发基础 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁线程并发不安全原因：可见性 可见性：一个线程对共享变量的修改，另外一个线程能够立刻看到。  123456&#x2F;&#x2F;线程1执行的代码int i &#x3D; 0;i &#x3D; 10; &#x2F;&#x2F;线程2执行的代码j &#x3D; i;  如上线程1对变量i修改了之后，线程2没有立即看到线程1修改的值。 原子性 原子性：一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。  1234567int i &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发基础">
+<meta property="og:url" content="http://example.com/2023/07/10/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁线程并发不安全原因：可见性 可见性：一个线程对共享变量的修改，另外一个线程能够立刻看到。  123456&#x2F;&#x2F;线程1执行的代码int i &#x3D; 0;i &#x3D; 10; &#x2F;&#x2F;线程2执行的代码j &#x3D; i;  如上线程1对变量i修改了之后，线程2没有立即看到线程1修改的值。 原子性 原子性：一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。  1234567int i &#x3D;">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://www.pdai.tech/images/pics/3646544a-cb57-451d-9e03-d3c4f5e4434a.png">
+<meta property="article:published_time" content="2023-07-10T08:41:37.000Z">
+<meta property="article:modified_time" content="2023-07-13T15:39:42.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.pdai.tech/images/pics/3646544a-cb57-451d-9e03-d3c4f5e4434a.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java并发基础" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/07/10/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/" class="article-date">
+  <time class="dt-published" datetime="2023-07-10T08:41:37.000Z" itemprop="datePublished">2023-07-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java并发基础
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="🍁线程并发不安全原因："><a href="#🍁线程并发不安全原因：" class="headerlink" title="🍁线程并发不安全原因："></a>🍁线程并发不安全原因：</h3><h4 id="可见性"><a href="#可见性" class="headerlink" title="可见性"></a>可见性</h4><blockquote>
+<p>可见性：一个线程对共享变量的修改，另外一个线程能够立刻看到。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//线程1执行的代码</span></span><br><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">i = <span class="number">10</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//线程2执行的代码</span></span><br><span class="line">j = i;</span><br></pre></td></tr></table></figure>
+
+<p>如上线程1对变量i修改了之后，线程2没有立即看到线程1修改的值。</p>
+<h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><blockquote>
+<p>原子性：一个操作或者多个操作 要么全部执行并且执行的过程不会被任何因素打断，要么就都不执行。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程1执行</span></span><br><span class="line">i += <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程2执行</span></span><br><span class="line">i += <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>i += 1</code>需要三条 CPU 指令:</p>
+<ol>
+<li>将变量 i 从内存读取到 CPU寄存器；</li>
+<li>在CPU寄存器中执行 i + 1 操作；</li>
+<li>将最后的结果i写入内存（缓存机制导致可能写入的是 CPU 缓存而不是内存）</li>
+</ol>
+<h4 id="有序性"><a href="#有序性" class="headerlink" title="有序性"></a>有序性</h4><blockquote>
+<p>有序性：即程序执行的顺序按照代码的先后顺序执行</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;              </span><br><span class="line"><span class="type">boolean</span> <span class="variable">flag</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">i = <span class="number">1</span>;                <span class="comment">//语句1  </span></span><br><span class="line">flag = <span class="literal">true</span>;          <span class="comment">//语句2</span></span><br></pre></td></tr></table></figure>
+
+<p>从代码顺序上看，语句1是在语句2前面的，那么JVM在真正执行这段代码的时候会保证语句1一定会在语句2前面执行吗? </p>
+<p>不一定，这里可能会发生指令重排序.</p>
+<h3 id="🍁JMM-Java内存模型-解决方案"><a href="#🍁JMM-Java内存模型-解决方案" class="headerlink" title="🍁JMM(Java内存模型)解决方案"></a>🍁JMM(Java内存模型)解决方案</h3><h4 id="原子性-1"><a href="#原子性-1" class="headerlink" title="原子性"></a><strong>原子性</strong></h4><p>Java内存模型只保证了<strong>基本读取和赋值</strong>是原子性操作，如果要实现更大范围操作的原子性，可以通过synchronized和Lock来实现。由于synchronized和Lock能够保证任一时刻只有一个线程执行该代码块，那么自然就不存在原子性问题了，从而保证了原子性。</p>
+<hr>
+<h4 id="可见性-1"><a href="#可见性-1" class="headerlink" title="可见性"></a><strong>可见性</strong></h4><p>当一个共享变量被<strong>volatile</strong>修饰时，它会保证修改的值会立即被更新到主存，当有其他线程需要读取时，它会去内存中读取新值</p>
+<p>另外，通过synchronized和Lock也能够保证可见性，synchronized和Lock能保证同一时刻只有一个线程获取锁然后执行同步代码，并且在释放锁之前会将对变量的修改刷新到主存当中。</p>
+<hr>
+<h4 id="有序性-1"><a href="#有序性-1" class="headerlink" title="有序性"></a><strong>有序性</strong></h4><p>也是使用volatile关键字、synchronized和Lock</p>
+<h3 id="🍁线程安全的实现方法"><a href="#🍁线程安全的实现方法" class="headerlink" title="🍁线程安全的实现方法"></a>🍁线程安全的实现方法</h3><h4 id="1-互斥同步"><a href="#1-互斥同步" class="headerlink" title="(1)互斥同步"></a><strong>(1)互斥同步</strong></h4><p>对共享数据进行加锁：<strong>synchronized 和 ReentrantLock</strong></p>
+<p>互斥同步最主要的问题就是线程阻塞和唤醒所带来的性能问题，因此这种同步也称为阻塞同步。</p>
+<h4 id="2-非阻塞同步"><a href="#2-非阻塞同步" class="headerlink" title="(2)非阻塞同步"></a><strong>(2)非阻塞同步</strong></h4><h5 id="一-CAS"><a href="#一-CAS" class="headerlink" title="(一)CAS"></a>(一)CAS</h5><p>比较并交换(Compare-and-Swap，CAS)。CAS 指令需要有 3 个操作数，分别是内存地址 V、旧的预期值 A 和新值 B。</p>
+<p>当执行操作时，<strong>只有当 V 的值等于 A，才将 V 的值更新为 B</strong>。</p>
+<h5 id="二-AtomicInteger"><a href="#二-AtomicInteger" class="headerlink" title="(二)AtomicInteger"></a><strong>(二)AtomicInteger</strong></h5><p>乐观锁：通过 getIntVolatile(var1, var2) 得到旧的预期值，通过调用 compareAndSwapInt() 来进行 CAS 比较</p>
+<p><strong>(三)ABA</strong></p>
+<p>如果一个变量初次读取的时候是 A 值，它的值被改成了 B，后来又被改回为 A，那 CAS 操作就会误认为它从来没有被改变过。</p>
+<p>J.U.C 包提供了一个带有标记的原子引用类 AtomicStampedReference 来解决这个问题。</p>
+<h4 id="3-无同步方案"><a href="#3-无同步方案" class="headerlink" title="(3)无同步方案"></a><strong>(3)无同步方案</strong></h4><p>一个方法本来就不涉及共享数据，那它自然就无须任何同步措施去保证正确性。</p>
+<h5 id="一-栈封闭"><a href="#一-栈封闭" class="headerlink" title="(一)栈封闭"></a><strong>(一)栈封闭</strong></h5><p>多个线程访问同一个方法的局部变量时，不会出现线程安全问题，因为局部变量存储在虚拟机栈中，属于线程私有。</p>
+<h5 id="二-线程本地存储（Thread-Local-Storage）"><a href="#二-线程本地存储（Thread-Local-Storage）" class="headerlink" title="(二)线程本地存储（Thread Local Storage）"></a><strong>(二)线程本地存储（Thread Local Storage）</strong></h5><p>关键：<strong>线程间隔离，线程内共享</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadLocalExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ThreadLocal</span> <span class="variable">threadLocal</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>();</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            threadLocal.set(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(threadLocal.get());</span><br><span class="line">            threadLocal.remove();</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            threadLocal.set(<span class="number">2</span>);</span><br><span class="line">            threadLocal.remove();</span><br><span class="line">        &#125;);</span><br><span class="line">        thread1.start();</span><br><span class="line">        thread2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码输出结果为：1</p>
+<p>解释：thread1 中设置 threadLocal 为 1，而 thread2 设置 threadLocal 为 2。过了一段时间之后，thread1 读取 threadLocal 依然是 1，不受 thread2 的影响。</p>
+<p><strong>原理解析</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadLocalExample1</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ThreadLocal</span> <span class="variable">threadLocal1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>();</span><br><span class="line">        <span class="type">ThreadLocal</span> <span class="variable">threadLocal2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>();</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            threadLocal1.set(<span class="number">1</span>);</span><br><span class="line">            threadLocal2.set(<span class="number">1</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            threadLocal1.set(<span class="number">2</span>);</span><br><span class="line">            threadLocal2.set(<span class="number">2</span>);</span><br><span class="line">        &#125;);</span><br><span class="line">        thread1.start();</span><br><span class="line">        thread2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码的结构图如下：</p>
+<p><img src="https://www.pdai.tech/images/pics/3646544a-cb57-451d-9e03-d3c4f5e4434a.png" alt="image"></p>
+<p>每个 Thread 都有一个 ThreadLocal.ThreadLocalMap 对象</p>
+<p>Thread 类中定义了 ThreadLocal.ThreadLocalMap 成员</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* ThreadLocal values pertaining to this thread. This map is maintained</span></span><br><span class="line"><span class="comment"> * by the ThreadLocal class. */</span></span><br><span class="line">ThreadLocal.<span class="type">ThreadLocalMap</span> <span class="variable">threadLocals</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<p>当调用一个 ThreadLocal 的 set(T value) 方法时，先得到当前线程的 ThreadLocalMap 对象，然后将 ThreadLocal(自己)-&gt;value 键值对插入到该 Map 中:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T value)</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用get()方法时，ThreadLocal 自己作为 key，到当前线程中查找关联的资源值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>) &#123;</span><br><span class="line">        ThreadLocalMap.<span class="type">Entry</span> <span class="variable">e</span> <span class="operator">=</span> map.getEntry(<span class="built_in">this</span>);</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">            <span class="type">T</span> <span class="variable">result</span> <span class="operator">=</span> (T)e.value;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用 remove ()方法，以 ThreadLocal 自己作为 key，移除当前线程关联的资源值</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/07/10/Java%E5%B9%B6%E5%8F%91%E5%9F%BA%E7%A1%80/" data-id="clq4m8c240013bc5sgxps5vj6" data-title="Java并发基础" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/07/11/ThreadLocal/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ThreadLocal
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/07/07/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">最长回文子串</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

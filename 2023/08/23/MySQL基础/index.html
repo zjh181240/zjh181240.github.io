@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL基础 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="主要总结MySQL基础部分的易错点和易忽略点 🍁数据类型MySQL中的数据类型主要分为三类：数值类型、字符串类型、日期时间类型 数值类型DECIMAL  依赖于M(精度)和D(标度) 的值  如decimal(5,2)，5-2&#x3D;3，其中小数部分为2，对应1个字节，整数部分为3，对应2个字节 字符串类型CHAR&#x2F;VARCHAR  char是定长字符串，指定长度多长，就占用多少个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL基础">
+<meta property="og:url" content="http://example.com/2023/08/23/MySQL%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="主要总结MySQL基础部分的易错点和易忽略点 🍁数据类型MySQL中的数据类型主要分为三类：数值类型、字符串类型、日期时间类型 数值类型DECIMAL  依赖于M(精度)和D(标度) 的值  如decimal(5,2)，5-2&#x3D;3，其中小数部分为2，对应1个字节，整数部分为3，对应2个字节 字符串类型CHAR&#x2F;VARCHAR  char是定长字符串，指定长度多长，就占用多少个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/39026/mysql1.png">
+<meta property="og:image" content="http://example.com/img/39026/mysql2.png">
+<meta property="og:image" content="http://example.com/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%981.png">
+<meta property="og:image" content="http://example.com/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%982.png">
+<meta property="og:image" content="http://example.com/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%983.png">
+<meta property="article:published_time" content="2023-08-23T15:06:40.000Z">
+<meta property="article:modified_time" content="2023-08-28T15:00:26.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/39026/mysql1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL基础" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/23/MySQL%E5%9F%BA%E7%A1%80/" class="article-date">
+  <time class="dt-published" datetime="2023-08-23T15:06:40.000Z" itemprop="datePublished">2023-08-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL基础
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>主要总结MySQL基础部分的易错点和易忽略点</p>
+<h2 id="🍁数据类型"><a href="#🍁数据类型" class="headerlink" title="🍁数据类型"></a>🍁数据类型</h2><p>MySQL中的数据类型主要分为三类：数值类型、字符串类型、日期时间类型</p>
+<h3 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h3><p><strong>DECIMAL</strong></p>
+<blockquote>
+<p>依赖于M(精度)和D(标度) 的值</p>
+</blockquote>
+<p>如decimal(5,2)，5-2&#x3D;3，其中小数部分为2，对应1个字节，整数部分为3，对应2个字节</p>
+<h3 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h3><p><strong>CHAR&#x2F;VARCHAR</strong></p>
+<blockquote>
+<p>char是定长字符串，指定长度多长，就占用多少个字符，和字段值的长度无关 。而varchar是变长字符串，指定的长度为最大占用长度</p>
+</blockquote>
+<h3 id="日期时间类型"><a href="#日期时间类型" class="headerlink" title="日期时间类型"></a>日期时间类型</h3><table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">范围</th>
+<th align="center">格式</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">DATE</td>
+<td align="center">1000-01-01 至 9999-12-31</td>
+<td align="center">YYYY-MM-DD</td>
+<td align="center">日期值</td>
+</tr>
+<tr>
+<td align="center">TIME</td>
+<td align="center">-838:59:59 至 838:59:59</td>
+<td align="center">HH:MM:SS</td>
+<td align="center">时间值</td>
+</tr>
+<tr>
+<td align="center">DATETIME</td>
+<td align="center">1000-01-01 00:00:00 至 <br />9999-12-31 23:59:59</td>
+<td align="center">YYYY-MM-DD HH:MM:SS</td>
+<td align="center">混合日期和时间</td>
+</tr>
+</tbody></table>
+<h2 id="🍁SQL"><a href="#🍁SQL" class="headerlink" title="🍁SQL"></a>🍁SQL</h2><h3 id="日期时间类型的操作"><a href="#日期时间类型的操作" class="headerlink" title="日期时间类型的操作"></a>日期时间类型的操作</h3><p>插入</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> employee <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">&#x27;2&#x27;</span>,<span class="string">&#x27;张无忌&#x27;</span>,<span class="string">&#x27;男&#x27;</span>,<span class="number">18</span>,<span class="string">&#x27;123456789012345670&#x27;</span>,<span class="string">&#x27;2005-01</span></span><br><span class="line"><span class="string">01&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>更新</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> employee <span class="keyword">set</span> entrydate <span class="operator">=</span> <span class="string">&#x27;2008-01-01&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="DQL"><a href="#DQL" class="headerlink" title="DQL"></a>DQL</h3><h4 id="BETWEEN-…-AND-…"><a href="#BETWEEN-…-AND-…" class="headerlink" title="BETWEEN … AND …"></a>BETWEEN … AND …</h4><p>在某个范围之内(含<strong>最小、最大</strong>值)</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span> 查询年龄在<span class="number">15</span>岁(包含) 到 <span class="number">20</span>岁(包含)之间的员工信息</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> age <span class="keyword">between</span> <span class="number">15</span> <span class="keyword">and</span> <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h4><p>1.语法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span>  字段列表  <span class="keyword">FROM</span>   表名  [ <span class="keyword">WHERE</span>   条件 ]  <span class="keyword">GROUP</span>   <span class="keyword">BY</span>  分组字段名  [ <span class="keyword">HAVING</span>  分组</span><br><span class="line">后过滤条件 ];</span><br></pre></td></tr></table></figure>
+
+<p>2.where与having区别</p>
+<ul>
+<li>执行时机不同：where是<strong>分组之前</strong>进行过滤，不满足where条件，不参与分组；而having是<strong>分组之后</strong>对结果进行过滤</li>
+<li>判断条件不同：where<strong>不能对聚合函数进行判断</strong>，而having可以</li>
+</ul>
+<p>3.聚合函数</p>
+<ul>
+<li>分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义</li>
+<li>执行顺序: where &gt; 聚合函数 &gt; having </li>
+<li>支持多字段分组, 具体语法为 : group by columnA,columnB</li>
+</ul>
+<h4 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h4><p>1.语法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span>  字段列表  <span class="keyword">FROM</span>   表名  LIMIT  起始索引, 查询记录数 ;</span><br></pre></td></tr></table></figure>
+
+<p>2.注意事项<br>起始索引从0开始，起始索引 &#x3D; <em><em>（查询页码 - 1）</em> 每页显示记录数</em>*<br>如果查询的是第一页数据，起始索引可以省略，直接简写为 limit 10</p>
+<p>3.示例</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span> 查询第<span class="number">2</span>页员工数据, 每页展示<span class="number">10</span>条记录,注意起始索引</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp limit <span class="number">10</span>,<span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<p>4.查询排名前几</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span>查询性别为男，且年龄在<span class="number">20</span><span class="number">-40</span> 岁(含)以内的前<span class="number">5</span>个员工信息，对查询的结果按年龄升序排序，</span><br><span class="line">年龄相同按入职时间升序排序。</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> emp <span class="keyword">where</span> gender <span class="operator">=</span> <span class="string">&#x27;男&#x27;</span> <span class="keyword">and</span> age <span class="keyword">between</span> <span class="number">20</span> <span class="keyword">and</span> <span class="number">40</span> <span class="keyword">order</span> <span class="keyword">by</span> age <span class="keyword">asc</span> , </span><br><span class="line">entrydate <span class="keyword">asc</span> limit <span class="number">5</span> ;</span><br></pre></td></tr></table></figure>
+
+<h4 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h4><p><img src="/img/39026/mysql1.png" alt="image-20230824231550177"></p>
+<h2 id="🍁约束"><a href="#🍁约束" class="headerlink" title="🍁约束"></a>🍁约束</h2><h3 id="约束类型"><a href="#约束类型" class="headerlink" title="约束类型"></a>约束类型</h3><img src="/img/39026/mysql2.png" alt="image-20230826170040097" style="zoom:80%;" />
+
+<p>建表演示：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tb_user(</span><br><span class="line">	id <span class="type">int</span> AUTO_INCREMENT PRIMAEY KEY COMMENT <span class="string">&#x27;主键&#x27;</span>,</span><br><span class="line">	name <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">UNIQUE</span> COMMENT <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">	age <span class="type">int</span> <span class="keyword">check</span>(age <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> age <span class="operator">&lt;=</span> <span class="number">120</span>) COMMENT <span class="string">&#x27;年龄&#x27;</span>,</span><br><span class="line">	status <span class="type">char</span>(<span class="number">1</span>) <span class="keyword">DEFAULT</span> <span class="string">&#x27;1&#x27;</span> COMMENT <span class="string">&#x27;状态&#x27;</span>,</span><br><span class="line">	gender <span class="type">char</span>(<span class="number">1</span>) COMMENT <span class="string">&#x27;性别&#x27;</span>,</span><br><span class="line">	dept_id <span class="type">int</span> COMMENT <span class="string">&#x27;部门&#x27;</span>,</span><br><span class="line">    <span class="keyword">FOREIGN</span> KEY(dept_id) <span class="keyword">REFERENCES</span> dept(id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加外键"><a href="#添加外键" class="headerlink" title="添加外键"></a>添加外键</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> 表名(</span><br><span class="line">字段名    数据类型,</span><br><span class="line"> ...</span><br><span class="line"> [<span class="keyword">CONSTRAINT</span>]  [外键名称] <span class="keyword">FOREIGN</span>  KEY (外键字段名)   <span class="keyword">REFERENCES</span>   主表 (主表列名)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span>   <span class="keyword">TABLE</span>  表名   <span class="keyword">ADD</span>  <span class="keyword">CONSTRAINT</span>   外键名称   <span class="keyword">FOREIGN</span>   KEY (外键字段名)  </span><br><span class="line"><span class="keyword">REFERENCES</span>  主表 (主表列名) ;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 示例</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> emp <span class="keyword">add</span> <span class="keyword">constraint</span> fk_emp_dept_id <span class="keyword">foreign</span> key (dept_id) <span class="keyword">references</span> </span><br><span class="line">dept(id)  <span class="keyword">on</span> <span class="keyword">update</span> cascade <span class="keyword">on</span> <span class="keyword">delete</span> cascade;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁事务"><a href="#🍁事务" class="headerlink" title="🍁事务"></a>🍁事务</h2><h3 id="事务的四大特性ACID"><a href="#事务的四大特性ACID" class="headerlink" title="事务的四大特性ACID"></a>事务的四大特性ACID</h3><p>原子性（Atomicity）：事务是不可分割的最小操作单元，要么全部成功，要么全部失败。 </p>
+<p>一致性（Consistency）：事务完成时，必须使所有的数据都保持一致状态。 </p>
+<p>隔离性（Isolation）：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行。 </p>
+<p>持久性（Durability）：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。</p>
+<h3 id="并发事务问题"><a href="#并发事务问题" class="headerlink" title="并发事务问题"></a>并发事务问题</h3><h4 id="1-脏读"><a href="#1-脏读" class="headerlink" title="1.脏读"></a>1.脏读</h4><blockquote>
+<p>一个事务读到另外一个事务还没有提交的数据。</p>
+</blockquote>
+<p><img src="/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%981.png" alt="image-20230826174624091"></p>
+<p>B读取到了A未提交的数据</p>
+<h4 id="2-不可重复读"><a href="#2-不可重复读" class="headerlink" title="2.不可重复读"></a>2.不可重复读</h4><blockquote>
+<p>一个事务先后读取同一条记录，但两次读取的数据不同，称之为不可重复读。</p>
+</blockquote>
+<p><img src="/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%982.png" alt="image-20230826174749208"></p>
+<p>事务A两次读取同一条记录，但是读取到的数据却是不一样的</p>
+<h4 id="3-幻读"><a href="#3-幻读" class="headerlink" title="3.幻读"></a>3.幻读</h4><blockquote>
+<p>一个事务按照条件查询数据时，没有对应的数据行，但是在插入数据时，又发现这行数据 已经存在，好像出现了 “幻影”。</p>
+</blockquote>
+<p><img src="/img/39026/%E4%BA%8B%E5%8A%A1%E9%97%AE%E9%A2%983.png" alt="image-20230826174853048"></p>
+<h3 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h3><table>
+<thead>
+<tr>
+<th align="center">隔离级别</th>
+<th align="center">存在脏读</th>
+<th align="center">存在不可重复读</th>
+<th align="center">存在幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Read uncommitted</td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">Read committed</td>
+<td align="center">×</td>
+<td align="center">√</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">Repeatable Read(默认)</td>
+<td align="center">×</td>
+<td align="center">×</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">Serializable</td>
+<td align="center">×</td>
+<td align="center">×</td>
+<td align="center">×</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/23/MySQL%E5%9F%BA%E7%A1%80/" data-id="clq4m8c3s0026bc5sh4641r4x" data-title="MySQL基础" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/08/27/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL存储引擎
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/08/22/BST%E7%A4%BA%E4%BE%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">BST示例</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

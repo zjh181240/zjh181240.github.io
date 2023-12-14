@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Spring循环依赖 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁循环依赖的产生bean 的创建要遵循一定的步骤，必须是创建、注入、初始化三步，顺序不能乱：   set 方法（包括成员变量）的循环依赖（属性依赖）如A中需要setB，B中需要setA，说明：   可以在【a 创建】和【a set 注入 b】之间加入 b 的整个流程来解决 ，【b set 注入 a】 时可以成功，因为之前 a 的实例已经创建完毕 ，这样 a 的顺序，及 b 的顺序都能得到保障 构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring循环依赖">
+<meta property="og:url" content="http://example.com/2023/07/22/Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁循环依赖的产生bean 的创建要遵循一定的步骤，必须是创建、注入、初始化三步，顺序不能乱：   set 方法（包括成员变量）的循环依赖（属性依赖）如A中需要setB，B中需要setA，说明：   可以在【a 创建】和【a set 注入 b】之间加入 b 的整个流程来解决 ，【b set 注入 a】 时可以成功，因为之前 a 的实例已经创建完毕 ，这样 a 的顺序，及 b 的顺序都能得到保障 构">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/40377/ReDI1.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI2.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI3.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI4.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI5.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI6.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI7.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI8.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI9.png">
+<meta property="og:image" content="http://example.com/img/40377/ReDI10.png">
+<meta property="article:published_time" content="2023-07-22T08:58:55.000Z">
+<meta property="article:modified_time" content="2023-07-24T04:52:22.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/40377/ReDI1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Spring循环依赖" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/07/22/Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" class="article-date">
+  <time class="dt-published" datetime="2023-07-22T08:58:55.000Z" itemprop="datePublished">2023-07-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Spring循环依赖
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁循环依赖的产生"><a href="#🍁循环依赖的产生" class="headerlink" title="🍁循环依赖的产生"></a>🍁循环依赖的产生</h2><p>bean 的创建要遵循一定的步骤，必须是<strong>创建、注入、初始化</strong>三步，顺序不能乱：</p>
+<img src="/img/40377/ReDI1.png" alt="image-20210903085238916.png" style="zoom: 67%;" />
+
+<h3 id="set-方法（包括成员变量）的循环依赖（属性依赖）"><a href="#set-方法（包括成员变量）的循环依赖（属性依赖）" class="headerlink" title="set 方法（包括成员变量）的循环依赖（属性依赖）"></a>set 方法（包括成员变量）的循环依赖（属性依赖）</h3><p>如A中需要setB，B中需要setA，说明：</p>
+<img src="/img/40377/ReDI2.png" alt="image-20210903085454603.png" style="zoom: 50%;" />
+
+<p>可以在【a 创建】和【a set 注入 b】之间加入 b 的整个流程来解决 ，【b set 注入 a】 时可以成功，因为之前 a 的实例已经创建完毕 ，这样 a 的顺序，及 b 的顺序都能得到保障</p>
+<h3 id="构造方法的循环依赖"><a href="#构造方法的循环依赖" class="headerlink" title="构造方法的循环依赖"></a>构造方法的循环依赖</h3><p>A的构造函数传入B，B的构造函数传入A，说明：</p>
+<img src="/img/40377/ReDI3.png" alt="image-20210903085906315.png" style="zoom:50%;" />
+
+<h2 id="🍁解决set循环依赖"><a href="#🍁解决set循环依赖" class="headerlink" title="🍁解决set循环依赖"></a>🍁解决set循环依赖</h2><p>Spring提供了三级缓存解决这类循环依赖问题</p>
+<p>🚩注意：这里的一级二级三级概念不一定与Spring相同，重要的是理解流程</p>
+<h3 id="一级缓存——singletonObjects"><a href="#一级缓存——singletonObjects" class="headerlink" title="一级缓存——singletonObjects"></a>一级缓存——singletonObjects</h3><p><strong>底层代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, Object&gt;(<span class="number">256</span>);</span><br></pre></td></tr></table></figure>
+
+<p>已经实例化并且属性赋值，这里的对象是<strong>成熟对象</strong></p>
+<p><strong>示例</strong></p>
+<img src="/img/40377/ReDI4.png" alt="img" style="zoom:67%;" />
+
+<p>作用是保证单例对象<strong>仅被创建一次</strong></p>
+<ul>
+<li>第一次走 <code>getBean(&quot;a&quot;)</code> 流程后，最后会将<strong>成品</strong> a 放入 <strong>singletonObjects</strong> 一级缓存</li>
+<li>后续再走 <code>getBean(&quot;a&quot;)</code> 流程时，<strong>先从一级缓存中找</strong>，这时已经有成品 a，就无需再次创建</li>
+</ul>
+<p><strong>不能解决set循环依赖的原因</strong></p>
+<img src="/img/40377/ReDI5.png" alt="img" style="zoom:67%;" />
+
+<ul>
+<li>无论是获取 bean a 还是获取 bean b，走的方法都是同一个 getBean 方法，假设先走 <code>getBean(&quot;a&quot;)</code></li>
+<li>当 a 的实例对象创建，接下来执行 <code>a.setB()</code> 时，需要走 <code>getBean(&quot;b&quot;)</code> 流程，红色箭头 1</li>
+<li>当 b 的实例对象创建，接下来执行 <code>b.setA()</code> 时，又回到了 <code>getBean(&quot;a&quot;)</code> 的流程，红色箭头 2</li>
+<li>但此时 singletonObjects 一级缓存内<strong>没有成品</strong>的 a，陷入了死循环</li>
+</ul>
+<h3 id="二级缓存——singletonFactories"><a href="#二级缓存——singletonFactories" class="headerlink" title="二级缓存——singletonFactories"></a>二级缓存——singletonFactories</h3><p><strong>底层代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton factories: bean name --&gt; ObjectFactory */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, ObjectFactory&lt;?&gt;&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>单例工厂的缓存，这里的对象是<strong>半成品对象</strong></p>
+<p><strong>示例</strong></p>
+<img src="/img/40377/ReDI6.png" alt="img" style="zoom:67%;" />
+
+<ul>
+<li>一级缓存不能解决set循环依赖，则再增加一个 <strong>singletonFactories</strong> 缓存</li>
+<li>在依赖注入前，即 <code>a.setB()</code> 以及 <code>b.setA()</code> 将 a 及 b 的<strong>半成品对象</strong>（未完成依赖注入和初始化）放入此缓存</li>
+<li>执行依赖注入时，先看看 singletonFactories 缓存中是否有<strong>半成品的对象</strong>，如果有拿来注入，顺利走完流程</li>
+</ul>
+<p><strong>如何解决set循环依赖</strong></p>
+<ul>
+<li><code>a = new A()</code> 执行之后就会把这个半成品的 a 放入 <strong>singletonFactories 缓存</strong>，即 <code>factories.put(a)</code></li>
+<li>接下来执行 <code>a.setB()</code>，走入 <code>getBean(&quot;b&quot;)</code> 流程，红色箭头 3</li>
+<li>这回再执行到 <code>b.setA()</code> 时，需要一个 a 对象，此时singletonFactories中有a对象</li>
+<li><code>factories.get()</code> 在 <strong>singletonFactories  缓存</strong>中就可以找到，红色箭头 4 和 5</li>
+<li>b 的流程能够顺利走完，将 b 成品放入 singletonObject 一级缓存，返回到 a 的依赖注入流程，红色箭头 6</li>
+</ul>
+<p><strong>二级缓存无法正确处理set循环依赖并且包含有代理创建的场景</strong></p>
+<img src="/img/40377/ReDI7.png" alt="img" style="zoom:67%;" />
+
+<ul>
+<li>spring 默认要求，在 <code>a.init</code> 完成之后才能创建代理 <code>pa = proxy(a)</code></li>
+<li>由于 a 的代理创建时机靠后，在执行 <code>factories.put(a)</code> 向 singletonFactories 中放入的还是<strong>原始对象</strong></li>
+<li>接下来箭头 3、4、5 这几步 b 对象拿到和注入的都是原始对象，而不是代理对象</li>
+</ul>
+<h3 id="三级缓存——earlySingletonObjects"><a href="#三级缓存——earlySingletonObjects" class="headerlink" title="三级缓存——earlySingletonObjects"></a>三级缓存——earlySingletonObjects</h3><p><strong>底层代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of early singleton objects: bean name --&gt; bean instance */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, Object&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>已经实例化但尚未属性赋值，这里的对象是<strong>半成品对象</strong></p>
+<p><strong>示例</strong></p>
+<img src="/img/40377/ReDI8.png" alt="img" style="zoom:67%;" />
+
+<p>正常分析的话，只需要将代理的创建时机放在依赖注入之前即可，但 spring 仍然希望<strong>代理的创建时机在 init 之后</strong>，只有出现循环依赖时，才会将代理的创建时机提前。所以解决思路稍显复杂：</p>
+<ul>
+<li>图中 <code>factories.put(fa)</code> 放入的既不是原始对象，也不是代理对象而是<strong>工厂对象 fa</strong></li>
+<li>当检查出发生<strong>循环依赖时，fa 的产品就是代理 pa</strong>，<strong>没有发生循环依赖，fa 的产品是原始对象 a</strong></li>
+<li>假设出现了循环依赖，拿到了 singletonFactories 中的工厂对象，通过在依赖注入前获得了 pa，红色箭头 5</li>
+<li>这回 <code>b.setA()</code> 注入的就是代理对象，保证了正确性，红色箭头 7</li>
+<li>还需要把 pa 存入新加的 <strong>earlySingletonObjects 缓存</strong>，红色箭头 6</li>
+<li><code>a.init</code> 完成后，<strong>无需二次创建代理</strong>，earlySingletonObjects 已经缓存pa，蓝色箭头 9</li>
+</ul>
+<p>当成品对象产生，放入 singletonObject 后，singletonFactories 和 earlySingletonObjects 就中的对象就没有用处，<strong>清除即可</strong></p>
+<p>🚩<strong>总结：一级单例，二级set，三级代理</strong></p>
+<h2 id="🍁解决构造循环依赖"><a href="#🍁解决构造循环依赖" class="headerlink" title="🍁解决构造循环依赖"></a>🍁解决构造循环依赖</h2><blockquote>
+<p>前面的三级缓存方案并不能解决构造循环依赖的问题，但是也有别的方案</p>
+</blockquote>
+<h3 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h3><p>思路1</p>
+<ul>
+<li>a 注入 <strong>b 的代理对象</strong>，这样能够保证 a 的流程走通</li>
+<li>后续需要用到 b 的真实对象时，可以通过代理间接访问</li>
+</ul>
+<img src="/img/40377/ReDI9.png" alt="img" style="zoom:67%;" />
+
+<p>思路2</p>
+<ul>
+<li>a 注入 <strong>b 的工厂对象</strong>，让 b 的实例创建被推迟，这样能够保证 a 的流程先走通</li>
+<li>后续需要用到 b 的真实对象时，再通过 ObjectFactory 工厂间接访问</li>
+</ul>
+<img src="/img/40377/ReDI10.png" alt="img" style="zoom:67%;" />
+
+<h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p><strong>用 @Lazy 为构造方法参数生成代理（思路1）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App60_1</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> B b;</span><br><span class="line">    	<span class="comment">// 创建B的代理</span></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">A</span><span class="params">(<span class="meta">@Lazy</span> B b)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;A(B b) &#123;&#125;&quot;</span>, b.getClass());</span><br><span class="line">            <span class="built_in">this</span>.b = b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">B</span><span class="params">(A a)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;B(&#123;&#125;)&quot;</span>, a);</span><br><span class="line">            <span class="built_in">this</span>.a = a;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">GenericApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenericApplicationContext</span>();</span><br><span class="line">        context.registerBean(<span class="string">&quot;a&quot;</span>, A.class);</span><br><span class="line">        context.registerBean(<span class="string">&quot;b&quot;</span>, B.class);</span><br><span class="line">        AnnotationConfigUtils.registerAnnotationConfigProcessors(context.getDefaultListableBeanFactory());</span><br><span class="line">        context.refresh();</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p><strong>用 ObjectProvider延迟依赖对象的创建（思路2）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App60_2</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> ObjectProvider&lt;B&gt; b;</span><br><span class="line">    	<span class="comment">// ObjectProvider是ObjectFactory的子类型</span></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">A</span><span class="params">(ObjectProvider&lt;B&gt; b)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;A(&#123;&#125;)&quot;</span>, b);</span><br><span class="line">            <span class="built_in">this</span>.b = b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">B</span><span class="params">(A a)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;B(&#123;&#125;)&quot;</span>, a);</span><br><span class="line">            <span class="built_in">this</span>.a = a;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">GenericApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenericApplicationContext</span>();</span><br><span class="line">        context.registerBean(<span class="string">&quot;a&quot;</span>, A.class);</span><br><span class="line">        context.registerBean(<span class="string">&quot;b&quot;</span>, B.class);</span><br><span class="line">        AnnotationConfigUtils.registerAnnotationConfigProcessors(context.getDefaultListableBeanFactory());</span><br><span class="line">        context.refresh();</span><br><span class="line">    	<span class="comment">// b.getObject()获得真正的b</span></span><br><span class="line">        System.out.println(context.getBean(A.class).b.getObject());</span><br><span class="line">        System.out.println(context.getBean(B.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="方案3"><a href="#方案3" class="headerlink" title="方案3"></a>方案3</h3><p><strong>用 Provider 接口解决，原理上与 ObjectProvider 一样，Provider 接口是独立的 jar 包，需要加入依赖（思路2）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;javax.inject&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;<span class="number">1</span>&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App60_4</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> Provider&lt;B&gt; b;</span><br><span class="line">    	<span class="comment">// 和ObjectProvider一样的解决方案</span></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">A</span><span class="params">(Provider&lt;B&gt; b)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;A(&#123;&#125;&#125;)&quot;</span>, b);</span><br><span class="line">            <span class="built_in">this</span>.b = b;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">B</span><span class="params">(A a)</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;B(&#123;&#125;&#125;)&quot;</span>, a);</span><br><span class="line">            <span class="built_in">this</span>.a = a;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@PostConstruct</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">GenericApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenericApplicationContext</span>();</span><br><span class="line">        context.registerBean(<span class="string">&quot;a&quot;</span>, A.class);</span><br><span class="line">        context.registerBean(<span class="string">&quot;b&quot;</span>, B.class);</span><br><span class="line">        AnnotationConfigUtils.registerAnnotationConfigProcessors(context.getDefaultListableBeanFactory());</span><br><span class="line">        context.refresh();</span><br><span class="line">    	<span class="comment">// b.get()获得真正的b</span></span><br><span class="line">        System.out.println(context.getBean(A.class).b.get());</span><br><span class="line">        System.out.println(context.getBean(B.class));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="方案4"><a href="#方案4" class="headerlink" title="方案4"></a>方案4</h3><p><strong>用 @Scope 产生代理（思路1）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App60_3</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">GenericApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenericApplicationContext</span>();</span><br><span class="line">        <span class="comment">// 扫描Bean工厂</span></span><br><span class="line">        <span class="type">ClassPathBeanDefinitionScanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathBeanDefinitionScanner</span>(context.getDefaultListableBeanFactory());</span><br><span class="line">        scanner.scan(<span class="string">&quot;com.itheima.app60.sub&quot;</span>);</span><br><span class="line">        context.refresh();</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Component</span> <span class="comment">// 配合组件扫描</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> B b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">A</span><span class="params">(B b)</span> &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;A(B b) &#123;&#125;&quot;</span>, b.getClass());</span><br><span class="line">        <span class="built_in">this</span>.b = b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)</span> <span class="comment">// 产生B的代理</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">    <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">B</span><span class="params">(A a)</span> &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;B(&#123;&#125;)&quot;</span>, a);</span><br><span class="line">        <span class="built_in">this</span>.a = a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;init()&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/07/22/Spring%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/" data-id="clq4m8c55003ubc5sbmn9hi9q" data-title="Spring循环依赖" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/07/23/IOC%E5%88%9D%E5%A7%8B%E5%8C%96%E6%B5%81%E7%A8%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IOC初始化流程
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/07/21/AOP%E9%80%9A%E7%9F%A5%E7%B1%BB%E5%9E%8B/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">AOP通知类型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

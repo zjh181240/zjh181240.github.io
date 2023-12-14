@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL-MVCC | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁概述1 当前读 读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。  select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读 2 快照读 简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-MVCC">
+<meta property="og:url" content="http://example.com/2023/09/14/MySQL-MVCC/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁概述1 当前读 读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。  select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读 2 快照读 简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/59324/MVCC1.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC2.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC3.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC4.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC5.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC6.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC7.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC8.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC9.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC10.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC11.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC12.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC13.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC14.png">
+<meta property="og:image" content="http://example.com/img/59324/MVCC15.png">
+<meta property="article:published_time" content="2023-09-14T07:05:48.000Z">
+<meta property="article:modified_time" content="2023-09-16T15:02:20.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/59324/MVCC1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL-MVCC" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/14/MySQL-MVCC/" class="article-date">
+  <time class="dt-published" datetime="2023-09-14T07:05:48.000Z" itemprop="datePublished">2023-09-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL-MVCC
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><h3 id="1-当前读"><a href="#1-当前读" class="headerlink" title="1 当前读"></a>1 当前读</h3><blockquote>
+<p>读取的是记录的最新版本，读取时还要保证其他并发事务不能修改当前记录，会对读取的记录进行加锁。</p>
+</blockquote>
+<p>select … lock in share mode(共享锁)，select … for update、update、insert、delete(排他锁)都是一种当前读</p>
+<h3 id="2-快照读"><a href="#2-快照读" class="headerlink" title="2 快照读"></a>2 快照读</h3><blockquote>
+<p>简单的select（不加锁）就是快照读，快照读，读取的是记录数据的可见版本，有可能是历史数据，不加锁，是非阻塞读。</p>
+</blockquote>
+<p>Read Committed：每次select，都生成一个快照读。</p>
+<p>Repeatable Read：开启事务后第一个select语句才是快照读的地方。</p>
+<p>Serializable：快照读会退化为当前读。</p>
+<h3 id="3-MVCC"><a href="#3-MVCC" class="headerlink" title="3 MVCC"></a>3 MVCC</h3><blockquote>
+<p>Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本， 使得读写操作没有冲突，快照读为MySQL实现MVCC提供了一个非阻塞读功能。</p>
+</blockquote>
+<p>MVCC的具体实现，依赖于数据库记录中的<strong>三个隐式字段、undo log日志、readView</strong></p>
+<h2 id="🍁隐藏字段"><a href="#🍁隐藏字段" class="headerlink" title="🍁隐藏字段"></a>🍁隐藏字段</h2><p>创建表后，InnoDB还会自动的添加三个隐藏字段：</p>
+<p><img src="/img/59324/MVCC1.png" alt="image-20230914152245645"></p>
+<p>前两个字段是肯定会添加的， 是否添加最后一个字段DB_ROW_ID，得看当前表有没有主键，如果有主键，则不会添加该隐藏字段</p>
+<h2 id="🍁undolog"><a href="#🍁undolog" class="headerlink" title="🍁undolog"></a>🍁undolog</h2><h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h3><p>回滚日志，在insert、update、delete的时候产生的便于数据回滚的日志。<br>当<strong>insert</strong>的时候，产生的undo log日志只在回滚时需要，在事务提交后，可被<strong>立即删除</strong>。<br>而<strong>update、delete</strong>的时候，产生的undo log日志不仅在回滚时需要，在快照读时也需要，<strong>不会立即被删除</strong></p>
+<h3 id="2-版本链"><a href="#2-版本链" class="headerlink" title="2 版本链"></a>2 版本链</h3><p>初始有一张表格</p>
+<img src="/img/59324/MVCC2.png" alt="image-20230914152848234" style="zoom:80%;" />
+
+<p>DB_TRX_ID : 代表最近修改事务ID，记录插入这条记录或最后一次修改该记录的事务ID，是自增的。<br>DB_ROLL_PTR ： 由于这条数据是才插入的，没有被更新过，所以该字段值为null。</p>
+<p>假设有四个并发事务访问该表</p>
+<p>(1)第一步</p>
+<p><img src="/img/59324/MVCC3.png" alt="image-20230914153054302"></p>
+<p>当事务2执行第一条修改语句时，会记录undo log日志，记录数据变更之前的样子; </p>
+<p>然后更新记录， 并且记录本次操作的事务ID，回滚指针，回滚指针用来指定如果发生回滚，回滚到哪一个版本</p>
+<p><img src="/img/59324/MVCC4.png" alt="image-20230914153149797"></p>
+<p>(2)第二步</p>
+<p><img src="/img/59324/MVCC5.png" alt="image-20230914153222905"></p>
+<p>当事务3执行第一条修改语句时，也会记录undo log日志; </p>
+<p>然后更新记录，并且记录本次操作的事务ID，回滚指针</p>
+<p><img src="/img/59324/MVCC6.png" alt="image-20230914153309216"></p>
+<p>(3)第三步</p>
+<p><img src="/img/59324/MVCC7.png" alt="image-20230914153416045"></p>
+<p>当事务4执行第一条修改语句时，也会记录undo log日志; </p>
+<p>然后更新记录，并且记录本次操作的事务ID，回滚指针</p>
+<p><img src="/img/59324/MVCC8.png" alt="image-20230914153454702"></p>
+<p>最终，不同事务或相同事务对同一条记录进行修改，会导致该记录的undo log生成一条<strong>记录版本链表</strong>，链表的头部是最新的旧记录，链表尾部是最早的旧记录</p>
+<h2 id="🍁readview"><a href="#🍁readview" class="headerlink" title="🍁readview"></a>🍁readview</h2><blockquote>
+<p>ReadView（读视图）是快照读SQL执行时MVCC提取数据的依据，记录并维护系统当前活跃的事务 （未提交的）id</p>
+</blockquote>
+<p>ReadView中包含了四个核心字段：</p>
+<p><img src="/img/59324/MVCC9.png" alt="image-20230914160018273"></p>
+<p>Readview中规定了版本链数据的访问规则：</p>
+<p>trx_id 代表当前undolog版本链对应事务ID</p>
+<p><img src="/img/59324/MVCC10.png" alt="image-20230914160209474"></p>
+<p>生成ReadView的时机不同： </p>
+<p>READ COMMITTED ：在事务中每一次执行快照读时生成ReadView </p>
+<p>REPEATABLE READ：仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView</p>
+<h2 id="🍁原理"><a href="#🍁原理" class="headerlink" title="🍁原理"></a>🍁原理</h2><h3 id="RC隔离级别"><a href="#RC隔离级别" class="headerlink" title="RC隔离级别"></a>RC隔离级别</h3><p>RC隔离级别下，在事务中每一次执行快照读时生成ReadView</p>
+<p><strong>分析上例事务5：</strong></p>
+<p>在事务5中，查询了两次id为30的记录，由于隔离级别为Read Committed，所以每一次进行快照读都会生成一个ReadView，两次生成的ReadView如下：</p>
+<p><img src="/img/59324/MVCC11.png" alt="image-20230914162427358"></p>
+<p>两次快照读在获取数据时，就需要根据所生成的ReadView以及ReadView的版本链访问规则，到undolog版本链中匹配数据，最终决定此次快照读返回的数据</p>
+<p>1、先来看第一次快照读具体的读取过程：</p>
+<p><img src="/img/59324/MVCC12.png" alt="image-20230914162920984"></p>
+<p>先匹配左侧的正常记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00003这条记录，对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②不满足 ③不满足 ④也 不满足 ，都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00002这条记录，对应的trx_id为2，也就是将2带入右侧的匹配规则中。①不满足 ②满足 <strong>终止匹配</strong>，此次快照读，返回的数据就是版本链中记录的这条数据。</p>
+<p>2、再来看第二次快照读具体的读取过程：</p>
+<p><img src="/img/59324/MVCC13.png" alt="image-20230915214410722"></p>
+<p>先匹配左侧的正常记录，这条记录对应的 trx_id为4，也就是将4带入右侧的匹配规则中。 ①不满足 ②不满足 ③不满足 ④也不满足 ， 都不满足，则继续匹配undo log版本链的下一条。</p>
+<p>再匹配0x00003这条记录，这条记录对应的trx_id为3，也就是将3带入右侧的匹配规则中。①不满足 ②满足 。终止匹配，此次 快照读，返回的数据就是版本链中记录的这条数据。</p>
+<h3 id="RR隔离级别"><a href="#RR隔离级别" class="headerlink" title="RR隔离级别"></a>RR隔离级别</h3><p>RR隔离级别下，仅在事务中第一次执行快照读时生成ReadView，后续复用该ReadView。 而RR 是可重复读，<strong>在一个事务中，执行两次相同的select语句，查询到的结果是一样的</strong>。</p>
+<p><img src="/img/59324/MVCC14.png" alt="image-20230915214939945"></p>
+<p>在RR隔离级别下，只是在事务中第一次快照读时生成ReadView，后续都是复用该 ReadView，那么既然ReadView都一样， ReadView的版本链匹配规则也一样， 那么最终快照读返回的结果也是一样的</p>
+<h2 id="🍁总结"><a href="#🍁总结" class="headerlink" title="🍁总结"></a>🍁总结</h2><p>MVCC + 锁，实现了事务的隔离性。 而一致性则是由redolog 与 undolog保证</p>
+<p><img src="/img/59324/MVCC15.png" alt="image-20230915215116732"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/14/MySQL-MVCC/" data-id="clq4m8c3r0025bc5s42nc4k16" data-title="MySQL-MVCC" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/09/16/MySQL%E4%BC%98%E5%8C%96/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL优化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/09/13/ConcurrentHashMap/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ConcurrentHashMap</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

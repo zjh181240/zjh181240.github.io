@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java中的锁 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁总览Java中往往是按照是否含有某一特性来定义锁，如下图所示：   🍁乐观锁 VS 悲观锁 对于同一个数据的并发操作，悲观锁认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。synchronized关键字和Lock的实现类都是悲观锁。 而乐观锁认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中的锁">
+<meta property="og:url" content="http://example.com/2023/07/18/Java%E4%B8%AD%E7%9A%84%E9%94%81/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁总览Java中往往是按照是否含有某一特性来定义锁，如下图所示：   🍁乐观锁 VS 悲观锁 对于同一个数据的并发操作，悲观锁认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候会先加锁，确保数据不会被别的线程修改。synchronized关键字和Lock的实现类都是悲观锁。 而乐观锁认为自己在使用数据时不会有别的线程修改数据，所以不会添加锁，只是在更新数据的时候去判断之前有">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-1.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-2.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-4.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-7.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-8.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-12.png">
+<meta property="og:image" content="http://example.com/img/51432/java-lock-13.png">
+<meta property="article:published_time" content="2023-07-18T09:11:33.000Z">
+<meta property="article:modified_time" content="2023-07-18T13:08:50.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/51432/java-lock-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java中的锁" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/07/18/Java%E4%B8%AD%E7%9A%84%E9%94%81/" class="article-date">
+  <time class="dt-published" datetime="2023-07-18T09:11:33.000Z" itemprop="datePublished">2023-07-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java中的锁
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="🍁总览"><a href="#🍁总览" class="headerlink" title="🍁总览"></a>🍁总览</h3><p>Java中往往是按照是否含有某一特性来定义锁，如下图所示：</p>
+<img src="/img/51432/java-lock-1.png" alt="java-lock-1" style="zoom: 67%;" />
+
+<h3 id="🍁乐观锁-VS-悲观锁"><a href="#🍁乐观锁-VS-悲观锁" class="headerlink" title="🍁乐观锁 VS 悲观锁"></a>🍁乐观锁 VS 悲观锁</h3><blockquote>
+<p>对于同一个数据的并发操作，悲观锁认为自己在使用数据的时候一定有别的线程来修改数据，因此在获取数据的时候<strong>会先加锁</strong>，确保数据不会被别的线程修改。<strong>synchronized关键字和Lock的实现类</strong>都是悲观锁。</p>
+<p>而乐观锁认为自己在使用数据时不会有别的线程修改数据，所以<strong>不会添加锁</strong>，只是在更新数据的时候去判断之前有没有别的线程更新了这个数据。如果这个数据没有被更新，当前线程将自己修改的数据成功写入。如果数据已经被其他线程更新，则根据不同的实现方式执行不同的操作（例如报错或者自动重试）。最常采用的是<strong>CAS算法</strong>实现。</p>
+</blockquote>
+<img src="/img/51432/java-lock-2.png" alt="java-lock-2" style="zoom: 50%;" />
+
+<ul>
+<li><strong>悲观锁适合写操作多的场景</strong>，先加锁可以保证写操作时数据正确。</li>
+<li><strong>乐观锁适合读操作多的场景</strong>，不加锁的特点能够使其读操作的性能大幅提升。</li>
+</ul>
+<p>示例代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// ------------------------- 悲观锁的调用方式 -------------------------</span><br><span class="line">// synchronized</span><br><span class="line">public synchronized void testMethod() &#123;</span><br><span class="line">	// 操作同步资源</span><br><span class="line">&#125;</span><br><span class="line">// ReentrantLock</span><br><span class="line">private ReentrantLock lock = new ReentrantLock(); // 需要保证多个线程使用的是同一个锁</span><br><span class="line">public void modifyPublicResources() &#123;</span><br><span class="line">	lock.lock();</span><br><span class="line">	// 操作同步资源</span><br><span class="line">	lock.unlock();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ------------------------- 乐观锁的调用方式 -------------------------</span><br><span class="line">private AtomicInteger atomicInteger = new AtomicInteger();  // 需要保证多个线程使用的是同一个AtomicInteger</span><br><span class="line">atomicInteger.incrementAndGet(); //执行自增1</span><br></pre></td></tr></table></figure>
+
+<h3 id="🍁自旋锁-VS-非自旋锁"><a href="#🍁自旋锁-VS-非自旋锁" class="headerlink" title="🍁自旋锁 VS 非自旋锁"></a>🍁自旋锁 VS 非自旋锁</h3><p>阻塞或唤醒一个Java线程需要操作系统切换CPU状态来完成，这种状态转换需要耗费处理器时间。如果同步代码块中的内容过于简单，状态转换消耗的时间有可能比用户代码执行的时间还要长。</p>
+<p>在许多场景中，同步资源的锁定时间很短，为了这一小段时间去切换线程，线程挂起和恢复现场的花费可能会让系统得不偿失。如果物理机器有多个处理器，能够让两个或以上的线程同时并行执行，我们就可以让后面那个请求锁的线程<strong>不放弃CPU的执行时间</strong>，看看持有锁的线程是否很快就会释放锁。</p>
+<blockquote>
+<p>而为了让当前线程“稍等一下”，我们需让当前线程进行<strong>自旋</strong>，如果在自旋完成后前面锁定同步资源的线程已经释放了锁，那么当前线程就<strong>可以不必阻塞而是直接获取同步资源</strong>，从而避免切换线程的开销。这就是<strong>自旋锁</strong>。</p>
+</blockquote>
+<img src="/img/51432/java-lock-4.png" alt="java-lock-4" style="zoom:50%;" />
+
+<h3 id="🍁无锁-VS-偏向锁-VS-轻量级锁-VS-重量级锁"><a href="#🍁无锁-VS-偏向锁-VS-轻量级锁-VS-重量级锁" class="headerlink" title="🍁无锁 VS 偏向锁 VS 轻量级锁 VS 重量级锁"></a>🍁无锁 VS 偏向锁 VS 轻量级锁 VS 重量级锁</h3><p>这四种锁是专门针对synchronized的。</p>
+<p>无锁 –&gt; 偏向锁 –&gt; 轻量级锁 –&gt; 重量级锁</p>
+<blockquote>
+<p>偏向锁通过对比Mark Word解决加锁问题，避免执行CAS操作。轻量级锁通过用CAS操作和自旋来解决加锁问题，避免线程阻塞和唤醒而影响性能。重量级锁是将除了拥有锁的线程以外的线程都阻塞。</p>
+</blockquote>
+<h3 id="🍁公平锁-VS-非公平锁"><a href="#🍁公平锁-VS-非公平锁" class="headerlink" title="🍁公平锁 VS 非公平锁"></a>🍁公平锁 VS 非公平锁</h3><blockquote>
+<p>公平锁是指多个线程按照申请锁的顺序来获取锁，线程直接进入队列中排队，队列中的<strong>第一个线程才能获得锁</strong>。</p>
+<p>优点：等待锁的线程不会饿死。</p>
+<p>缺点：整体吞吐效率相对非公平锁要低，等待队列中除第一个线程以外的所有线程都会阻塞，CPU唤醒阻塞线程的开销比非公平锁大。</p>
+<hr>
+<p>非公平锁是多个线程加锁时直接尝试获取锁，获取不到才会到等待队列的队尾等待。但如果此时锁刚好可用，那么这个线程可以<strong>无需阻塞直接获取到锁</strong>，所以非公平锁有可能出现后申请锁的线程先获取锁的场景。</p>
+<p>优点：可以减少唤起线程的开销，整体的吞吐效率高，因为线程有几率不阻塞直接获得锁，CPU不必唤醒所有线程。</p>
+<p>缺点：处于等待队列中的线程可能会饿死，或者等很久才会获得锁。</p>
+</blockquote>
+<p>示例：</p>
+<img src="/img/51432/java-lock-7.png" alt="java-lock-7" style="zoom:50%;" />
+
+<p>假设有一口水井，有管理员看守，管理员有一把锁，只有拿到锁的人才能够打水，打完水要把锁还给管理员。每个过来打水的人都要管理员的允许并拿到锁之后才能去打水，如果前面有人正在打水，那么这个想要打水的人就必须排队。管理员会查看下一个要去打水的人是不是队伍里排最前面的人，如果是的话，才会给你锁让你去打水；如果你不是排第一的人，就必须去队尾排队，这就是公平锁。</p>
+<img src="/img/51432/java-lock-8.png" alt="java-lock-8" style="zoom:50%;" />
+
+<p>对于非公平锁，管理员对打水的人没有要求。即使等待队伍里有排队等待的人，但如果在上一个人刚打完水把锁还给管理员而且管理员还没有允许等待队伍里下一个人去打水时，刚好来了一个插队的人，这个插队的人是可以直接从管理员那里拿到锁去打水，不需要排队，原本排队等待的人只能继续等待。</p>
+<h3 id="🍁可重入锁-VS-非可重入锁"><a href="#🍁可重入锁-VS-非可重入锁" class="headerlink" title="🍁可重入锁 VS 非可重入锁"></a>🍁可重入锁 VS 非可重入锁</h3><blockquote>
+<p>可重入锁又名递归锁，是指在同一个线程在外层方法获取锁的时候，再<strong>进入该线程的内层方法会自动获取锁</strong>（前提锁对象得是同一个对象或者class），不会因为之前已经获取过还没释放而阻塞。Java中<strong>ReentrantLock和synchronized</strong>都是可重入锁。</p>
+</blockquote>
+<p>可重入锁的一个优点是可一定程度避免死锁。</p>
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;方法1执行...&quot;</span>);</span><br><span class="line">        doOthers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">doOthers</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;方法2执行...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 解释</span></span><br><span class="line">类中的两个方法都是被内置锁<span class="keyword">synchronized</span>修饰的，doSomething()方法中调用doOthers()方法。因为内置锁是可重入的，所以同一个线程在调用doOthers()时可以直接获得当前对象的锁，进入doOthers()进行操作</span><br><span class="line">如果是一个不可重入锁，那么当前线程在调用doOthers()之前需要将执行doSomething()时获取当前对象的锁释放掉，实际上该对象锁已被当前线程所持有，且无法释放。所以此时会出现死锁</span><br></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<img src="/img/51432/java-lock-12.png" alt="java-lock-12" style="zoom:50%;" />
+
+<p>假设有多个人在排队打水，此时管理员允许锁和同一个人的多个水桶绑定。这个人用多个水桶打水时，第一个水桶和锁绑定并打完水之后，第二个水桶也可以直接和锁绑定并开始打水，所有的水桶都打完水之后打水人才会将锁还给管理员。这个人的所有打水流程都能够成功执行，后续等待的人也能够打到水。这就是可重入锁。</p>
+<img src="/img/51432/java-lock-13.png" alt="java-lock-13" style="zoom:50%;" />
+
+<p>但如果是非可重入锁的话，此时管理员只允许锁和同一个人的一个水桶绑定。第一个水桶和锁绑定打完水之后并不会释放锁，导致第二个水桶不能和锁绑定也无法打水。当前线程出现死锁，整个等待队列中的所有线程都无法被唤醒。</p>
+<h3 id="🍁独享锁-排他锁-VS-共享锁"><a href="#🍁独享锁-排他锁-VS-共享锁" class="headerlink" title="🍁独享锁(排他锁) VS 共享锁"></a>🍁独享锁(排他锁) VS 共享锁</h3><blockquote>
+<p><strong>独享锁也叫排他锁</strong>，是指该锁一次只能被一个线程所持有。如果线程T对数据A加上排它锁后，则其他线程不能再对A加任何类型的锁。获得排它锁的线程即能读数据又能修改数据。<strong>JDK中的synchronized和JUC中Lock的实现类就是互斥锁</strong>。</p>
+<p><strong>共享锁</strong>是指该锁可被多个线程所持有。如果线程T对数据A加上共享锁后，则其他线程只能对A再加共享锁，不能加排它锁。获得共享锁的线程<strong>只能读数据，不能修改数据</strong>。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/07/18/Java%E4%B8%AD%E7%9A%84%E9%94%81/" data-id="clq4m8c220011bc5s2kbt01e7" data-title="Java中的锁" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/07/18/ThreadPoolExecutor/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ThreadPoolExecutor
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/07/17/volatile/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">volatile</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

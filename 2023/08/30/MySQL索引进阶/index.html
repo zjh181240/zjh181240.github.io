@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL索引进阶 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁最左前缀法则 如果索引了多列（联合索引），要遵守最左前缀法则。最左前缀法则指的是查询从索引的最左列开始， 并且不跳过索引中的列。如果跳跃某一列，索引将会**部分失效(后面的字段索引失效)**。  示例tb_user表有一个联合索引，这个联合索引涉及到三个字段，顺序分别为：profession， age，status  最左前缀法则指的是，查询时，最左边的列，也就是profession必须存在，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL索引进阶">
+<meta property="og:url" content="http://example.com/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁最左前缀法则 如果索引了多列（联合索引），要遵守最左前缀法则。最左前缀法则指的是查询从索引的最左列开始， 并且不跳过索引中的列。如果跳跃某一列，索引将会**部分失效(后面的字段索引失效)**。  示例tb_user表有一个联合索引，这个联合索引涉及到三个字段，顺序分别为：profession， age，status  最左前缀法则指的是，查询时，最左边的列，也就是profession必须存在，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/13143/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B61.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%881.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%882.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%883.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%884.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%885.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%886.png">
+<meta property="og:image" content="http://example.com/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%887.png">
+<meta property="og:image" content="http://example.com/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%951.png">
+<meta property="og:image" content="http://example.com/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%952.png">
+<meta property="og:image" content="http://example.com/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%953.png">
+<meta property="og:image" content="http://example.com/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%954.png">
+<meta property="og:image" content="http://example.com/img/13143/%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95.png">
+<meta property="og:image" content="http://example.com/img/13143/%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95.png">
+<meta property="article:published_time" content="2023-08-30T14:43:59.000Z">
+<meta property="article:modified_time" content="2023-09-05T07:50:30.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/13143/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B61.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL索引进阶" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/" class="article-date">
+  <time class="dt-published" datetime="2023-08-30T14:43:59.000Z" itemprop="datePublished">2023-08-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL索引进阶
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁最左前缀法则"><a href="#🍁最左前缀法则" class="headerlink" title="🍁最左前缀法则"></a>🍁最左前缀法则</h2><blockquote>
+<p>如果索引了多列（联合索引），要遵守最左前缀法则。最左前缀法则指的是查询<strong>从索引的最左列开始， 并且不跳过索引中的列</strong>。如果跳跃某一列，索引将会**部分失效(后面的字段索引失效)**。</p>
+</blockquote>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>tb_user表有一个联合索引，这个联合索引涉及到三个字段，顺序分别为：profession， age，status</p>
+<p><img src="/img/13143/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B61.png" alt="image-20230830224849301"></p>
+<p>最左前缀法则指的是，查询时，最左边的列，也就是profession必须存在，否则索引全部失效。  而且中间不能跳过某一列，否则该列后面的字段索引将失效。</p>
+<p>生效示例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">=</span> <span class="number">31</span>;</span><br></pre></td></tr></table></figure>
+
+<p>失效示例：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> age <span class="operator">=</span> <span class="number">31</span> <span class="keyword">and</span> status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>当执行以下SQL语句，索引<strong>生效</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> age <span class="operator">=</span> <span class="number">31</span> <span class="keyword">and</span>  status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span> <span class="keyword">and</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span>；</span><br></pre></td></tr></table></figure>
+
+<p>🚩最左前缀法则中指的最左边的列，是指在查询时，联合索引的最左边的字段(即是<strong>第一个字段</strong>)必须存在，与编写SQL时，<strong>条件编写的先后顺序无关</strong></p>
+<h2 id="🍁索引失效情况"><a href="#🍁索引失效情况" class="headerlink" title="🍁索引失效情况"></a>🍁索引失效情况</h2><h3 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h3><blockquote>
+<p>联合索引中，出现范围查询<code>(&gt;,&lt;)</code>，范围查询<strong>右侧的列索引</strong>失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">&gt;</span> <span class="number">30</span> <span class="keyword">and</span> status </span><br><span class="line"><span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%881.png" alt="image-20230830225756823"></p>
+<p>当范围查询使用&gt; 或 &lt; 时，走联合索引了，但是索引的长度为49（不够联合索引的长度），就说明范围查询右边的status字段是没有走索引的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工程&#x27;</span> <span class="keyword">and</span> age <span class="operator">&gt;=</span> <span class="number">30</span> <span class="keyword">and</span> </span><br><span class="line">status <span class="operator">=</span> <span class="string">&#x27;0&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%882.png" alt="image-20230830225937192"></p>
+<p>范围查询使用&gt;&#x3D; 或 &lt;&#x3D; 时，走联合索引了，但是索引的长度为54（正常），就说明所有的字段都是走索引的</p>
+<p><strong>总结：尽可能的使用类似于 &gt;&#x3D; 或 &lt;&#x3D; 这类的范围查询，而避免使用 &gt; 或 &lt;</strong></p>
+<h3 id="索引列运算"><a href="#索引列运算" class="headerlink" title="索引列运算"></a>索引列运算</h3><blockquote>
+<p>在索引列上进行运算操作， 索引将失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  <span class="built_in">substring</span>(phone,<span class="number">10</span>,<span class="number">2</span>) <span class="operator">=</span> <span class="string">&#x27;15&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%883.png" alt="image-20230902161053946"></p>
+<p>根据phone字段进行函数运算操作之后，索引失效</p>
+<h3 id="字符串不加引号"><a href="#字符串不加引号" class="headerlink" title="字符串不加引号"></a>字符串不加引号</h3><blockquote>
+<p>字符串类型字段使用时，不加引号，索引将失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="string">&#x27;17799990015&#x27;</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="number">17799990015</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%884.png" alt="image-20230902161301773"></p>
+<h3 id="模糊查询"><a href="#模糊查询" class="headerlink" title="模糊查询"></a>模糊查询</h3><blockquote>
+<p>尾部模糊匹配，索引不会失效。<strong>头部模糊匹配</strong>，索引失效</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;软件%&#x27;</span>;</span><br><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;%工程&#x27;</span>;</span><br><span class="line">explain  <span class="keyword">select</span>  <span class="operator">*</span>  <span class="keyword">from</span>  tb_user  <span class="keyword">where</span>  profession <span class="keyword">like</span> <span class="string">&#x27;%工%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%885.png" alt="image-20230902161446391"></p>
+<p>在like模糊查询中，在关键字后面加%，索引可以生效。而如果在关键字<strong>前面加了%<strong>，索引</strong>将会失效</strong></p>
+<h3 id="or连接条件"><a href="#or连接条件" class="headerlink" title="or连接条件"></a>or连接条件</h3><blockquote>
+<p>用or分割开的条件， 如果or前的条件中的列有索引，而后面的列中没有索引，那么涉及的索引<strong>都不会</strong>被用到</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> id <span class="operator">=</span> <span class="number">10</span> <span class="keyword">or</span> age <span class="operator">=</span> <span class="number">23</span>;</span><br><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">=</span> <span class="string">&#x27;17799990017&#x27;</span> <span class="keyword">or</span> age <span class="operator">=</span> <span class="number">23</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%886.png" alt="image-20230902161651202"></p>
+<p>由于age没有索引，所以即使id、phone有索引，索引也会失效</p>
+<h3 id="数据分布影响"><a href="#数据分布影响" class="headerlink" title="数据分布影响"></a>数据分布影响</h3><blockquote>
+<p>如果MySQL评估使用索引比全表更慢，则不使用索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">&gt;=</span> <span class="string">&#x27;17799990005&#x27;</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user <span class="keyword">where</span> phone <span class="operator">&gt;=</span> <span class="string">&#x27;17799990015&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/13143/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%887.png" alt="image-20230902161847037"></p>
+<p>MySQL在查询时，会评估使用索引的效率与走全表扫描的效率，如果走全表扫描更快，则放弃索引，走全表扫描</p>
+<h2 id="🍁SQL提示"><a href="#🍁SQL提示" class="headerlink" title="🍁SQL提示"></a>🍁SQL提示</h2><blockquote>
+<p>SQL提示是优化数据库的一个重要手段，简单来说，就是在SQL语句中加入一些人为的提示来达到优 化操作的目的</p>
+<p>在查询的时候，自己来指定使用哪个索引</p>
+</blockquote>
+<h3 id="use-index"><a href="#use-index" class="headerlink" title="use index"></a>use index</h3><blockquote>
+<p>建议MySQL使用哪一个索引完成此次查询（仅仅是建议，mysql内部还会再次进行评估）</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user use index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ignore-index"><a href="#ignore-index" class="headerlink" title="ignore index"></a>ignore index</h3><blockquote>
+<p>忽略指定的索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user ignore index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="force-index"><a href="#force-index" class="headerlink" title="force index"></a>force index</h3><blockquote>
+<p> 强制使用索引</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_user force index(idx_user_pro) <span class="keyword">where</span> profession <span class="operator">=</span> <span class="string">&#x27;软件工</span></span><br><span class="line"><span class="string">程&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁覆盖索引"><a href="#🍁覆盖索引" class="headerlink" title="🍁覆盖索引"></a>🍁覆盖索引</h2><blockquote>
+<p>覆盖索引是指 查询使用了索引，并且需要返回的列，在该索引中已经全部能够找到</p>
+</blockquote>
+<h3 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h3><h4 id="1-表结构及索引示意图"><a href="#1-表结构及索引示意图" class="headerlink" title="1.表结构及索引示意图"></a>1.表结构及索引示意图</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%951.png" alt="image-20230902162909592"></p>
+<p>说明：id是主键，是一个聚集索引。 name字段建立了普通索引，是一个二级索引（辅助索引）</p>
+<h4 id="2-执行：select-from-tb-user-where-id-2"><a href="#2-执行：select-from-tb-user-where-id-2" class="headerlink" title="2.执行：select * from tb_user where id &#x3D; 2;"></a>2.执行：select * from tb_user where id &#x3D; 2;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%952.png" alt="image-20230902163019030"></p>
+<p>根据id查询，直接走聚集索引查询，一次索引扫描，直接返回数据，性能高。</p>
+<h4 id="3-执行：select-id-name-from-tb-user-where-name-‘Arm’"><a href="#3-执行：select-id-name-from-tb-user-where-name-‘Arm’" class="headerlink" title="3.执行：select id,name from tb_user where name &#x3D; ‘Arm’;"></a>3.执行：select id,name from tb_user where name &#x3D; ‘Arm’;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%953.png" alt="image-20230902163120038"></p>
+<p>虽然是根据name字段查询，查询二级索引，但是由于查询返回在字段为 id，name，在name的二级索引中，这两个值都是可以直接获取到的，因为<strong>覆盖索引</strong>，所以不需要回表查询，性能高</p>
+<h4 id="4-执行：select-id-name-gender-from-tb-user-where-name-‘Arm’"><a href="#4-执行：select-id-name-gender-from-tb-user-where-name-‘Arm’" class="headerlink" title="4.执行：select id,name,gender from tb_user where name &#x3D; ‘Arm’;"></a>4.执行：select id,name,gender from tb_user where name &#x3D; ‘Arm’;</h4><p><img src="/img/13143/%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%954.png" alt="image-20230902163234966"></p>
+<p>由于在name的二级索引中，不包含gender，所以，需要两次索引扫描，也就是需要<strong>回表查询</strong>，性能相对较差</p>
+<h3 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h3><p>一张表, 有四个字段(id, username, password, status), 对以下SQL语句进行优化:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> id,username,password <span class="keyword">from</span> tb_user <span class="keyword">where</span> username <span class="operator">=</span> <span class="string">&#x27;itcast&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>解析：</p>
+<p>针对于 username, password建立联合索引, sql为:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_user_name_pass <span class="keyword">on</span> tb_user(username,password); </span><br></pre></td></tr></table></figure>
+
+<p>这样避免上述的SQL语句，在查询的过程中，出现回表查询</p>
+<p>🚩<strong>根据覆盖索引的原则，应少用select * …;</strong></p>
+<h2 id="🍁前缀索引"><a href="#🍁前缀索引" class="headerlink" title="🍁前缀索引"></a>🍁前缀索引</h2><blockquote>
+<p>当字段类型为字符串（varchar，text，longtext等）时，有时候需要索引很长的字符串，这会让索引变得很大，查询时，浪费大量的磁盘IO， 影响查询效率。此时可以只将字符串的<strong>一部分前缀建立索引</strong>，这样可以大大节约索引空间，从而提高索引效率</p>
+</blockquote>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index  idx_xxxx <span class="keyword">on</span> table_name(<span class="keyword">column</span>(n)) ;</span><br></pre></td></tr></table></figure>
+
+<p>示例：为tb_user表的email字段，建立长度为5的前缀索引。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index idx_email_5 <span class="keyword">on</span> tb_user(email(<span class="number">5</span>));</span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀长度"><a href="#前缀长度" class="headerlink" title="前缀长度"></a>前缀长度</h3><p>可以根据索引的选择性来决定，而选择性是指不重复的索引值（基数）和数据表的记录总数的比值， 索引选择性越高则查询效率越高， 唯一索引的选择性是1，这是最好的索引选择性，性能也是最好的</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span>  <span class="built_in">count</span>(<span class="keyword">distinct</span> email) <span class="operator">/</span> <span class="built_in">count</span>(<span class="operator">*</span>)   <span class="keyword">from</span>  tb_user ;</span><br><span class="line"><span class="keyword">select</span>  <span class="built_in">count</span>(<span class="keyword">distinct</span> <span class="built_in">substring</span>(email,<span class="number">1</span>,<span class="number">5</span>)) <span class="operator">/</span> <span class="built_in">count</span>(<span class="operator">*</span>)  <span class="keyword">from</span>  tb_user ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀索引的查询流程"><a href="#前缀索引的查询流程" class="headerlink" title="前缀索引的查询流程"></a>前缀索引的查询流程</h3><p><img src="/img/13143/%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95.png" alt="image-20230902164841767"></p>
+<h2 id="🍁单列索引与联合索引"><a href="#🍁单列索引与联合索引" class="headerlink" title="🍁单列索引与联合索引"></a>🍁单列索引与联合索引</h2><blockquote>
+<p>单列索引：即一个索引只包含单个列</p>
+<p>联合索引：即一个索引包含了多个列</p>
+</blockquote>
+<p>在业务场景中，如果存在多个查询条件，考虑针对于查询字段建立索引时，建议建立联合索引， 而非单列索引。</p>
+<p><img src="/img/13143/%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95.png" alt="image-20230902165135541"></p>
+<h2 id="🍁索引设计原则"><a href="#🍁索引设计原则" class="headerlink" title="🍁索引设计原则"></a>🍁索引设计原则</h2><ol>
+<li>针对于数据量较大，且<strong>查询比较频繁</strong>的表建立索引。</li>
+<li>针对于常作为<strong>查询条件（where）、排序（order by）、分组（group by）操作的字段</strong>建立索引。</li>
+<li>尽量选择<strong>区分度高的列</strong>作为索引，尽量建立<strong>唯一索引</strong>，区分度越高，使用索引的效率越高。</li>
+<li>如果是字符串类型的字段，字段的<strong>长度较长</strong>，可以针对于字段的特点，建立<strong>前缀索引</strong>。</li>
+<li><strong>尽量使用联合索引，减少单列索引</strong>，查询时，联合索引很多时候可以覆盖索引，节省存储空间，避免回表，提高查询效率。</li>
+<li>要<strong>控制索引的数量</strong>，索引并不是多多益善，索引越多，维护索引结构的代价也就越大，会影响增删改的效率。</li>
+<li>如果索引列不能存储NULL值，请在创建表时使用NOT NULL约束它。当优化器知道每列是否包含NULL值时，它可以更好地确定哪个索引最有效地用于查询。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/30/MySQL%E7%B4%A2%E5%BC%95%E8%BF%9B%E9%98%B6/" data-id="clq4m8c4b002kbc5s7fxyeug1" data-title="MySQL索引进阶" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/09/05/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          排序算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/08/27/MySQL%E7%B4%A2%E5%BC%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL索引</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

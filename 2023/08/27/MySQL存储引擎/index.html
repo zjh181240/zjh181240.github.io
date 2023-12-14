@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL存储引擎 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁简介 存储引擎就是存储数据、建立索引、更新&#x2F;查询数据等技术的实现方式 。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型  建表时指定存储引擎 12345CREATE TABLE  表名(    字段1  字段1类型   [ COMMENT  字段1注释 ] ,     ......    字段n  字段n类型   [COMMENT  字段n注释 ] ) ENGINE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL存储引擎">
+<meta property="og:url" content="http://example.com/2023/08/27/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁简介 存储引擎就是存储数据、建立索引、更新&#x2F;查询数据等技术的实现方式 。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型  建表时指定存储引擎 12345CREATE TABLE  表名(    字段1  字段1类型   [ COMMENT  字段1注释 ] ,     ......    字段n  字段n类型   [COMMENT  字段n注释 ] ) ENGINE">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/14571/mysql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E.png">
+<meta property="og:image" content="http://example.com/img/14571/mysql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E2.png">
+<meta property="article:published_time" content="2023-08-27T02:23:59.000Z">
+<meta property="article:modified_time" content="2023-08-28T15:01:28.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/14571/mysql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL存储引擎" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/27/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" class="article-date">
+  <time class="dt-published" datetime="2023-08-27T02:23:59.000Z" itemprop="datePublished">2023-08-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/MySQL/">MySQL</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL存储引擎
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁简介"><a href="#🍁简介" class="headerlink" title="🍁简介"></a>🍁简介</h2><blockquote>
+<p>存储引擎就是存储数据、建立索引、更新&#x2F;查询数据等技术的实现方式 。存储引擎是基于表的，而不是基于库的，所以存储引擎也可被称为表类型</p>
+</blockquote>
+<p>建表时指定存储引擎</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE  表名(</span><br><span class="line">    字段1  字段1类型   [ COMMENT  字段1注释 ] ,</span><br><span class="line">     ......</span><br><span class="line">    字段n  字段n类型   [COMMENT  字段n注释 ] </span><br><span class="line">) ENGINE = INNODB   [ COMMENT  表注释 ] ;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁主要分类"><a href="#🍁主要分类" class="headerlink" title="🍁主要分类"></a>🍁主要分类</h2><h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><blockquote>
+<p>兼顾高可靠性和高性能的通用存储引擎， MySQL 5.5 之后，InnoDB是默认的存储引擎</p>
+</blockquote>
+<h4 id="1-特点"><a href="#1-特点" class="headerlink" title="1.特点"></a>1.特点</h4><ul>
+<li>DML操作遵循ACID模型，支持事务； </li>
+<li>行级锁，提高并发访问性能； </li>
+<li>支持外键FOREIGN KEY约束，保证数据的完整性和正确性；</li>
+</ul>
+<h4 id="2-文件"><a href="#2-文件" class="headerlink" title="2.文件"></a>2.文件</h4><p>xxx.ibd：xxx代表的是表名，innoDB引擎的每张表都会对应这样一个表空间文件，存储该表的表结构（frm-早期的 、sdi-新版的）、数据和索引。</p>
+<h4 id="3-逻辑存储结构"><a href="#3-逻辑存储结构" class="headerlink" title="3.逻辑存储结构"></a>3.逻辑存储结构</h4><p><img src="/img/14571/mysql%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E.png" alt="image-20230827103143080"></p>
+<p>表空间: InnoDB存储引擎逻辑结构的<strong>最高层</strong>，ibd文件其实就是表空间文件，在表空间中可以<br>包含多个Segment段。<br>段 : 表空间是由各个段组成的， 常见的段有数据段、索引段、回滚段等。InnoDB中对于段的管<br>理，都是引擎自身完成，不需要人为对其控制，一个段中包含多个区。<br>区 : 区是表空间的单元结构，每个区的大小为<strong>1M</strong>。 默认情况下， InnoDB存储引擎页大小为<br>16K， 即一个区中一共有<strong>64个连续的页</strong>。<br>页 : 页是组成区的<strong>最小单元</strong>，页也是InnoDB 存储引擎磁盘管理的最小单元，每个页的大小默<br>认为 <strong>16KB</strong>。为了保证页的连续性，InnoDB 存储引擎每次从磁盘申请 4-5 个区。<br>行 : InnoDB 存储引擎是面向行的，也就是说<strong>数据是按行进行存放</strong>的，在每一行中除了定义表时<br>所指定的字段以外，还包含两个隐藏字段(后面会详细介绍)。</p>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><blockquote>
+<p>MyISAM是MySQL早期的默认存储引擎</p>
+</blockquote>
+<h4 id="1-特点-1"><a href="#1-特点-1" class="headerlink" title="1.特点"></a>1.特点</h4><ul>
+<li>不支持事务，不支持外键</li>
+<li>支持表锁，不支持行锁</li>
+<li>访问速度快</li>
+</ul>
+<h4 id="2-文件-1"><a href="#2-文件-1" class="headerlink" title="2.文件"></a>2.文件</h4><ul>
+<li>xxx.sdi：存储表结构信息</li>
+<li>xxx.MYD: 存储数据</li>
+<li>xxx.MYI: 存储索引</li>
+</ul>
+<h3 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h3><blockquote>
+<p>Memory引擎的表数据时存储在内存中的，由于受到硬件问题、或断电问题的影响，只能将这些表作为 临时表或缓存使用</p>
+</blockquote>
+<h4 id="1-特点-2"><a href="#1-特点-2" class="headerlink" title="1.特点"></a>1.特点</h4><ul>
+<li>内存存放</li>
+<li>hash索引（默认）</li>
+</ul>
+<h4 id="2-文件-2"><a href="#2-文件-2" class="headerlink" title="2.文件"></a>2.文件</h4><p>xxx.sdi：存储表结构信息</p>
+<h2 id="🍁区别"><a href="#🍁区别" class="headerlink" title="🍁区别"></a>🍁区别</h2><img src="/img/14571/mysql存储引擎2.png" alt="image-20230827104044780" style="zoom: 67%;" />
+
+<p><strong>（面试）InnoDB引擎与MyISAM引擎的区别 ?</strong></p>
+<ul>
+<li>InnoDB引擎支持事务, 而MyISAM不支持。</li>
+<li>InnoDB引擎支持行锁和表锁, 而MyISAM仅支持表锁, 不支持行锁。</li>
+<li>InnoDB引擎支持外键, 而MyISAM是不支持的。</li>
+</ul>
+<p>（<strong>外键事务行级锁</strong>）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/27/MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/" data-id="clq4m8c4o0032bc5s41ya22fu" data-title="MySQL存储引擎" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/08/27/MySQL%E7%B4%A2%E5%BC%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL索引
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/08/23/MySQL%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL基础</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Thread方法 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁总览   名称 说明 注意事项    start() 启动一个新线程，在新的线程运行 run 方法 start 方法只是让线程进入就绪，里面代码不一定立刻运行（CPU 的时间片还没分给它）。每个线程对象的 start方法只能调用一次，调用了多次会出现 IllegalThreadStateException   run() 新线程启动后会 调用的方法 如果在构造 Thread 对象时传递了 Ru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Thread方法">
+<meta property="og:url" content="http://example.com/2023/10/06/Thread%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁总览   名称 说明 注意事项    start() 启动一个新线程，在新的线程运行 run 方法 start 方法只是让线程进入就绪，里面代码不一定立刻运行（CPU 的时间片还没分给它）。每个线程对象的 start方法只能调用一次，调用了多次会出现 IllegalThreadStateException   run() 新线程启动后会 调用的方法 如果在构造 Thread 对象时传递了 Ru">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/4124/join1.png">
+<meta property="og:image" content="http://example.com/img/4124/join2.png">
+<meta property="og:image" content="http://example.com/img/4124/Moniter1.png">
+<meta property="og:image" content="http://example.com/img/4124/Moniter2.png">
+<meta property="og:image" content="http://example.com/img/4124/wait1.png">
+<meta property="article:published_time" content="2023-10-06T12:44:35.000Z">
+<meta property="article:modified_time" content="2023-10-10T07:04:36.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/4124/join1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Thread方法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/10/06/Thread%E6%96%B9%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2023-10-06T12:44:35.000Z" itemprop="datePublished">2023-10-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Thread方法
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁总览"><a href="#🍁总览" class="headerlink" title="🍁总览"></a>🍁总览</h2><table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="left">说明</th>
+<th align="left">注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">start()</td>
+<td align="left">启动一个新线程，在新的线程<strong>运行 run 方法</strong></td>
+<td align="left">start 方法只是让线程进入就绪，里面代码<strong>不一定立刻运行</strong>（CPU 的时间片还没分给它）。每个线程对象的 start方法<strong>只能调用一次</strong>，调用了多次会出现 IllegalThreadStateException</td>
+</tr>
+<tr>
+<td align="center">run()</td>
+<td align="left">新线程启动后会 调用的方法</td>
+<td align="left">如果在构造 Thread 对象时传递了 Runnable 参数，则线程启动后会调用 Runnable 中的 run 方法，否则默认不执行任何操作。但可以创建 Thread 的子类对象，来覆盖默认行为</td>
+</tr>
+<tr>
+<td align="center">join()</td>
+<td align="left">等待线程运行结束</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="center">join(long n)</td>
+<td align="left">等待线程运行结束</td>
+<td align="left">最多等待 n  毫秒</td>
+</tr>
+<tr>
+<td align="center">setPriority(int)</td>
+<td align="left">修改线程优先级</td>
+<td align="left">java中规定线程优先级是1~10 的整数，较大的优先级<strong>能提高该线程被 CPU 调度的机率</strong></td>
+</tr>
+<tr>
+<td align="center">interrupt()</td>
+<td align="left">打断线程</td>
+<td align="left">如果被打断线程正在 sleep，wait，join 会导致被打断的线程抛出 InterruptedException，<strong>并清除打断标记</strong> ；如果打断的正在运行的线程，则会<strong>设置打断标记</strong> ；park 的线程被打断，也会<strong>设置打断标记</strong></td>
+</tr>
+<tr>
+<td align="center">sleep(long n)</td>
+<td align="left">让当前执行的线程休眠n毫秒， 休眠时让出cpu  的时间片给其它线程</td>
+<td align="left">static，属于Object的方法</td>
+</tr>
+<tr>
+<td align="center">yield()</td>
+<td align="left">提示线程调度器让出当前线程对 CPU的使用</td>
+<td align="left">static，该方法只是对线程调度器的一个建议</td>
+</tr>
+</tbody></table>
+<h2 id="🍁start和run"><a href="#🍁start和run" class="headerlink" title="🍁start和run"></a>🍁start和run</h2><h3 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="string">&quot;t1&quot;</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            log.debug(Thread.currentThread().getName());</span><br><span class="line">            FileReader.read(Constants.MP4_FULL_PATH);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    t1.run();</span><br><span class="line">    <span class="comment">// t1.start();</span></span><br><span class="line">    log.debug(<span class="string">&quot;do other things ...&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-调用-run"><a href="#1-调用-run" class="headerlink" title="1.调用 run"></a>1.调用 run</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">19</span>:<span class="number">39</span>:<span class="number">14</span> [main] c.TestStart - main</span><br><span class="line"><span class="number">19</span>:<span class="number">39</span>:<span class="number">14</span> [main] c.FileReader - read [<span class="number">1.</span>mp4] start ...</span><br><span class="line"><span class="number">19</span>:<span class="number">39</span>:<span class="number">18</span> [main] c.FileReader - read [<span class="number">1.</span>mp4] end ... cost: <span class="number">4227</span> ms</span><br><span class="line"><span class="number">19</span>:<span class="number">39</span>:<span class="number">18</span> [main] c.TestStart - <span class="keyword">do</span> other things ...</span><br></pre></td></tr></table></figure>
+
+<p>程序仍在 main 线程运行， FileReader.read() 方法调用是<strong>同步</strong>的</p>
+<h4 id="2-调用-start"><a href="#2-调用-start" class="headerlink" title="2.调用 start"></a>2.调用 start</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">19</span>:<span class="number">41</span>:<span class="number">30</span> [main] c.TestStart - <span class="keyword">do</span> other things ...</span><br><span class="line"><span class="number">19</span>:<span class="number">41</span>:<span class="number">30</span> [t1] c.TestStart - t1</span><br><span class="line"><span class="number">19</span>:<span class="number">41</span>:<span class="number">30</span> [t1] c.FileReader - read [<span class="number">1.</span>mp4] start ...</span><br><span class="line"><span class="number">19</span>:<span class="number">41</span>:<span class="number">35</span> [t1] c.FileReader - read [<span class="number">1.</span>mp4] end ... cost: <span class="number">4542</span> ms</span><br></pre></td></tr></table></figure>
+
+<p>程序在 t1 线程运行， FileReader.read() 方法调用是<strong>异步</strong>的</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>直接调用 run 是在主线程中执行了 run，<strong>没有启动新的线程</strong> </p>
+<p>使用 start 是启动新的线程，通过新的线程<strong>间接执行</strong> run 中的代码</p>
+<h2 id="🍁sleep和yield"><a href="#🍁sleep和yield" class="headerlink" title="🍁sleep和yield"></a>🍁sleep和yield</h2><h3 id="sleep"><a href="#sleep" class="headerlink" title="sleep"></a>sleep</h3><ol>
+<li>调用 sleep 会让当前线程从 Running 进入 <strong>Timed Waiting</strong> 状态（阻塞）</li>
+<li>其它线程可以使用 <strong>interrupt</strong> 方法打断正在睡眠的线程，这时 sleep 方法会抛出 InterruptedException</li>
+<li>睡眠结束后的线程<strong>未必会立刻</strong>得到执行</li>
+</ol>
+<h3 id="yield"><a href="#yield" class="headerlink" title="yield"></a>yield</h3><ol>
+<li>调用 yield 会让当前线程从 Running 进入 <strong>Runnable 就绪状态</strong>，然后调度执行其它线程</li>
+<li>具体的实现依赖于操作系统的任务调度器</li>
+</ol>
+<h2 id="🍁join"><a href="#🍁join" class="headerlink" title="🍁join"></a>🍁join</h2><h3 id="应用同步"><a href="#应用同步" class="headerlink" title="应用同步"></a>应用同步</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    test1();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test1</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    log.debug(<span class="string">&quot;开始&quot;</span>);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;开始&quot;</span>);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        log.debug(<span class="string">&quot;结束&quot;</span>);</span><br><span class="line">        r = <span class="number">10</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    t1.start();</span><br><span class="line">    log.debug(<span class="string">&quot;结果为:&#123;&#125;&quot;</span>, r);</span><br><span class="line">    log.debug(<span class="string">&quot;结束&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 因为主线程和线程 t1 是并行执行的，t1 线程需要 1 秒之后才能算出 r=10</span></span><br><span class="line"><span class="comment">// 而主线程一开始就要打印 r 的结果，所以只能打印出 r=0</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-方法调用角度看同步、异步："><a href="#1-方法调用角度看同步、异步：" class="headerlink" title="1.方法调用角度看同步、异步："></a>1.方法调用角度看同步、异步：</h4><ul>
+<li>需要等待结果返回，才能继续运行就是同步</li>
+<li>不需要等待结果返回，就能继续运行就是异步</li>
+</ul>
+<h4 id="2-解决方案："><a href="#2-解决方案：" class="headerlink" title="2.解决方案："></a>2.解决方案：</h4><p>t1.start()之后+t1.join()</p>
+<img src="/img/4124/join1.png" alt="image-20231010111653053" style="zoom: 50%;" />
+
+<h3 id="更多线程join"><a href="#更多线程join" class="headerlink" title="更多线程join"></a>更多线程join</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r1</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r2</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    test2();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test2</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        r1 = <span class="number">10</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        sleep(<span class="number">2</span>);</span><br><span class="line">        r2 = <span class="number">20</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    t1.start();</span><br><span class="line">    t2.start();</span><br><span class="line">    t1.join();</span><br><span class="line">    t2.join();</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    log.debug(<span class="string">&quot;r1: &#123;&#125; r2: &#123;&#125; cost: &#123;&#125;&quot;</span>, r1, r2, end - start);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 第一个 join：等待 t1 时, t2 并没有停止, 而在运行</span></span><br><span class="line"><span class="comment">// 第二个 join：1s 后, 执行到此, t2 也运行了 1s, 因此也只需再等待 1s</span></span><br></pre></td></tr></table></figure>
+
+<p>输出（颠倒2个join一样）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">45</span>:<span class="number">43.239</span> [main] c.TestJoin - r1: <span class="number">10</span> r2: <span class="number">20</span> cost: <span class="number">2005</span></span><br></pre></td></tr></table></figure>
+
+<img src="/img/4124/join2.png" alt="image-20231010112317910" style="zoom: 50%;" />
+
+<h3 id="有时效的-join"><a href="#有时效的-join" class="headerlink" title="有时效的 join"></a>有时效的 join</h3><h4 id="1-等够时间：join会提前结束"><a href="#1-等够时间：join会提前结束" class="headerlink" title="1.等够时间：join会提前结束"></a>1.等够时间：join会提前结束</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r1</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r2</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    test3();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test3</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        sleep(<span class="number">1</span>); <span class="comment">// 睡1秒</span></span><br><span class="line">        r1 = <span class="number">10</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    t1.start();</span><br><span class="line">    <span class="comment">// 线程执行结束会导致 join 结束</span></span><br><span class="line">    t1.join(<span class="number">1500</span>);</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    log.debug(<span class="string">&quot;r1: &#123;&#125; r2: &#123;&#125; cost: &#123;&#125;&quot;</span>, r1, r2, end - start);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">48</span>:<span class="number">01.320</span> [main] c.TestJoin - r1: <span class="number">10</span> r2: <span class="number">0</span> cost: <span class="number">1010</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-未等够时间"><a href="#2-未等够时间" class="headerlink" title="2.未等够时间"></a>2.未等够时间</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r1</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">r2</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    test3();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test3</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        sleep(<span class="number">2</span>); <span class="comment">// 睡2秒</span></span><br><span class="line">        r1 = <span class="number">10</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    t1.start();</span><br><span class="line">    <span class="comment">// 线程执行结束会导致 join 结束</span></span><br><span class="line">    t1.join(<span class="number">1500</span>);</span><br><span class="line">    <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">    log.debug(<span class="string">&quot;r1: &#123;&#125; r2: &#123;&#125; cost: &#123;&#125;&quot;</span>, r1, r2, end - start);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">52</span>:<span class="number">15.623</span> [main] c.TestJoin - r1: <span class="number">0</span> r2: <span class="number">0</span> cost: <span class="number">1502</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁interrupt"><a href="#🍁interrupt" class="headerlink" title="🍁interrupt"></a>🍁interrupt</h2><h3 id="打断-sleep，wait，join-的线程"><a href="#打断-sleep，wait，join-的线程" class="headerlink" title="打断 sleep，wait，join 的线程"></a>打断 sleep，wait，join 的线程</h3><p>打断阻塞的线程，会清空打断状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test1</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(()-&gt;&#123;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">    &#125;, <span class="string">&quot;t1&quot;</span>);</span><br><span class="line">    t1.start();</span><br><span class="line">    sleep(<span class="number">0.5</span>);</span><br><span class="line">    t1.interrupt();</span><br><span class="line">    log.debug(<span class="string">&quot; 打断状态: &#123;&#125;&quot;</span>, t1.isInterrupted());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.lang.InterruptedException: sleep interrupted</span><br><span class="line"> at java.lang.Thread.sleep(Native Method)</span><br><span class="line"> at java.lang.Thread.sleep(Thread.java:<span class="number">340</span>)</span><br><span class="line"> at java.util.concurrent.TimeUnit.sleep(TimeUnit.java:<span class="number">386</span>)</span><br><span class="line"> at cn.itcast.n2.util.Sleeper.sleep(Sleeper.java:<span class="number">8</span>)</span><br><span class="line"> at cn.itcast.n4.TestInterrupt.lambda$test1$<span class="number">3</span>(TestInterrupt.java:<span class="number">59</span>)</span><br><span class="line"> at java.lang.Thread.run(Thread.java:<span class="number">745</span>)</span><br><span class="line"><span class="number">21</span>:<span class="number">18</span>:<span class="number">10.374</span> [main] c.TestInterrupt - 打断状态: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="打断正常运行的线程"><a href="#打断正常运行的线程" class="headerlink" title="打断正常运行的线程"></a>打断正常运行的线程</h3><p>打断正常运行的线程, 不会清空打断状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">test2</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(()-&gt;&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="type">Thread</span> <span class="variable">current</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">interrupted</span> <span class="operator">=</span> current.isInterrupted();</span><br><span class="line">            <span class="keyword">if</span>(interrupted) &#123;</span><br><span class="line">                log.debug(<span class="string">&quot; 打断状态: &#123;&#125;&quot;</span>, interrupted);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="string">&quot;t2&quot;</span>);</span><br><span class="line">    t2.start();</span><br><span class="line">    sleep(<span class="number">0.5</span>);</span><br><span class="line">    t2.interrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">57</span>:<span class="number">37.964</span> [t2] c.TestInterrupt - 打断状态: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁setDaemon"><a href="#🍁setDaemon" class="headerlink" title="🍁setDaemon"></a>🍁setDaemon</h2><h3 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h3><p>默认情况下，Java 进程需要等待所有线程都运行结束，才会结束。</p>
+<p>而守护线程，只要其它非守护线程运行结束了，即使守护线程的代码没有执行完，也会<strong>强制结束</strong>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">log.debug(<span class="string">&quot;开始运行...&quot;</span>);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;开始运行...&quot;</span>);</span><br><span class="line">        sleep(<span class="number">2</span>);</span><br><span class="line">        log.debug(<span class="string">&quot;运行结束...&quot;</span>);</span><br><span class="line">    &#125;, <span class="string">&quot;daemon&quot;</span>);</span><br><span class="line"><span class="comment">// 设置该线程为守护线程</span></span><br><span class="line">t1.setDaemon(<span class="literal">true</span>);</span><br><span class="line">t1.start();</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">log.debug(<span class="string">&quot;运行结束...&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">08:<span class="number">26</span>:<span class="number">38.123</span> [main] c.TestDaemon - 开始运行... </span><br><span class="line">08:<span class="number">26</span>:<span class="number">38.213</span> [daemon] c.TestDaemon - 开始运行... </span><br><span class="line">08:<span class="number">26</span>:<span class="number">39.215</span> [main] c.TestDaemon - 运行结束... </span><br></pre></td></tr></table></figure>
+
+<h3 id="常见守护线程"><a href="#常见守护线程" class="headerlink" title="常见守护线程"></a>常见守护线程</h3><p>垃圾回收器线程</p>
+<p>Tomcat 中的 Acceptor 和 Poller 线程都是守护线程，所以 Tomcat 接收到 shutdown 命令后，不会等 待它们处理完当前请求</p>
+<h2 id="🍁wait-notify-notifyAll"><a href="#🍁wait-notify-notifyAll" class="headerlink" title="🍁wait()&#x2F;notify()&#x2F;notifyAll()"></a>🍁wait()&#x2F;notify()&#x2F;notifyAll()</h2><h3 id="Monitor-Java对象头"><a href="#Monitor-Java对象头" class="headerlink" title="Monitor-Java对象头"></a>Monitor-Java对象头</h3><p>32 位虚拟机</p>
+<img src="/img/4124/Moniter1.png" alt="image-20231010131540915" style="zoom: 67%;" />
+
+<p>其中 Mark Word 结构为</p>
+<img src="/img/4124/Moniter2.png" alt="image-20231010131648053" style="zoom:67%;" />
+
+<h3 id="API介绍"><a href="#API介绍" class="headerlink" title="API介绍"></a>API介绍</h3><h4 id="obj的方法"><a href="#obj的方法" class="headerlink" title="obj的方法"></a>obj的方法</h4><p>obj.wait()——让进入 object 监视器的线程到 waitSet 等待 </p>
+<p>obj.notify()——在 object 上正在 waitSet 等待的线程中挑一个唤醒 </p>
+<p>obj.notifyAll()——让 object 上正在 waitSet 等待的线程全部唤醒</p>
+<p><strong>必须获得此对象的锁，才能调用这几个方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;执行....&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                obj.wait(); <span class="comment">// 让线程在obj上一直等待下去</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            log.debug(<span class="string">&quot;其它代码....&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;执行....&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                obj.wait(); <span class="comment">// 让线程在obj上一直等待下去</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            log.debug(<span class="string">&quot;其它代码....&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">    <span class="comment">// 主线程两秒后执行</span></span><br><span class="line">    sleep(<span class="number">2</span>);</span><br><span class="line">    log.debug(<span class="string">&quot;唤醒 obj 上其它线程&quot;</span>);</span><br><span class="line">    <span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">        obj.notify(); <span class="comment">// 唤醒obj上一个线程</span></span><br><span class="line">        <span class="comment">// obj.notifyAll(); // 唤醒obj上所有等待线程</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>notify 的一种结果(随机唤醒)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">00</span>:<span class="number">53.096</span> [Thread-<span class="number">0</span>] c.TestWaitNotify - 执行.... </span><br><span class="line"><span class="number">20</span>:<span class="number">00</span>:<span class="number">53.099</span> [Thread-<span class="number">1</span>] c.TestWaitNotify - 执行.... </span><br><span class="line"><span class="number">20</span>:<span class="number">00</span>:<span class="number">55.096</span> [main] c.TestWaitNotify - 唤醒 obj 上其它线程</span><br><span class="line"><span class="number">20</span>:<span class="number">00</span>:<span class="number">55.096</span> [Thread-<span class="number">0</span>] c.TestWaitNotify - 其它代码.... </span><br></pre></td></tr></table></figure>
+
+<p>notifyAll 的结果(唤醒所有)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">19</span>:<span class="number">58</span>:<span class="number">15.457</span> [Thread-<span class="number">0</span>] c.TestWaitNotify - 执行.... </span><br><span class="line"><span class="number">19</span>:<span class="number">58</span>:<span class="number">15.460</span> [Thread-<span class="number">1</span>] c.TestWaitNotify - 执行.... </span><br><span class="line"><span class="number">19</span>:<span class="number">58</span>:<span class="number">17.456</span> [main] c.TestWaitNotify - 唤醒 obj 上其它线程</span><br><span class="line"><span class="number">19</span>:<span class="number">58</span>:<span class="number">17.456</span> [Thread-<span class="number">1</span>] c.TestWaitNotify - 其它代码.... </span><br><span class="line"><span class="number">19</span>:<span class="number">58</span>:<span class="number">17.456</span> [Thread-<span class="number">0</span>] c.TestWaitNotify - 其它代码....</span><br></pre></td></tr></table></figure>
+
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>wait() ——会释放对象的锁，进入 WaitSet 等待区，从而让<strong>其他线程有机会获取对象的锁</strong>。无限制等待，直到 notify 为止 </p>
+<p>wait(long n) ——有时限的等待, 到 n 毫秒后结束等待，或是被 notify</p>
+<h3 id="wait-notify-的正确使用"><a href="#wait-notify-的正确使用" class="headerlink" title="wait&#x2F;notify 的正确使用"></a>wait&#x2F;notify 的正确使用</h3><h4 id="1-区别sleep和notify"><a href="#1-区别sleep和notify" class="headerlink" title="1.区别sleep和notify"></a>1.区别sleep和notify</h4><p>sleep 是 Thread 方法，而 wait 是 Object 的方法 </p>
+<p>sleep 不需要强制和 synchronized 配合使用，但 <strong>wait 需要和 synchronized 一起用</strong> </p>
+<p>sleep 在睡眠的同时<strong>不会释放对象锁</strong>，但 wait 在等待的时候<strong>会释放对象锁</strong></p>
+<h4 id="2-示例"><a href="#2-示例" class="headerlink" title="2.示例"></a>2.示例</h4><img src="/img/4124/wait1.png" alt="image-20231010143349416" style="zoom: 67%;" />
+
+<p><strong>步骤1</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Object</span> <span class="variable">room</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line"><span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">hasCigarette</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">hasTakeout</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (!hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没烟，先歇会！&quot;</span>);</span><br><span class="line">            sleep(<span class="number">2</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;小南&quot;</span>).start();</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="string">&quot;其它人&quot;</span>).start();</span><br><span class="line">&#125;</span><br><span class="line">sleep(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="comment">// 这里能不能加 synchronized (room)？</span></span><br><span class="line">    hasCigarette = <span class="literal">true</span>;</span><br><span class="line">    log.debug(<span class="string">&quot;烟到了噢！&quot;</span>);</span><br><span class="line">&#125;, <span class="string">&quot;送烟的&quot;</span>).start();</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">49.883</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">49.887</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">50.882</span> [送烟的] c.TestCorrectPosture - 烟到了噢！</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.887</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">true</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.887</span> [小南] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.887</span> [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.887</span> [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.888</span> [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.888</span> [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">49</span>:<span class="number">51.888</span> [其它人] c.TestCorrectPosture - 可以开始干活了</span><br></pre></td></tr></table></figure>
+
+<p>分析</p>
+<ul>
+<li>其它干活的线程，都要一直阻塞，效率太低</li>
+<li>小南线程必须睡足 2s 后才能醒来，就算烟提前送到，也无法立刻醒来</li>
+<li>加了 synchronized (room) 后，就好比小南在里面反锁了门睡觉，烟根本没法送进门，main 没加<br>synchronized 就好像 main 线程是翻窗户进来的</li>
+</ul>
+<p><strong>步骤2-[使用wait&#x2F;notify]</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (!hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没烟，先歇会！&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                room.wait(<span class="number">2000</span>); <span class="comment">// 使用wait等待</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;小南&quot;</span>).start();</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="string">&quot;其它人&quot;</span>).start();</span><br><span class="line">&#125;</span><br><span class="line">sleep(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        hasCigarette = <span class="literal">true</span>;</span><br><span class="line">        log.debug(<span class="string">&quot;烟到了噢！&quot;</span>);</span><br><span class="line">        room.notify(); <span class="comment">// 使用notify唤醒</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;送烟的&quot;</span>).start();</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">20:51:42.489 [小南] c.TestCorrectPosture - 有烟没？[false] </span><br><span class="line">20:51:42.493 [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br><span class="line">20:51:42.493 [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line">20:51:42.493 [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line">20:51:42.494 [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line">20:51:42.494 [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line">20:51:42.494 [其它人] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line">20:51:43.490 [送烟的] c.TestCorrectPosture - 烟到了噢！</span><br><span class="line">20:51:43.490 [小南] c.TestCorrectPosture - 有烟没？[true] </span><br><span class="line">20:51:43.490 [小南] c.TestCorrectPosture - 可以开始干活了</span><br></pre></td></tr></table></figure>
+
+<p>分析</p>
+<p>解决了其它干活的线程阻塞的问题</p>
+<p><strong>步骤3-[多线程等待]</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (!hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没烟，先歇会！&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                room.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">&quot;有烟没？[&#123;&#125;]&quot;</span>, hasCigarette);</span><br><span class="line">        <span class="keyword">if</span> (hasCigarette) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没干成活...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;小南&quot;</span>).start();</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">        log.debug(<span class="string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);</span><br><span class="line">        <span class="keyword">if</span> (!hasTakeout) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没外卖，先歇会！&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                room.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        log.debug(<span class="string">&quot;外卖送到没？[&#123;&#125;]&quot;</span>, hasTakeout);</span><br><span class="line">        <span class="keyword">if</span> (hasTakeout) &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;可以开始干活了&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;没干成活...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;小女&quot;</span>).start();</span><br><span class="line">sleep(<span class="number">1</span>);</span><br><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        hasTakeout = <span class="literal">true</span>;</span><br><span class="line">        log.debug(<span class="string">&quot;外卖到了噢！&quot;</span>);</span><br><span class="line">        room.notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;送外卖的&quot;</span>).start();</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">12.173</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">12.176</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">12.176</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">12.176</span> [小女] c.TestCorrectPosture - 没外卖，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">13.174</span> [送外卖的] c.TestCorrectPosture - 外卖到了噢！</span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">13.174</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">53</span>:<span class="number">13.174</span> [小南] c.TestCorrectPosture - 没干成活...</span><br></pre></td></tr></table></figure>
+
+<p>分析</p>
+<p>notify 只能随机唤醒一个 WaitSet 中的线程，这时如果有其它线程也在等待，那么就可能唤醒不了正确的线<br>程，称之为<strong>虚假唤醒</strong></p>
+<p><strong>步骤4-[使用notifyAll]</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (room) &#123;</span><br><span class="line">        hasTakeout = <span class="literal">true</span>;</span><br><span class="line">        log.debug(<span class="string">&quot;外卖到了噢！&quot;</span>);</span><br><span class="line">        room.notifyAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="string">&quot;送外卖的&quot;</span>).start();</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">23.978</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">23.982</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">23.982</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">23.982</span> [小女] c.TestCorrectPosture - 没外卖，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">24.979</span> [送外卖的] c.TestCorrectPosture - 外卖到了噢！</span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">24.979</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="literal">true</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">24.980</span> [小女] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">24.980</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">55</span>:<span class="number">24.980</span> [小南] c.TestCorrectPosture - 没干成活... </span><br></pre></td></tr></table></figure>
+
+<p>分析</p>
+<p>用 notifyAll 仅解决某个线程的唤醒问题，但使用 if + wait 判断仅有一次机会，一旦条件不成立，就<strong>没有重新判断的机会</strong>了</p>
+<p><strong>步骤5-[使用while]</strong></p>
+<p>将 if 改为 while</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (!hasCigarette) &#123;</span><br><span class="line"> log.debug(<span class="string">&quot;没烟，先歇会！&quot;</span>);</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line"> room.wait();</span><br><span class="line"> &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line"> e.printStackTrace();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">34.322</span> [小南] c.TestCorrectPosture - 有烟没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">34.326</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">34.326</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="literal">false</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">34.326</span> [小女] c.TestCorrectPosture - 没外卖，先歇会！</span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">35.323</span> [送外卖的] c.TestCorrectPosture - 外卖到了噢！</span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">35.324</span> [小女] c.TestCorrectPosture - 外卖送到没？[<span class="literal">true</span>] </span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">35.324</span> [小女] c.TestCorrectPosture - 可以开始干活了</span><br><span class="line"><span class="number">20</span>:<span class="number">58</span>:<span class="number">35.324</span> [小南] c.TestCorrectPosture - 没烟，先歇会！</span><br></pre></td></tr></table></figure>
+
+<p><strong>模板总结</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span>(lock) &#123;</span><br><span class="line"> <span class="keyword">while</span>(条件不成立) &#123;</span><br><span class="line"> lock.wait();</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">// 干活</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//另一个线程</span></span><br><span class="line"><span class="keyword">synchronized</span>(lock) &#123;</span><br><span class="line"> lock.notifyAll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/10/06/Thread%E6%96%B9%E6%B3%95/" data-id="clq4m8c6g005mbc5s6ji4fmc4" data-title="Thread方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/10/11/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java设计模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/10/05/Redis%E4%BA%8B%E5%8A%A1%E5%92%8C%E9%94%81/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Redis事务和锁</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

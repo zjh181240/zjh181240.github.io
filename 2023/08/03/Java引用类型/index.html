@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Java引用类型 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁强引用 普通变量赋值即为强引用，如 A a &#x3D; new A();  通过 GC Root 的引用链，如果强引用不到该对象，该对象才能被回收   🎈GC Root  虚拟机栈中引用的对象 本地方法栈中引用的对象 方法区中类静态属性引用的对象 方法区中的常量引用的对象  🍁软引用（SoftReference） 使用 SoftReference 类来创建软引用，SoftReferenc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java引用类型">
+<meta property="og:url" content="http://example.com/2023/08/03/Java%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁强引用 普通变量赋值即为强引用，如 A a &#x3D; new A();  通过 GC Root 的引用链，如果强引用不到该对象，该对象才能被回收   🎈GC Root  虚拟机栈中引用的对象 本地方法栈中引用的对象 方法区中类静态属性引用的对象 方法区中的常量引用的对象  🍁软引用（SoftReference） 使用 SoftReference 类来创建软引用，SoftReferenc">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/40363/GC%E5%BC%95%E7%94%A81.png">
+<meta property="og:image" content="http://example.com/img/40363/GC%E5%BC%95%E7%94%A82.png">
+<meta property="og:image" content="http://example.com/img/40363/GC%E5%BC%95%E7%94%A83.png">
+<meta property="og:image" content="http://example.com/img/40363/GC%E5%BC%95%E7%94%A84.png">
+<meta property="article:published_time" content="2023-08-03T14:00:07.000Z">
+<meta property="article:modified_time" content="2023-08-07T14:05:06.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java基础">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/40363/GC%E5%BC%95%E7%94%A81.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Java引用类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/08/03/Java%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/" class="article-date">
+  <time class="dt-published" datetime="2023-08-03T14:00:07.000Z" itemprop="datePublished">2023-08-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/JVM/">JVM</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Java引用类型
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁强引用"><a href="#🍁强引用" class="headerlink" title="🍁强引用"></a>🍁强引用</h2><blockquote>
+<p>普通变量赋值即为强引用，如 A a &#x3D; new A();</p>
+</blockquote>
+<p>通过 GC Root 的引用链，如果强引用不到该对象，该对象才能被回收</p>
+<img src="/img/40363/GC引用1.png" alt="GC引用1" style="zoom: 80%;" />
+
+<p>🎈<strong>GC Root</strong></p>
+<ul>
+<li>虚拟机栈中引用的对象</li>
+<li>本地方法栈中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中的常量引用的对象</li>
+</ul>
+<h2 id="🍁软引用（SoftReference）"><a href="#🍁软引用（SoftReference）" class="headerlink" title="🍁软引用（SoftReference）"></a>🍁软引用（SoftReference）</h2><blockquote>
+<p>使用 SoftReference 类来创建软引用，SoftReference a &#x3D; new SoftReference(new A());</p>
+</blockquote>
+<ul>
+<li>如果仅有软引用该对象时，<strong>首次</strong>垃圾回收不会回收该对象，如果<strong>内存仍不足</strong>，再次回收时才会释放对象 </li>
+<li>软引用自身需要配合<strong>引用队列</strong>来释放 </li>
+<li>典型例子是反射数据</li>
+</ul>
+<img src="/img/40363/GC引用2.png" alt="GC引用2" style="zoom:80%;" />
+
+<h2 id="🍁弱引用（WeakReference）"><a href="#🍁弱引用（WeakReference）" class="headerlink" title="🍁弱引用（WeakReference）"></a>🍁弱引用（<strong>WeakReference</strong>）</h2><blockquote>
+<p>使用 WeakReference 类来实现弱引用，WeakReference a &#x3D; new WeakReference(new A());</p>
+</blockquote>
+<ul>
+<li>如果仅有弱引用引用该对象时，<strong>只要发生</strong>垃圾回收，<strong>就会释放</strong>该对象，也就是说它只能存活到下一次垃圾回收发生之前</li>
+<li>弱引用自身需要配合<strong>引用队列</strong>来释放</li>
+<li>典型例子是 ThreadLocalMap 中的 <strong>Entry</strong> 对象</li>
+</ul>
+<img src="/img/40363/GC引用3.png" alt="GC引用3" style="zoom:80%;" />
+
+<p>代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestWeakReference</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyWeakMap</span> <span class="variable">map</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyWeakMap</span>();</span><br><span class="line">        map.put(<span class="number">0</span>, <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;a&quot;</span>), <span class="string">&quot;1&quot;</span>);</span><br><span class="line">        map.put(<span class="number">1</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;2&quot;</span>);</span><br><span class="line">        map.put(<span class="number">2</span>, <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;c&quot;</span>), <span class="string">&quot;3&quot;</span>);</span><br><span class="line">        map.put(<span class="number">3</span>, <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;d&quot;</span>), <span class="string">&quot;4&quot;</span>);</span><br><span class="line">        System.out.println(map);<span class="comment">// 输出:[a:1,b:2,c:3,d:4]</span></span><br><span class="line"></span><br><span class="line">        System.gc();</span><br><span class="line">        System.out.println(map.get(<span class="string">&quot;a&quot;</span>));</span><br><span class="line">        System.out.println(map.get(<span class="string">&quot;b&quot;</span>));</span><br><span class="line">        System.out.println(map.get(<span class="string">&quot;c&quot;</span>));</span><br><span class="line">        System.out.println(map.get(<span class="string">&quot;d&quot;</span>));</span><br><span class="line">        System.out.println(map);<span class="comment">// 输出:[null:1,null:2,null:3,null:4]</span></span><br><span class="line">        map.clean();</span><br><span class="line">        System.out.println(map); <span class="comment">// 输出:[b:2]</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 模拟 ThreadLocalMap 的内存泄漏问题以及一种解决方法</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">MyWeakMap</span> &#123;</span><br><span class="line">        <span class="keyword">static</span> ReferenceQueue&lt;Object&gt; queue = <span class="keyword">new</span> <span class="title class_">ReferenceQueue</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Entry</span> <span class="keyword">extends</span> <span class="title class_">WeakReference</span>&lt;String&gt; &#123;</span><br><span class="line">            String value;</span><br><span class="line">            <span class="keyword">public</span> <span class="title function_">Entry</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">                <span class="built_in">super</span>(key, queue); <span class="comment">// key为弱引用</span></span><br><span class="line">                <span class="built_in">this</span>.value = value; <span class="comment">// value为强引用</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">clean</span><span class="params">()</span> &#123;</span><br><span class="line">            Object ref;</span><br><span class="line">            <span class="keyword">while</span> ((ref = queue.poll()) != <span class="literal">null</span>) &#123;</span><br><span class="line">                System.out.println(ref);</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; table.length; i++) &#123;</span><br><span class="line">                    <span class="keyword">if</span>(table[i] == ref) &#123;</span><br><span class="line">                        table[i] = <span class="literal">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        Entry[] table = <span class="keyword">new</span> <span class="title class_">Entry</span>[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">put</span><span class="params">(<span class="type">int</span> index, String key, String value)</span> &#123;</span><br><span class="line">            table[index] = <span class="keyword">new</span> <span class="title class_">Entry</span>(key, value);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key)</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (Entry entry : table) &#123;</span><br><span class="line">                <span class="keyword">if</span> (entry != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">k</span> <span class="operator">=</span> entry.get();</span><br><span class="line">                    <span class="keyword">if</span> (k != <span class="literal">null</span> &amp;&amp; k.equals(key)) &#123;</span><br><span class="line">                        <span class="keyword">return</span> entry.value;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">            sb.append(<span class="string">&quot;[&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Entry entry : table) &#123;</span><br><span class="line">                <span class="keyword">if</span> (entry != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">k</span> <span class="operator">=</span> entry.get();</span><br><span class="line">                    sb.append(k).append(<span class="string">&quot;:&quot;</span>).append(entry.value).append(<span class="string">&quot;,&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (sb.length() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">                sb.deleteCharAt(sb.length() - <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(<span class="string">&quot;]&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> sb.toString();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁虚引用（PhantomReference）"><a href="#🍁虚引用（PhantomReference）" class="headerlink" title="🍁虚引用（PhantomReference）"></a>🍁虚引用（<strong>PhantomReference</strong>）</h2><blockquote>
+<p>使用PhantomReference类实现虚引用，PhantomReference a &#x3D; new PhantomReference(new A(), referenceQueue);</p>
+</blockquote>
+<ul>
+<li>必须<strong>配合引用队列</strong>一起使用，当虚引用所引用的对象被回收时，由 Reference Handler 线程将虚引用对象入队，这样就可以知道哪些对象被回收，从而对它们关联的资源做进一步处理</li>
+<li>无法通过虚引用取得一个对象</li>
+<li>为一个对象设置虚引用关联的唯一目的就是能在这个对象被<strong>回收时收到一个系统通知</strong></li>
+<li>典型例子是 Cleaner 释放 DirectByteBuffer 关联的直接内存</li>
+</ul>
+<img src="/img/40363/GC引用4.png" alt="GC引用4" style="zoom:80%;" />
+
+<hr>
+<p> <strong>总结</strong>：强-无法收，弱-碰就收，软-二次收，虚-通知收</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/03/Java%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/" data-id="clq4m8c290019bc5s9fxe4c0n" data-title="Java引用类型" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/08/07/GC%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          GC回收算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/08/01/GC%E5%88%A4%E6%96%AD%E6%97%A0%E7%94%A8%E5%AF%B9%E8%B1%A1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">GC判断无用对象</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

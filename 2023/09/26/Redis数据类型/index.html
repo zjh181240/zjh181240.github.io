@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Redis数据类型 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁概述Redis中所有的key（键）都是字符串，值的数据类型有5种：String、List、Set、Zset、Hash      类型 存储的值 操作    String 可以是字符串、整数或浮点数 对整个字符串或字符串的一部分进行操作；对整数或浮点数进行自增或自减操作   List 一个链表，链表上的每个节点都包含一个字符串 对链表的两端进行push和pop操作，读取单个或多个元素；根据值查找">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis数据类型">
+<meta property="og:url" content="http://example.com/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁概述Redis中所有的key（键）都是字符串，值的数据类型有5种：String、List、Set、Zset、Hash      类型 存储的值 操作    String 可以是字符串、整数或浮点数 对整个字符串或字符串的一部分进行操作；对整数或浮点数进行自增或自减操作   List 一个链表，链表上的每个节点都包含一个字符串 对链表的两端进行push和pop操作，读取单个或多个元素；根据值查找">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/6834/redis1.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis2.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis4.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis3.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis5.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis6.jpeg">
+<meta property="og:image" content="http://example.com/img/6834/redis7.jpeg">
+<meta property="article:published_time" content="2023-09-26T02:28:17.000Z">
+<meta property="article:modified_time" content="2023-10-04T08:17:54.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/6834/redis1.jpeg">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Redis数据类型" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="article-date">
+  <time class="dt-published" datetime="2023-09-26T02:28:17.000Z" itemprop="datePublished">2023-09-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Redis/">Redis</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Redis数据类型
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁概述"><a href="#🍁概述" class="headerlink" title="🍁概述"></a>🍁概述</h2><p>Redis中所有的key（键）都是字符串，值的数据类型有5种：<strong>String、List、Set、Zset、Hash</strong></p>
+<img src="/img/6834/redis1.jpeg" alt="img" style="zoom:67%;" />
+
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">存储的值</th>
+<th align="center">操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">String</td>
+<td align="center">可以是字符串、整数或浮点数</td>
+<td align="center">对整个字符串或字符串的一部分进行操作；对整数或浮点数进行自增或自减操作</td>
+</tr>
+<tr>
+<td align="center">List</td>
+<td align="center">一个链表，链表上的每个节点都包含一个字符串</td>
+<td align="center">对链表的两端进行push和pop操作，读取单个或多个元素；根据值查找或删除元素</td>
+</tr>
+<tr>
+<td align="center">Set</td>
+<td align="center">包含字符串的无序集合</td>
+<td align="center">字符串的集合，包含基础的方法有看是否存在添加、获取、删除；还包含计算交集、并集、差集等</td>
+</tr>
+<tr>
+<td align="center">Hash</td>
+<td align="center">包含键值对的无序散列表</td>
+<td align="center">包含方法有添加、获取、删除单个元素</td>
+</tr>
+<tr>
+<td align="center">Zset</td>
+<td align="center">和散列一样，用于存储键值对</td>
+<td align="center">字符串成员与浮点数分数之间的有序映射；元素的排列顺序由分数的大小决定；包含方法有添加、获取、删除单个元素以及根据分值范围或成员来获取元素</td>
+</tr>
+</tbody></table>
+<h2 id="🍁String"><a href="#🍁String" class="headerlink" title="🍁String"></a>🍁String</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>String类型是<strong>二进制安全</strong>的，string可以包含任何数据，如数字，字符串，jpg图片或者序列化的对象</p>
+<h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis2.jpeg" alt="image-20230926151736752" style="zoom: 80%;" />
+
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p><strong>缓存</strong>： 经典使用场景，把常用信息，字符串，图片或者视频等信息放到redis中，redis<strong>作为缓存层</strong>，mysql做持久化层，降低mysql的读写压力</p>
+<p><strong>计数器</strong>：redis是单线程模型（<strong>原子性</strong>），一个命令执行完才会执行下一个，同时数据可以一步落地到其他的数据源</p>
+<p><strong>session</strong>：spring session + redis实现session共享</p>
+<h2 id="🍁List"><a href="#🍁List" class="headerlink" title="🍁List"></a>🍁List</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>List底层为双端链表</p>
+<ul>
+<li>元素较少的情况下会使用一块连续的内存存储，即压缩列表ziplist（元素较少的情况下会使用一块连续的内存存储）</li>
+<li>当数据量比较多的时候会改成quicklist，将多个ziplist使用双向指针串起来使用。这样既满足了快速的插入删除性能，又不会出现太大的空间冗余</li>
+</ul>
+<img src="/img/6834/redis4.jpeg" alt="image-20230926153312332" style="zoom:80%;" />
+
+<h3 id="命令-1"><a href="#命令-1" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis3.jpeg" alt="image-20230926152748719" style="zoom:80%;" />
+
+<h3 id="应用-1"><a href="#应用-1" class="headerlink" title="应用"></a>应用</h3><p>lpush+lpop&#x3D;Stack(栈)</p>
+<p>lpush+rpop&#x3D;Queue（队列）</p>
+<p>lpush+ltrim&#x3D;Capped Collection（有限集合）</p>
+<p>lpush+brpop&#x3D;Message Queue（消息队列）</p>
+<h2 id="🍁Set"><a href="#🍁Set" class="headerlink" title="🍁Set"></a>🍁Set</h2><h3 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h3><p>Set 是 String 类型的<strong>无序集合</strong>。集合成员是唯一的，这就意味着集合中<strong>不能出现重复</strong>的数据</p>
+<p>底层其实是一个value为null的hash表，所以添加，删除，查找的<strong>复杂度都是O(1)</strong></p>
+<h3 id="命令-2"><a href="#命令-2" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis5.jpeg" alt="image-20230926153655152" style="zoom:80%;" />
+
+<h3 id="应用-2"><a href="#应用-2" class="headerlink" title="应用"></a>应用</h3><p><strong>标签</strong>（tag）：给用户添加标签，或者用户给消息添加标签，这样有同一标签或者类似标签的可以给推荐关注的事或者关注的人</p>
+<p><strong>点赞，或点踩，收藏等</strong>：可以放到set中实现</p>
+<h2 id="🍁Hash"><a href="#🍁Hash" class="headerlink" title="🍁Hash"></a>🍁Hash</h2><h3 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h3><p>Hash是一个string类型的field和value的映射表，hash特别适合用于<strong>存储对象</strong>。类似Java里面的<strong>Map&lt;String,Object&gt;</strong></p>
+<h3 id="命令-3"><a href="#命令-3" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis6.jpeg" alt="image-20230926173013194" style="zoom:80%;" />
+
+<h3 id="应用-3"><a href="#应用-3" class="headerlink" title="应用"></a>应用</h3><p>存储对象类型</p>
+<h2 id="🍁Zset"><a href="#🍁Zset" class="headerlink" title="🍁Zset"></a>🍁Zset</h2><h3 id="概述-4"><a href="#概述-4" class="headerlink" title="概述"></a>概述</h3><p>Redis有序集合zset与普通集合set非常相似，是一个没有重复元素的字符串集合。</p>
+<p>不同之处是有序集合的每个成员都关联了一个<strong>评分（score）</strong>,这个评分（score）被用来按照从最低分到最高分的方式排序集合中的成员。集合的成员是唯一的，但是评分可以是重复的</p>
+<p><strong>底层结构</strong></p>
+<p>hash：hash的作用就是关联元素value和权重score，保障元素value的唯一性，可以通过元素value找到相应的score值。<br>跳跃表（<strong>zSkiplist</strong>）：跳跃表的目的在于给元素value排序，根据score的范围获取元素列表</p>
+<h3 id="命令-4"><a href="#命令-4" class="headerlink" title="命令"></a>命令</h3><img src="/img/6834/redis7.jpeg" alt="image-20230926221106241" style="zoom:80%;" />
+
+<h3 id="应用-4"><a href="#应用-4" class="headerlink" title="应用"></a>应用</h3><p>排行榜：有序集合经典使用场景。例如小说视频等网站需要对用户上传的小说视频做排行榜，榜单可以按照用户关注数，更新时间，字数等打分，做排行。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/09/26/Redis%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" data-id="clq4m8c4g002qbc5sfbli3tnr" data-title="Redis数据类型" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/10/04/%E5%89%8D%E7%BC%80%E5%92%8C/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          前缀和
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/09/21/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">分布式锁</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

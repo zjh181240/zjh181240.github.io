@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>线程状态 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁线程6种状态 1 新建(New)​	当一个线程对象被创建，但还未调用 start 方法时处于新建状态,  此时未与操作系统底层线程关联 2 可运行(Runnable)​	调用了 start 方法，就会由新建进入可运行 ​	可能正在运行，也可能正在等待 CPU 时间片。包含了操作系统线程状态中的 Running 和 Ready 3 死亡(Terminated)​	可以是线程结束任务之后自己结束，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程状态">
+<meta property="og:url" content="http://example.com/2023/07/13/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁线程6种状态 1 新建(New)​	当一个线程对象被创建，但还未调用 start 方法时处于新建状态,  此时未与操作系统底层线程关联 2 可运行(Runnable)​	调用了 start 方法，就会由新建进入可运行 ​	可能正在运行，也可能正在等待 CPU 时间片。包含了操作系统线程状态中的 Running 和 Ready 3 死亡(Terminated)​	可以是线程结束任务之后自己结束，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/3d00/ThreadStatus.png">
+<meta property="og:image" content="http://example.com/img/3d00/ThreadStatus2.png">
+<meta property="article:published_time" content="2023-07-13T13:43:11.000Z">
+<meta property="article:modified_time" content="2023-11-04T02:12:40.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java并发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/3d00/ThreadStatus.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-线程状态" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/07/13/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" class="article-date">
+  <time class="dt-published" datetime="2023-07-13T13:43:11.000Z" itemprop="datePublished">2023-07-13</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      线程状态
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="🍁线程6种状态"><a href="#🍁线程6种状态" class="headerlink" title="🍁线程6种状态"></a>🍁线程6种状态</h3><p><img src="/img/3d00/ThreadStatus.png" alt="ThreadStatus"></p>
+<h4 id="1-新建-New"><a href="#1-新建-New" class="headerlink" title="1 新建(New)"></a>1 新建(New)</h4><p>​	当一个线程对象被创建，但还未调用 <strong>start 方法</strong>时处于新建状态,  此时未与操作系统底层线程关联</p>
+<h4 id="2-可运行-Runnable"><a href="#2-可运行-Runnable" class="headerlink" title="2 可运行(Runnable)"></a>2 可运行(Runnable)</h4><p>​	调用了 start 方法，就会由新建进入可运行</p>
+<p>​	可能正在运行，也可能正在等待 CPU 时间片。包含了操作系统线程状态中的 <strong>Running 和 Ready</strong></p>
+<h4 id="3-死亡-Terminated"><a href="#3-死亡-Terminated" class="headerlink" title="3 死亡(Terminated)"></a>3 死亡(Terminated)</h4><p>​	可以是线程结束任务之后自己结束，或者产生了异常而结束</p>
+<h4 id="4-阻塞-Blocking"><a href="#4-阻塞-Blocking" class="headerlink" title="4 阻塞(Blocking)"></a>4 阻塞(Blocking)</h4><p>​	当获取锁失败后，由可运行进入 Monitor 的阻塞队列阻塞，此时不占用 cpu 时间<br>​	当持锁线程释放锁时，会按照一定规则唤醒阻塞队列中的阻塞线程，唤醒后的线程进入可运行状态</p>
+<h4 id="5-无限期等待-Waiting"><a href="#5-无限期等待-Waiting" class="headerlink" title="5 无限期等待(Waiting)"></a>5 无限期等待(Waiting)</h4><p>​	等待其它线程显式地唤醒，否则不会被分配 CPU 时间片</p>
+<table>
+<thead>
+<tr>
+<th align="center">常见进入方法</th>
+<th align="center">常见退出方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">没有设置 Timeout 参数的 Object.wait() 方法</td>
+<td align="center">Object.notify() &#x2F; Object.notifyAll()</td>
+</tr>
+<tr>
+<td align="center">没有设置 Timeout 参数的 Thread.join() 方法</td>
+<td align="center">被调用的线程执行完毕</td>
+</tr>
+</tbody></table>
+<h4 id="6-限期等待-Timed-Waiting"><a href="#6-限期等待-Timed-Waiting" class="headerlink" title="6 限期等待(Timed Waiting)"></a>6 限期等待(Timed Waiting)</h4><p>​	无需等待其它线程显式地唤醒，在一定时间之后会被系统自动唤醒</p>
+<table>
+<thead>
+<tr>
+<th align="center">常见进入方法</th>
+<th align="center">常见退出方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Thread.sleep() 方法</td>
+<td align="center">时间结束</td>
+</tr>
+<tr>
+<td align="center">设置了 Timeout 参数的 Object.wait() 方法</td>
+<td align="center">时间结束 &#x2F; Object.notify() &#x2F; Object.notifyAll()</td>
+</tr>
+<tr>
+<td align="center">设置了 Timeout 参数的 Thread.join() 方法</td>
+<td align="center">时间结束 &#x2F; 被调用的线程执行完毕</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>阻塞和等待的区别：阻塞是被动的，它是在等待获取一个排它锁；而等待是主动的，通过调用 Thread.sleep() 和 Object.wait() 等方法进入</p>
+</blockquote>
+<h3 id="线程状态的转换"><a href="#线程状态的转换" class="headerlink" title="线程状态的转换"></a>线程状态的转换</h3><img src="/img/3d00/ThreadStatus2.png" alt="img" style="zoom:67%;" />
+
+<p>1.只有就绪态和运行态是双向转换，其余都是单向</p>
+<p>2.yield()是Thread的静态方法，作用当前线程，释放当前线程持有的CPU资源，将CPU让给优先级不低于自己的线程用，调用后进入就绪状态</p>
+<p>3.join()、sleep()会让当前线程进入阻塞状态，wait()会让当前线程进入等待状态（对OS而言，都是阻塞态）</p>
+<h3 id="🍁wait-vs-sleep"><a href="#🍁wait-vs-sleep" class="headerlink" title="🍁wait vs sleep"></a>🍁wait vs sleep</h3><h4 id="共同点"><a href="#共同点" class="headerlink" title="共同点"></a>共同点</h4><p>​	wait() ，wait(long) 和 sleep(long) 的效果都是让当前线程暂时放弃 CPU 的使用权，进入<strong>阻塞状态</strong></p>
+<h4 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h4><p>●  方法归属不同<br>    sleep(long) 是 <strong>Thread</strong> 的静态方法<br>    而 wait()，wait(long) 都是 <strong>Object</strong> 的成员方法，每个对象都有<br>●  醒来时机不同<br>    执行 sleep(long) 和 wait(long) 的线程都会在等待相应毫秒后醒来<br>    wait(long) 和 wait() 还可以被 <strong>notify</strong> 唤醒，wait() 如果不唤醒就一直等下去<br>    它们都可以被打断唤醒<br>●  锁特性不同（重点）<br>    wait 方法的调用必须先获取 wait 对象的锁，而 sleep 则无此限制<br>    wait 方法执行后会释放对象锁，允许其它线程获得该对象锁（我放弃 cpu，但你们还可以用）<br>    而 sleep 如果在 synchronized 代码块中执行，并不会释放对象锁（我放弃 cpu，你们也用不了）</p>
+<blockquote>
+<p><strong>wait扔掉锁睡觉，sleep抱着锁睡觉</strong></p>
+</blockquote>
+<h3 id="🍁线程间的协作"><a href="#🍁线程间的协作" class="headerlink" title="🍁线程间的协作"></a>🍁线程间的协作</h3><blockquote>
+<p>当多个线程可以一起工作去解决某个问题时，如果某些部分必须在其它部分之前完成，那么就需要对线程进行协调</p>
+</blockquote>
+<h4 id="join"><a href="#join" class="headerlink" title="join()"></a>join()</h4><p>在线程中调用另一个线程的 join() 方法，会将当前线程挂起，而不是忙等待，直到目标线程结束</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JoinExample</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">A</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">B</span> <span class="keyword">extends</span> <span class="title class_">Thread</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> A a;</span><br><span class="line"></span><br><span class="line">        B(A a) &#123;</span><br><span class="line">            <span class="built_in">this</span>.a = a;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                a.join();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">A</span> <span class="variable">a</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">A</span>();</span><br><span class="line">        <span class="type">B</span> <span class="variable">b</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">B</span>(a);</span><br><span class="line">        b.start();</span><br><span class="line">        a.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果</span></span><br><span class="line">A</span><br><span class="line">B</span><br></pre></td></tr></table></figure>
+
+<p>解释：</p>
+<p>虽然 b 线程先启动，但是因为在 b 线程中调用了 a 线程的 <strong>join()</strong> 方法，b 线程会等待 a 线程结束才继续执行，因此最后能够<strong>保证 a 线程的输出先于 b 线程的输出</strong></p>
+<h4 id="wait-notify-notifyAll"><a href="#wait-notify-notifyAll" class="headerlink" title="wait() &#x2F; notify() &#x2F; notifyAll()"></a>wait() &#x2F; notify() &#x2F; notifyAll()</h4><p>调用 wait() 使得线程等待某个条件满足，线程在等待时会被挂起，当其他线程的运行使得这个条件满足时，其它线程会调用 notify() 或者 notifyAll() 来唤醒挂起的线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WaitNotifyExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;before&quot;</span>);</span><br><span class="line">        notifyAll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            wait();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;after&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">ExecutorService</span> <span class="variable">executorService</span> <span class="operator">=</span> Executors.newCachedThreadPool();</span><br><span class="line">    <span class="type">WaitNotifyExample</span> <span class="variable">example</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WaitNotifyExample</span>();</span><br><span class="line">    executorService.execute(() -&gt; example.after());</span><br><span class="line">    executorService.execute(() -&gt; example.before());</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果</span></span><br><span class="line">before</span><br><span class="line">after</span><br></pre></td></tr></table></figure>
+
+<p>解释：</p>
+<ul>
+<li>它们都属于 Object 的一部分，而不属于 Thread。</li>
+<li>只能用在同步方法或者同步控制块中使用，否则会在运行时抛出 IllegalMonitorStateExeception。</li>
+<li>使用 wait() 挂起期间，<strong>线程会释放锁</strong>。这是因为，如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁</li>
+</ul>
+<h4 id="await-signal-signalAll"><a href="#await-signal-signalAll" class="headerlink" title="await() &#x2F; signal() &#x2F; signalAll()"></a>await() &#x2F; signal() &#x2F; signalAll()</h4><p>java.util.concurrent 类库中提供了 Condition 类来实现线程之间的协调，可以在 Condition 上调用 await() 方法使线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒等待的线程。相比于 wait() 这种等待方式，await() 可以<strong>指定等待的条件</strong>，因此更加灵活</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AwaitSignalExample</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line">    <span class="comment">// 使用 Lock 来获取一个 Condition 对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">Condition</span> <span class="variable">condition</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">before</span><span class="params">()</span> &#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;before&quot;</span>);</span><br><span class="line">            condition.signalAll();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">after</span><span class="params">()</span> &#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            condition.await();</span><br><span class="line">            System.out.println(<span class="string">&quot;after&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">ExecutorService</span> <span class="variable">executorService</span> <span class="operator">=</span> Executors.newCachedThreadPool();</span><br><span class="line">    <span class="type">AwaitSignalExample</span> <span class="variable">example</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AwaitSignalExample</span>();</span><br><span class="line">    executorService.execute(() -&gt; example.after());</span><br><span class="line">    executorService.execute(() -&gt; example.before());</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出结果</span></span><br><span class="line">before</span><br><span class="line">after</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/07/13/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" data-id="clq4m8c6m005ubc5shblg7zdc" data-title="线程状态" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/07/15/%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          线程使用方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/07/12/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">快速排序</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

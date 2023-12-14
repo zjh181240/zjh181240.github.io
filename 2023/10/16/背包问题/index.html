@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>背包问题 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁0-1背包问题问题描述n个物品都是固体，有重量和价值。现在要取走不超过10克的物品。每次可以不拿或全拿，问最高价值是多少？ 示例：    编号 重量（g） 价值 描述 简称    0 4 1600 黄金一块 A   1 8 2400 红宝石一块 R   2 5 30 白银一块 S   3 1 1,000,000 钻石一粒 D   思路该问题不能使用贪心求解，正确思路为动态规划 考虑二维dp数组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="背包问题">
+<meta property="og:url" content="http://example.com/2023/10/16/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁0-1背包问题问题描述n个物品都是固体，有重量和价值。现在要取走不超过10克的物品。每次可以不拿或全拿，问最高价值是多少？ 示例：    编号 重量（g） 价值 描述 简称    0 4 1600 黄金一块 A   1 8 2400 红宝石一块 R   2 5 30 白银一块 S   3 1 1,000,000 钻石一粒 D   思路该问题不能使用贪心求解，正确思路为动态规划 考虑二维dp数组">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-16T15:13:49.000Z">
+<meta property="article:modified_time" content="2023-11-02T08:15:24.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-背包问题" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/10/16/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/" class="article-date">
+  <time class="dt-published" datetime="2023-10-16T15:13:49.000Z" itemprop="datePublished">2023-10-16</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      背包问题
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁0-1背包问题"><a href="#🍁0-1背包问题" class="headerlink" title="🍁0-1背包问题"></a>🍁0-1背包问题</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>n个物品都是固体，有重量和价值。现在要取走<strong>不超过10克</strong>的物品。每次<strong>可以不拿或全拿</strong>，问最高价值是多少？</p>
+<p>示例：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>重量（g）</th>
+<th>价值</th>
+<th>描述</th>
+<th>简称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>4</td>
+<td>1600</td>
+<td>黄金一块</td>
+<td>A</td>
+</tr>
+<tr>
+<td>1</td>
+<td>8</td>
+<td>2400</td>
+<td>红宝石一块</td>
+<td>R</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>30</td>
+<td>白银一块</td>
+<td>S</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>1,000,000</td>
+<td>钻石一粒</td>
+<td>D</td>
+</tr>
+</tbody></table>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>该问题不能使用贪心求解，正确思路为动态规划</p>
+<p>考虑二维dp数组，<strong>行代表该编号对应的物品，列代表背包重量</strong>（0~n）,<code>dp[i][j]</code>代表<strong>i种物体下j重量的最大价值</strong></p>
+<p>分析如下：</p>
+<p>​		0	1	2	3	4	5	6	7	8	9	10</p>
+<p>0	  0	0	0	0	A	A	A	A	A	A	A	黄金</p>
+<p>1	  0	0	0	0	A	A	A	A	R	R	R	红宝石</p>
+<p>2	  0	0	0	0	A	A	A	A	R	R	R	白银</p>
+<p>3	  0	D    D   D   D    DA DA DA DA DR DR  钻石</p>
+<hr>
+<p>转为递推式如下：</p>
+<p>1.装不下：保持上一行不变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br><span class="line"><span class="comment">// 如dp[1][7] = dp[0][7];</span></span><br></pre></td></tr></table></figure>
+
+<p>2.装得下：max(上一行价值，当前物品价值+<strong>上一行</strong>中减去当前物品重量的价值)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = max(dp[i-<span class="number">1</span>][j],item.value+dp[i-<span class="number">1</span>][j-item.weight]);</span><br><span class="line"><span class="comment">// 如dp[3][5] = dp[2][5] + dp[2][5-D.weight];</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KnapsackProblem</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        1   2   3   4   5   6   7   8   9   10</span></span><br><span class="line"><span class="comment">                    a</span></span><br><span class="line"><span class="comment">                    a               r</span></span><br><span class="line"><span class="comment">                    a               r</span></span><br><span class="line"><span class="comment">        d               da          da  dr  dr</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Item</span> &#123;</span><br><span class="line">        <span class="type">int</span> index;</span><br><span class="line">        String name;</span><br><span class="line">        <span class="type">int</span> weight;</span><br><span class="line">        <span class="type">int</span> value;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Item</span><span class="params">(<span class="type">int</span> index, String name, <span class="type">int</span> weight, <span class="type">int</span> value)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.index = index;</span><br><span class="line">            <span class="built_in">this</span>.name = name;</span><br><span class="line">            <span class="built_in">this</span>.weight = weight;</span><br><span class="line">            <span class="built_in">this</span>.value = value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Item(&quot;</span> + name + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Item[] items = <span class="keyword">new</span> <span class="title class_">Item</span>[]&#123;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">1</span>, <span class="string">&quot;黄金&quot;</span>, <span class="number">4</span>, <span class="number">1600</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">2</span>, <span class="string">&quot;宝石&quot;</span>, <span class="number">8</span>, <span class="number">2400</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">3</span>, <span class="string">&quot;白银&quot;</span>, <span class="number">5</span>, <span class="number">30</span>),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">4</span>, <span class="string">&quot;钻石&quot;</span>, <span class="number">1</span>, <span class="number">10000</span>),</span><br><span class="line">        &#125;;</span><br><span class="line">        System.out.println(select(items, <span class="number">10</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">select</span><span class="params">(Item[] items, <span class="type">int</span> total)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[items.length][total + <span class="number">1</span>]; <span class="comment">// total + 1是防止0</span></span><br><span class="line">        print(dp);</span><br><span class="line">        <span class="type">Item</span> <span class="variable">item0</span> <span class="operator">=</span> items[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; total + <span class="number">1</span>; j++) &#123; <span class="comment">// 先处理第一行</span></span><br><span class="line">            <span class="keyword">if</span> (j &gt;= item0.weight) &#123;</span><br><span class="line">                dp[<span class="number">0</span>][j] = item0.value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        print(dp);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; dp.length; i++) &#123;</span><br><span class="line">            <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> items[i];</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>; j &lt; total + <span class="number">1</span>; j++) &#123;</span><br><span class="line">                <span class="comment">// x: 上一次同容量背包的最大价值</span></span><br><span class="line">                <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> dp[i - <span class="number">1</span>][j];</span><br><span class="line">                <span class="keyword">if</span> (j &gt;= item.weight) &#123;</span><br><span class="line">                    <span class="comment">// j-item.weight: 当前背包容量-这次物品重量=剩余背包空间</span></span><br><span class="line">                    <span class="comment">// y: 剩余背包空间能装下的最大价值 + 这次物品价值</span></span><br><span class="line">                    <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> dp[i - <span class="number">1</span>][j - item.weight] + item.value;</span><br><span class="line">                    dp[i][j] = Integer.max(x, y);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp[i][j] = x;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            print(dp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[dp.length - <span class="number">1</span>][total];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">(<span class="type">int</span>[][] dp)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;   &quot;</span> + <span class="string">&quot;-&quot;</span>.repeat(<span class="number">63</span>));</span><br><span class="line">        Object[] array = IntStream.range(<span class="number">0</span>, dp[<span class="number">0</span>].length + <span class="number">1</span>).boxed().toArray();</span><br><span class="line">        System.out.printf((<span class="string">&quot;%5d &quot;</span>.repeat(dp[<span class="number">0</span>].length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span>[] d : dp) &#123;</span><br><span class="line">            array = Arrays.stream(d).boxed().toArray();</span><br><span class="line">            System.out.printf((<span class="string">&quot;%5d &quot;</span>.repeat(d.length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁完全背包问题"><a href="#🍁完全背包问题" class="headerlink" title="🍁完全背包问题"></a>🍁完全背包问题</h2><h3 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h3><p>n个物品都是固体，有重量和价值。现在要取走<strong>不超过10克</strong>的物品。问最高价值是多少？</p>
+<p>与0-1背包问题的区别在于可以<strong>拿多次</strong></p>
+<p>示例：</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>重量（g）</th>
+<th>价值</th>
+<th>描述</th>
+<th>简称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>青铜</td>
+<td>C</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>白银</td>
+<td>S</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>7</td>
+<td>黄金</td>
+<td>A</td>
+</tr>
+</tbody></table>
+<h3 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h3><p>和0-1背包同样的思路，考虑二维dp数组，<strong>行代表该编号对应的物品，列代表背包重量</strong>（0~n）,<code>dp[i][j]</code>代表<strong>i种物体下j重量的最大价值</strong></p>
+<p>分析如下：</p>
+<p>​		0		1		2		3		4		5		6	</p>
+<p>1	  0		0		C		C	   2C	  2C	 3C	青铜</p>
+<p>1	  0		0		C		S	   2C	  SC	 3C	 白银</p>
+<p>1	  0		0		C		S	   A  	  A	    AC	黄金</p>
+<hr>
+<p>转为递推式如下：</p>
+<p>1.装不下：保持上一行不变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br></pre></td></tr></table></figure>
+
+<p>2.装得下：max(上一行价值，当前物品价值+<strong>本行</strong>中减去当前物品重量的价值)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = max(dp[i-<span class="number">1</span>][j],item.value+dp[i][j-item.weight]);</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KnapsackProblemComplete</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Item</span> &#123;</span><br><span class="line">        <span class="type">int</span> index;</span><br><span class="line">        String name;</span><br><span class="line">        <span class="type">int</span> weight;</span><br><span class="line">        <span class="type">int</span> value;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Item</span><span class="params">(<span class="type">int</span> index, String name, <span class="type">int</span> weight, <span class="type">int</span> value)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.index = index;</span><br><span class="line">            <span class="built_in">this</span>.name = name;</span><br><span class="line">            <span class="built_in">this</span>.weight = weight;</span><br><span class="line">            <span class="built_in">this</span>.value = value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Item(&quot;</span> + name + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Item[] items = <span class="keyword">new</span> <span class="title class_">Item</span>[]&#123;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">1</span>, <span class="string">&quot;青铜&quot;</span>, <span class="number">2</span>, <span class="number">3</span>),    <span class="comment">// c</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">2</span>, <span class="string">&quot;白银&quot;</span>, <span class="number">3</span>, <span class="number">4</span>),    <span class="comment">// s</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Item</span>(<span class="number">3</span>, <span class="string">&quot;黄金&quot;</span>, <span class="number">4</span>, <span class="number">7</span>),    <span class="comment">// a</span></span><br><span class="line">        &#125;;</span><br><span class="line">        System.out.println(select(items, <span class="number">6</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">            0   1   2   3   4   5   6</span></span><br><span class="line"><span class="comment">        1   0   0   c   c   cc  cc  ccc</span></span><br><span class="line"><span class="comment">        2   0   0   c   s   cc  cs  ccc</span></span><br><span class="line"><span class="comment">        3   0   0   c   s   a   a   ac</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">select</span><span class="params">(Item[] items, <span class="type">int</span> total)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[items.length][total + <span class="number">1</span>];</span><br><span class="line">        <span class="type">Item</span> <span class="variable">item0</span> <span class="operator">=</span> items[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; total + <span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j &gt;= item0.weight) &#123;</span><br><span class="line">                dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - item0.weight] + item0.value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        print(dp);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; items.length; i++) &#123;</span><br><span class="line">            <span class="type">Item</span> <span class="variable">item</span> <span class="operator">=</span> items[i];            </span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>; j &lt; total + <span class="number">1</span>; j++) &#123;</span><br><span class="line">                <span class="comment">// x: 上一次同容量背包的最大价值</span></span><br><span class="line">            	<span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> dp[i - <span class="number">1</span>][j];</span><br><span class="line">                <span class="keyword">if</span> (j &gt;= item.weight) &#123;</span><br><span class="line">                    <span class="comment">// j-item.weight: 当前背包容量-这次物品重量=剩余背包空间</span></span><br><span class="line">                    <span class="comment">// y: 剩余背包空间能装下的最大价值 + 这次物品价值</span></span><br><span class="line">                    <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> dp[i][j - item.weight] + item.value;</span><br><span class="line">                    dp[i][j] = Integer.max(x, y);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp[i][j] = x;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            print(dp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[dp.length - <span class="number">1</span>][total];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">(<span class="type">int</span>[][] dp)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;   &quot;</span> + <span class="string">&quot;-&quot;</span>.repeat(<span class="number">63</span>));</span><br><span class="line">        Object[] array = IntStream.range(<span class="number">0</span>, dp[<span class="number">0</span>].length + <span class="number">1</span>).boxed().toArray();</span><br><span class="line">        System.out.printf((<span class="string">&quot;%5d &quot;</span>.repeat(dp[<span class="number">0</span>].length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span>[] d : dp) &#123;</span><br><span class="line">            array = Arrays.stream(d).boxed().toArray();</span><br><span class="line">            System.out.printf((<span class="string">&quot;%5d &quot;</span>.repeat(d.length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁零钱兑换问题"><a href="#🍁零钱兑换问题" class="headerlink" title="🍁零钱兑换问题"></a>🍁零钱兑换问题</h2><h3 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h3><p>凑成总金额的凑法中，需要硬币的最少个数是多少？</p>
+<p>示例：现有面值1、2、5，求凑成总金额为5的最小个数</p>
+<h3 id="思路-2"><a href="#思路-2" class="headerlink" title="思路"></a>思路</h3><p>和背包问题一样的分析方法</p>
+<p>面值		0		1		2		3		4		5	</p>
+<p>​	1	  	0		1		11	111  1111  11111</p>
+<p>​	2	  	0		1		2		21	 22	  221</p>
+<p>​	5	  	0		1		2		21	 22 	  5	    </p>
+<p>总金额：类比为背包容量</p>
+<p>硬币面值：类比为物品重量</p>
+<p>硬币个数：类比为物品价值（固定为1）</p>
+<p>问题：求价值（个数）<strong>最小的</strong></p>
+<hr>
+<p>转为递推式如下：</p>
+<p>1.装不下：保持上次价值（个数）不变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br></pre></td></tr></table></figure>
+
+<p>2.装得下：min(上次价值（个数），剩余容量能装下的最小价值（个数）**+1**)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = min(dp[i-<span class="number">1</span>][j],dp[i][j-coin]+<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChangeMakingProblemLeetcode322</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">coinChange</span><span class="params">(<span class="type">int</span>[] coins, <span class="type">int</span> amount)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">max</span> <span class="operator">=</span> amount + <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[coins.length][amount + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>; j &lt; amount + <span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (j &gt;= coins[<span class="number">0</span>]) &#123;</span><br><span class="line">                dp[<span class="number">0</span>][j] = <span class="number">1</span> + dp[<span class="number">0</span>][j - coins[<span class="number">0</span>]];</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                dp[<span class="number">0</span>][j] = max;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; coins.length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">1</span>; j &lt; amount + <span class="number">1</span>; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (j &gt;= coins[i]) &#123;</span><br><span class="line">                    dp[i][j] = Math.min(dp[i - <span class="number">1</span>][j], <span class="number">1</span> + dp[i][j - coins[i]]);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    dp[i][j] = dp[i - <span class="number">1</span>][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            print(dp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">r</span> <span class="operator">=</span> dp[coins.length - <span class="number">1</span>][amount];</span><br><span class="line">        <span class="keyword">return</span> r &gt; amount ? -<span class="number">1</span> : r;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ChangeMakingProblemLeetcode322</span> <span class="variable">leetcode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChangeMakingProblemLeetcode322</span>();</span><br><span class="line">        <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> leetcode.coinChange(<span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>&#125;, <span class="number">5</span>);</span><br><span class="line"><span class="comment">//        int count = leetcode.coinChange(new int[]&#123;25, 10, 5, 1&#125;, 41);</span></span><br><span class="line"><span class="comment">//        int count = leetcode.coinChange(new int[]&#123;2&#125;, 3);</span></span><br><span class="line"><span class="comment">//        int count = leetcode.coinChange(new int[]&#123;15, 10, 1&#125;, 21);</span></span><br><span class="line">        System.out.println(count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">(<span class="type">int</span>[][] dp)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;-&quot;</span>.repeat(<span class="number">18</span>));</span><br><span class="line">        Object[] array = IntStream.range(<span class="number">0</span>, dp[<span class="number">0</span>].length + <span class="number">1</span>).boxed().toArray();</span><br><span class="line">        System.out.printf((<span class="string">&quot;%2d &quot;</span>.repeat(dp[<span class="number">0</span>].length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span>[] d : dp) &#123;</span><br><span class="line">            array = Arrays.stream(d).boxed().toArray();</span><br><span class="line">            System.out.printf((<span class="string">&quot;%2d &quot;</span>.repeat(d.length)) + <span class="string">&quot;%n&quot;</span>, array);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="🍁零钱兑换问题II"><a href="#🍁零钱兑换问题II" class="headerlink" title="🍁零钱兑换问题II"></a>🍁零钱兑换问题II</h2><h3 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h3><p>凑成总金额的<strong>凑法</strong>有多少？</p>
+<p>示例：现有面值1、2、5，求凑成总金额为5的最小个数</p>
+<h3 id="思路-3"><a href="#思路-3" class="headerlink" title="思路"></a>思路</h3><p>面值		0		1		2		3		4		5	</p>
+<p>​	1	     1		1		11	111  1111  11111</p>
+<p>​	2	     1		1		11	111  1111  11111</p>
+<p>​	  	  	 		   		2	    21    211	2111</p>
+<p>​									                   22	  221</p>
+<p>​	5	     1 		1		11	111  1111  11111</p>
+<p>​	  	  	 		   		2	    21    211	2111</p>
+<p>​									                   22	  221</p>
+<p>​																	5</p>
+<hr>
+<p>转为递推式如下：</p>
+<p>1.装不下：保持上次不变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br></pre></td></tr></table></figure>
+
+<p>2.装得下：<strong>继承上次的</strong>+减去当前面值的剩余面值对应的个数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dp[i][j] = dp[i-<span class="number">1</span>][j] + dp[i][j-coin];</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码-3"><a href="#代码-3" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChangeMakingProblem</span> &#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     面值    0        1        2        3        4        5</span></span><br><span class="line"><span class="comment">       1    1        1        1        1        1        1</span></span><br><span class="line"><span class="comment">       2    1        1        2        2        3        3</span></span><br><span class="line"><span class="comment">       5    1        1        2        2        3        4</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">     面值    0        1        2        3</span></span><br><span class="line"><span class="comment">            1        0        0        0</span></span><br><span class="line"><span class="comment">       2    1        0        1        0</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">change</span><span class="params">(<span class="type">int</span>[] coins, <span class="type">int</span> amount)</span> &#123;</span><br><span class="line">        <span class="type">int</span>[][] dp = <span class="keyword">new</span> <span class="title class_">int</span>[coins.length][amount + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>; i&lt;coins.length; i++)&#123; <span class="comment">// 第一列全设置为0</span></span><br><span class="line">            dp[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j &lt; amount+<span class="number">1</span>;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(j&gt;=coins[<span class="number">0</span>])&#123;</span><br><span class="line">                dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - coins[<span class="number">0</span>]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i &lt; coins.length;i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j &lt; amount+<span class="number">1</span>;j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(j &gt;= coins[i])&#123;</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j] + dp[i][j-coins[i]];</span><br><span class="line">                &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                    dp[i][j] = dp[i-<span class="number">1</span>][j];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[coins.length - <span class="number">1</span>][amount];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ChangeMakingProblemLeetcode518</span> <span class="variable">leetcode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChangeMakingProblemLeetcode518</span>();</span><br><span class="line">        <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> leetcode.change(<span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>&#125;, <span class="number">5</span>);</span><br><span class="line">        System.out.println(count);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/10/16/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98/" data-id="clq4m8c5v004pbc5s670dgz7h" data-title="背包问题" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          SpringCloud总览
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/10/15/Redis%E7%BC%93%E5%AD%98%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Redis缓存问题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

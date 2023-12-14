@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>SpringAOP | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="🍁理解AOP什么是AOP？ 像OOP(Object Oriented Programming)面向对象编程一样，AOP(Aspect Oriented Programming)面向切面编程，也是一种编程范式，指导开发者如何组织程序结构  AOP的作用 在不惊动原始设计的基础上为其进行功能增强 实现这样的功能即代理模式  AOP的核心概念直接解释AOP的核心概念是比较困难的，先从一个简单的案例说起">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAOP">
+<meta property="og:url" content="http://example.com/2023/07/20/SpringAOP/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="🍁理解AOP什么是AOP？ 像OOP(Object Oriented Programming)面向对象编程一样，AOP(Aspect Oriented Programming)面向切面编程，也是一种编程范式，指导开发者如何组织程序结构  AOP的作用 在不惊动原始设计的基础上为其进行功能增强 实现这样的功能即代理模式  AOP的核心概念直接解释AOP的核心概念是比较困难的，先从一个简单的案例说起">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/19494/AOP1.png">
+<meta property="og:image" content="http://example.com/img/19494/AOP2.png">
+<meta property="og:image" content="http://example.com/img/19494/AOP3.png">
+<meta property="article:published_time" content="2023-07-20T15:08:45.000Z">
+<meta property="article:modified_time" content="2023-07-22T07:24:24.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/19494/AOP1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-SpringAOP" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/07/20/SpringAOP/" class="article-date">
+  <time class="dt-published" datetime="2023-07-20T15:08:45.000Z" itemprop="datePublished">2023-07-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Spring/">Spring</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      SpringAOP
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="🍁理解AOP"><a href="#🍁理解AOP" class="headerlink" title="🍁理解AOP"></a>🍁理解AOP</h2><h3 id="什么是AOP？"><a href="#什么是AOP？" class="headerlink" title="什么是AOP？"></a>什么是AOP？</h3><blockquote>
+<p>像OOP(Object Oriented Programming)面向对象编程一样，<strong>AOP(Aspect Oriented Programming)面向切面编程</strong>，也是一种编程范式，指导开发者如何组织程序结构</p>
+</blockquote>
+<h3 id="AOP的作用"><a href="#AOP的作用" class="headerlink" title="AOP的作用"></a>AOP的作用</h3><blockquote>
+<p>在不惊动原始设计的基础上为其进行<strong>功能增强</strong></p>
+<p>实现这样的功能即<strong>代理模式</strong></p>
+</blockquote>
+<h3 id="AOP的核心概念"><a href="#AOP的核心概念" class="headerlink" title="AOP的核心概念"></a>AOP的核心概念</h3><p>直接解释AOP的核心概念是比较困难的，先从一个简单的案例说起：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BookDaoImpl</span> <span class="keyword">implements</span> <span class="title class_">BookDao</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//记录程序当前执行执行（开始时间）</span></span><br><span class="line">        <span class="type">Long</span> <span class="variable">startTime</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        <span class="comment">//业务执行万次</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;i&lt;<span class="number">10000</span>;i++) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;book dao save ...&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//记录程序当前执行时间（结束时间）</span></span><br><span class="line">        <span class="type">Long</span> <span class="variable">endTime</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        <span class="comment">//计算时间差</span></span><br><span class="line">        <span class="type">Long</span> <span class="variable">totalTime</span> <span class="operator">=</span> endTime-startTime;</span><br><span class="line">        <span class="comment">//输出信息</span></span><br><span class="line">        System.out.println(<span class="string">&quot;执行万次消耗时间：&quot;</span> + totalTime + <span class="string">&quot;ms&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;book dao update ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;book dao delete ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">select</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;book dao select ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码是在BookDaoImpl中对<code>save</code>方法中有计算万次执行消耗的时间。</p>
+<p>但是从容器中获取bookDao对象后，分别执行其<code>save</code>,<code>delete</code>,<code>update</code>和<code>select</code>方法，会有以下结果：</p>
+<p><img src="/img/19494/AOP1.png" alt="AOP1"></p>
+<p>对于计算万次执行消耗的时间只有save方法有，为什么delete和update方法也会有呢?</p>
+<p>实际上这里就是使用了Spring的AOP，在不惊动原有设计(代码)的前提下，想给谁添加功能就给谁添加，即<code>无入侵式</code></p>
+<p><strong>核心概念引入</strong></p>
+<p><img src="/img/19494/AOP2.png" alt="AOP2"></p>
+<p>(1)对上面的案例中BookServiceImpl中有<code>save</code>,<code>update</code>,<code>delete</code>和<code>select</code>方法，这些方法称为<code>连接点</code></p>
+<p>(2)在BookServiceImpl的四个方法中，<code>update</code>和<code>delete</code>只有打印没有计算万次执行消耗时间，但是在运行的时候已经有该功能，那也就是说<code>update</code>和<code>delete</code>方法都已经被增强，所以对于需要增强的方法称为<code>切入点</code></p>
+<p>(3)执行BookServiceImpl的update和delete方法的时候都被添加了一个计算万次执行消耗时间的功能，将这个功能抽取到一个方法中，换句话说就是<strong>存放共性功能的方法</strong>，称为<code>通知</code></p>
+<p>(4)通知是要增强的内容，会有多个，切入点是需要被增强的方法，也会有多个，那哪个切入点需要添加哪个通知，就需要提前将它们之间的关系描述清楚，那么对于通知和切入点之间的关系描述，称为<code>切面</code></p>
+<p>(5)通知是一个方法，方法不能独立存在需要被写在一个类中，这个类称为<code>通知类</code></p>
+<p><strong>核心概念总结</strong></p>
+<p>**连接点(JoinPoint)**：程序执行过程中的任意位置，粒度为执行方法、抛出异常、设置变量等</p>
+<ul>
+<li>在SpringAOP中，理解为方法的执行</li>
+</ul>
+<p>**切入点(Pointcut)**：匹配连接点的式子</p>
+<ul>
+<li>在SpringAOP中，一个切入点可以描述一个具体方法，也可也匹配多个方法<ul>
+<li>一个具体的方法:如com.dao包下的BookDao接口中的无形参无返回值的save方法</li>
+<li>匹配多个方法:所有的save方法，所有的get开头的方法，所有以Dao结尾的接口中的任意方法，所有带有一个参数的方法</li>
+</ul>
+</li>
+<li>连接点范围要比切入点范围大，是切入点的方法也一定是连接点，但是是连接点的方法就不一定要被增强，所以可能不是切入点。</li>
+</ul>
+<p><strong>通知(Advice)</strong>:在切入点处执行的操作，也就是共性功能</p>
+<ul>
+<li>在SpringAOP中，功能最终以方法的形式呈现</li>
+</ul>
+<p><strong>通知类</strong>：定义通知的类</p>
+<p><strong>切面(Aspect)</strong>:描述通知与切入点的对应关系。</p>
+<h2 id="🍁AOP案例"><a href="#🍁AOP案例" class="headerlink" title="🍁AOP案例"></a>🍁AOP案例</h2><h3 id="前置说明"><a href="#前置说明" class="headerlink" title="前置说明"></a>前置说明</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BookDao</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BookDaoImpl</span> <span class="keyword">implements</span> <span class="title class_">BookDao</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">        System.out.println(<span class="string">&quot;book dao save ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;book dao update ...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现有接口BookDao和其实现类BookDaoImpl</p>
+<p>目前打印save方法的时候，因为方法中有打印系统时间，所以运行的时候是可以看到系统时间，对于update方法来说，就没有该功能。使用SpringAOP的方式在不改变update方法的前提下让其具有打印系统时间的功能。</p>
+<h3 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h3><p>仅说明AOP相关的配置，默认依赖等全部配置完毕</p>
+<h4 id="1-定义通知类"><a href="#1-定义通知类" class="headerlink" title="1.定义通知类"></a>1.定义通知类</h4><p>通知就是将共性功能抽取出来后形成的方法，这里指的就是当前系统时间的打印</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类名和方法名无要求</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyAdvice</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-定义切入点"><a href="#2-定义切入点" class="headerlink" title="2.定义切入点"></a>2.定义切入点</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyAdvice</span> &#123;</span><br><span class="line">    <span class="comment">// 要增强的是update方法</span></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(void com.itheima.dao.BookDao.update())&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">pt</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>切入点定义依托一个不具有实际意义的方法进行，即<strong>无参数、无返回值、方法体无实际逻辑</strong>。</li>
+<li><strong>切入点表达式execution</strong>(@Pointcut中的内容)有专门的编写格式</li>
+</ul>
+<h4 id="3-制作切面"><a href="#3-制作切面" class="headerlink" title="3.制作切面"></a>3.制作切面</h4><p>切面是用来描述通知和切入点之间的关系</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyAdvice</span> &#123;</span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(void com.itheima.dao.BookDao.update())&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">pt</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">// Before描述通知和切入点之间的关系</span></span><br><span class="line">    <span class="meta">@Before(&quot;pt()&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>绑定切入点与通知关系，并指定通知添加到原始连接点的具体执行<code>位置</code></p>
+<p><img src="/img/19494/AOP3.png" alt="AOP3"></p>
+<p>🚩@Before翻译过来是之前，也就是说通知会在切入点方法执行之前执行，除此之前还有其他四种类型，这就是<code>通知类型</code></p>
+<h4 id="4-将通知类配给容器并标识其为切面类"><a href="#4-将通知类配给容器并标识其为切面类" class="headerlink" title="4.将通知类配给容器并标识其为切面类"></a>4.将通知类配给容器并标识其为切面类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加入以下两个注解</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyAdvice</span> &#123;</span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(void com.itheima.dao.BookDao.update())&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">pt</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Before(&quot;pt()&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(System.currentTimeMillis());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-开启注解格式AOP功能"><a href="#5-开启注解格式AOP功能" class="headerlink" title="5.开启注解格式AOP功能"></a>5.开启注解格式AOP功能</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.itheima&quot;)</span></span><br><span class="line"><span class="comment">// 加入此注解</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-运行App类"><a href="#6-运行App类" class="headerlink" title="6.运行App类"></a>6.运行App类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(SpringConfig.class);</span><br><span class="line">        <span class="type">BookDao</span> <span class="variable">bookDao</span> <span class="operator">=</span> ctx.getBean(BookDao.class);</span><br><span class="line">        bookDao.update();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1618998676535</span><br><span class="line">book dao update ...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到在update方法前加入了时间戳，方法增强成功。</p>
+<h2 id="🍁注解说明"><a href="#🍁注解说明" class="headerlink" title="🍁注解说明"></a>🍁注解说明</h2><h3 id="EnableAspectJAutoProxy"><a href="#EnableAspectJAutoProxy" class="headerlink" title="@EnableAspectJAutoProxy"></a>@EnableAspectJAutoProxy</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@EnableAspectJAutoProxy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>配置类注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>配置类定义上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>开启注解格式AOP功能</td>
+</tr>
+</tbody></table>
+<h3 id="Aspect"><a href="#Aspect" class="headerlink" title="@Aspect"></a>@Aspect</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@Aspect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>类注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>切面类定义上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>设置当前类为AOP切面类</td>
+</tr>
+</tbody></table>
+<h3 id="Pointcut"><a href="#Pointcut" class="headerlink" title="@Pointcut"></a>@Pointcut</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@Pointcut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>方法注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>切入点方法定义上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>设置切入点方法</td>
+</tr>
+<tr>
+<td>属性</td>
+<td>value（默认）：切入点表达式</td>
+</tr>
+</tbody></table>
+<h3 id="Before"><a href="#Before" class="headerlink" title="@Before"></a>@Before</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>@Before</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>方法注解</td>
+</tr>
+<tr>
+<td>位置</td>
+<td>通知方法定义上方</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>设置当前通知方法与切入点之间的绑定关系，当前通知方法在原始切入点方法前运行</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/07/20/SpringAOP/" data-id="clq4m8c4k002wbc5s39boc9bw" data-title="SpringAOP" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2023/07/21/AOP%E9%80%9A%E7%9F%A5%E7%B1%BB%E5%9E%8B/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          AOP通知类型
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2023/07/20/%E6%B3%A8%E8%A7%A3%E6%B3%A8%E5%85%A5%E6%AF%94%E8%BE%83/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">注解注入比较</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%9F%BA%E7%A1%80/">Java基础</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java%E5%B9%B6%E5%8F%91/">Java并发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%9F%BA%E7%A1%80/" rel="tag">Java基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java%E5%B9%B6%E5%8F%91/" rel="tag">Java并发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/" rel="tag">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JVM/" style="font-size: 13.33px;">JVM</a> <a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 16.67px;">Java基础</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 20px;">Java并发</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Spring/" style="font-size: 18.33px;">Spring</a> <a href="/tags/SpringBoot/" style="font-size: 11.67px;">SpringBoot</a> <a href="/tags/SpringMVC/" style="font-size: 11.67px;">SpringMVC</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" style="font-size: 10px;">分布式</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 15px;">数据结构</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 11.67px;">算法</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">December 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/10/">October 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/09/">September 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/08/">August 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/12/14/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2023/12/05/JUC%E5%B7%A5%E5%85%B7/">JUC工具</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/10/JUC%E6%97%A0%E9%94%81/">JUC无锁</a>
+          </li>
+        
+          <li>
+            <a href="/2023/11/06/ReentrantLock/">ReentrantLock</a>
+          </li>
+        
+          <li>
+            <a href="/2023/10/23/SpringCloud%E6%80%BB%E8%A7%88/">SpringCloud总览</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
